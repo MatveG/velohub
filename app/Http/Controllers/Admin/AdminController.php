@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Sku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class AdminController extends Controller
 {
@@ -63,7 +64,7 @@ class AdminController extends Controller
 
         $product->skus = $product->skus->sortByDesc('is_default')->sortByDesc('is_active');
 
-        return view('admin.products.edit', compact(['product', 'categories']));
+        return view('admin::products.edit', compact(['product', 'categories']));
     }
 
     public function validateId(Request $request)

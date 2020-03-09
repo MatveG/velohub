@@ -8,7 +8,7 @@ module.exports = {
     mode: 'development', // change on deploy
     entry: {
         'public/assets/app.min': './resources/js/app.js', // output file (without extension) : input file
-        'public/admin/assets/app.min': './resources/js/admin/app.js', // output file (without extension) : input file
+        'public/admin/assets/app.min': './resources/admin/js/app.js', // output file (without extension) : input file
     },
     output: {
         path: path.resolve(__dirname, './'),

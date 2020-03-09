@@ -42,5 +42,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Define path to Widget Views
         $this->loadViewsFrom(resource_path() . '/views/widgets', 'Widgets');
+
+        // admin views
+        app('view')->prependNamespace('admin', resource_path('admin/views'));
     }
 }

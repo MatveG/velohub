@@ -9,6 +9,7 @@ class Sku extends Model
     use Traits\General;
     use Traits\Shop;
     use Traits\Relations\BelongsTo\Product;
+    use Traits\Relations\BelongsTo\Category;
 
     protected $name = 'sku';
     public $timestamps = false;
