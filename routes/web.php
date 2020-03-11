@@ -40,15 +40,13 @@ Route::namespace('Admin')->group(function () {
     Route::get('/admin/products/edit/', 'AdminController@edit');
     Route::delete('/admin/products/delete/', 'AdminController@delete');
 
-    //Route::post('/admin/sku/post/', 'SkuController@post');
-    Route::put('/admin/sku/patch/', 'SkuController@save');
-    Route::delete('/admin/sku/delete/', 'SkuController@delete');
-    Route::patch('/admin/sku/set-default/', 'SkuController@setDefault');
-    Route::patch('/admin/sku/set-active/', 'SkuController@setActive');
-
     // Sku
+    Route::post('/admin/sku/store', 'SkuController@store');
+    Route::post('/admin/sku/{id}/update', 'SkuController@update');
+    Route::post('/admin/sku/{id}/destroy', 'SkuController@destroy');
+    Route::post('/admin/sku/{id}/set-default', 'SkuController@setDefault');
+    Route::post('/admin/sku/{id}/upload-image', 'SkuController@uploadImage');
+    Route::post('/admin/sku/{id}/delete-image/{key}', 'SkuController@deleteImage');
     Route::get('/admin/sku/{product_id}', 'SkuController@index');
-    Route::post('/admin/sku/{product_id}/store', 'SkuController@store');
-    Route::post('/admin/sku/{product_id}/update', 'SkuController@update');
 
 });

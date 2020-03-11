@@ -14,6 +14,7 @@ class Sku extends Model
     protected $name = 'sku';
     public $timestamps = false;
     protected $fillable = [
+        'product_id',
         'title',
         'barcode',
         'options',

@@ -125,6 +125,6 @@
 {{--        </div>--}}
 {{--    </form>--}}
 
-    <list></list>
+<list product-id="{{ $product->id }}"></list>
 
 @endsection
