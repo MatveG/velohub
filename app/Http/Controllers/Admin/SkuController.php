@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use http\Exception\RuntimeException;
 use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\Sku;
+use App\Models\Product;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class SkuController extends Controller
@@ -18,7 +16,7 @@ class SkuController extends Controller
         //$this->checkAjaxRequiredFields($request, ['product_id']);
 
         $product = $product->findOrFail($product_id);
-        $skus = $product->skus()->orderBy('is_default', 'desc')->orderBy('id')->get();
+        $skus = $product->skus()->orderBy('id')->get();
         $options = $product->category->pluck('options')->first();
 
         return response()->json([
@@ -31,29 +29,32 @@ class SkuController extends Controller
         ]);
     }
 
-    public function store(Request $request, Sku $sku)
+    public function store(Request $request, Product $product, Sku $sku)
     {
-        $sku->category_id = 0; // remove
-        $sku->fill($request->all())->save();
+        $product = $product->findOrFail($request->product_id);
+
+        $sku->fill($request->all());
+        $sku->category_id = $product->category_id;
+        $sku->save();
+
+        $this->updateProductStock($product);
 
         return response()->json([
             'id' => $sku->id,
         ]);
     }
 
-    public function update(Sku $sku, $id)
+    public function update(Request $request, Sku $sku, $id)
     {
         $sku = $sku->findOrFail($id);
-        $sku->update(request()->all());
+        $sku->update($request->all());
 
-//        $product = Product::findOrFail($sku->product_id);
-//        $result = Sku::fromRaw('skus, json_each_text(stocks)')->where('product_id', $sku->product_id)->whereRaw('value <> \'0\'')->first();
-//        $product->is_stock = ($result) ? 0 : 1;
-//
-//        if ($sku->is_default) {
-//            $product->prices = $data['prices'];
-//        }
-//        $product->save();
+        $this->updateProductStock($sku->product);
+
+        if ($sku->is_default) {
+            $sku->product->prices = $sku->prices;
+            $sku->product->save();
+        }
 
         return response()->json();
     }
@@ -66,6 +67,7 @@ class SkuController extends Controller
         if(!$sku->is_default) {
             $sku->delete();
         }
+        $this->updateProductStock($sku->product);
 
         return response()->json();
     }
@@ -73,9 +75,12 @@ class SkuController extends Controller
     public function setDefault(Sku $sku, $id)
     {
         $sku = $sku->findOrFail($id);
-        Sku::where('product_id', $sku->product_id)->update(['is_default' => false]);
+        $sku->product->skus()->update(['is_default' => false]);
         $sku->is_default = true;
         $sku->save();
+
+        $sku->product->prices = $sku->prices;
+        $sku->product->save();
 
         return response()->json();
     }
@@ -137,6 +142,17 @@ class SkuController extends Controller
         }
 
         return response()->json(['image' => $pathLg . $name]);
+    }
+
+    public function updateProductStock(Product $product)
+    {
+        $result = Sku
+            ::fromRaw('skus, json_each_text(stocks)')
+            ->where('product_id', $product->id)
+            ->whereRaw('value <> \'0\'')
+            ->first();
+        $product->is_stock = ($result) ? 1 : 0;
+        $product->save();
     }
 
 }

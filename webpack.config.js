@@ -8,13 +8,14 @@ module.exports = {
     mode: 'development', // change on deploy
     entry: {
         'public/assets/app.min': './resources/js/app.js', // output file (without extension) : input file
-        'public/admin/assets/app.min': './resources/admin/js/app.js', // output file (without extension) : input file
+        'public/_admin/_assets/app.min': './resources/admin/app.js', // output file (without extension) : input file
     },
     output: {
         path: path.resolve(__dirname, './'),
         filename: '[name].js',
     },
     resolve: {
+        extensions: ['*', '.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
         }

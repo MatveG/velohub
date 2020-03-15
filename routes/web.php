@@ -12,7 +12,7 @@ Route::post('/comment/{product_id}/store/', 'CommentController@store')->name('co
 Route::get('/cart/form/', 'CartController@form')->name('cart.form');
 Route::post('/cart/send/', 'CartController@send')->name('cart.send');
 // Content
-Route::get('/{latin}/', 'ContentController@show')->name('content.show');
+Route::get('/content/{latin}/', 'ContentController@show')->name('content.show');
 // Mailing
 Route::post('/mailing/store/', 'MailingController@store')->name('mailing.store');
 Route::post('/mailing/destroy/', 'MailingController@destroy')->name('mailing.destroy');
@@ -26,19 +26,26 @@ Route::get('/ajax/widget/{name}/', function (string $name) {
     return app('widget')->show($name, request()->param);
 })->name('ajax.widget');
 
-// Images routing
+// Images routing // !remove!
 Route::get('/media/pt/{img}')->name('img.category');
 Route::get('/media/pt/{img}')->name('img.product');
 Route::get('/media/ul/{img}')->name('img.upload');
 
 // Admin
+Route::get('/admin/', function () {
+    return view('admin');
+});
+
 Route::namespace('Admin')->group(function () {
-    Route::get('/admin/', 'AdminController@index');
     Route::get('/admin/products/', 'AdminController@index');
-    Route::get('/admin/products/get/', 'AdminController@get');
-    Route::get('/admin/products/suggest/', 'AdminController@suggest');
-    Route::get('/admin/products/edit/', 'AdminController@edit');
-    Route::delete('/admin/products/delete/', 'AdminController@delete');
+    Route::get('/admin/products/{id}/edit/', 'AdminController@edit');
+    Route::post('/admin/products/{id}/update/', 'AdminController@update');
+//    Route::get('/admin/products/suggest/', 'AdminController@suggest');
+//    Route::get('/admin/products/edit/', 'AdminController@edit');
+//    Route::delete('/admin/products/delete/', 'AdminController@delete');
+
+    // Categories
+    Route::get('/admin/categories/tree/', 'AdminController@tree');
 
     // Sku
     Route::post('/admin/sku/store', 'SkuController@store');

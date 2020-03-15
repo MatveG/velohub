@@ -25,7 +25,7 @@ class CreateSkusTable extends Migration
             $table->json('options')->nullable();
             $table->json('stocks')->nullable();
             $table->json('prices')->nullable();
-            $table->json('images')->nullable();
+            $table->string('images')->nullable();
         });
     }
 

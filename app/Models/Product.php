@@ -14,6 +14,20 @@ class Product extends Model
 
     protected $name = 'product';
     protected $dates = ['created_at', 'updated_at'];
+    protected $fillable = [
+        'category_id',
+        'is_active',
+        'is_sale',
+        'name',
+        'brand',
+        'model',
+        'preview',
+        'text',
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'features',
+    ];
     protected $casts = [
         'features' => 'object',
         'prices' => 'object',
