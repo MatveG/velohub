@@ -14,7 +14,7 @@ class ProductsTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for($i = 1; $i < 1000; $i++) {
+        for($i = 1; $i < 500; $i++) {
             DB::table('products')->insert([
                 'category_id' => $faker->numberBetween(1, 3),
                 'is_stock' => '1',
@@ -24,7 +24,7 @@ class ProductsTableSeeder extends Seeder
                 'name' => $faker->name,
                 'brand' => $faker->randomElement(['Asus', 'Intel', 'Apple', 'Acer', 'HP', 'Razer']),
                 'model' => $faker->name,
-                'preview' => $faker->text,
+                'brief' => $faker->text,
                 'text' => $faker->realText,
                 'features' => json_encode([
                     'year' => $faker->randomElement([2018, 2019, 2020]),
@@ -35,9 +35,9 @@ class ProductsTableSeeder extends Seeder
                     'options' => ['Wi-Fi', 'BT', 'scaner', 'more1', 'more2', 'more3'],
                 ]),
                 'prices' => json_encode([
-                    'retail' => $faker->numberBetween(1000, 5000),
-                    'sale' => $faker->numberBetween(1000, 4500),
-                    'club' => $faker->numberBetween(1000, 4900),
+                    'price-1' => $faker->numberBetween(1000, 5000),
+                    'price-2' => $faker->numberBetween(1000, 4500),
+                    'price-3' => $faker->numberBetween(1000, 4900),
                 ]),
                 'images' => json_encode([
                     '0' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-1.jpg',

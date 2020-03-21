@@ -1,4 +1,6 @@
+/laradock
 /node_modules
+/public/media
 /storage/*.key
 /storage
 /vendor

@@ -18,7 +18,7 @@ class CreateWidgetsTable extends Migration
           $table->boolean('is_active')->default(false)->index();
           $table->string('latin')->nullable();
           $table->string('name')->nullable();
-          $table->longText('text')->nullable();
+          $table->text('text')->nullable();
           $table->timestamps();
         });
     }

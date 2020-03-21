@@ -3,22 +3,30 @@ import "./sass/app.scss";
 
 import Vue from 'vue';
 import Buefy from 'buefy';
-import axiosApi from 'axios';
+import AxiosInstance from 'axios';
 
 Vue.use(Buefy);
 
 import router from './router';
+import { ToastProgrammatic as Toast } from 'buefy'
 
-const app = new Vue({
-    router
-}).$mount('#app');
+window.error = (message) => {
+    Toast.open({
+        message: message,
+        type: 'is-danger',
+        queue: false
+    });
+};
 
-
-window.axios = axiosApi;
+window.axios = AxiosInstance;
 window.axios.defaults.headers.common = {
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN' : document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 };
+
+const app = new Vue({
+    router
+}).$mount('#app');
 
 
 

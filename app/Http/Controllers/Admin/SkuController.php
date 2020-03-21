@@ -35,6 +35,13 @@ class SkuController extends Controller
 
         $sku->fill($request->all());
         $sku->category_id = $product->category_id;
+
+        foreach (['options', 'prices', 'stocks'] as $item) {
+            if (empty($sku->{$item})) {
+                $sku->{$item} = (object)[];
+            }
+        }
+
         $sku->save();
 
         $this->updateProductStock($product);

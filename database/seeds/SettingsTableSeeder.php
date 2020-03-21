@@ -13,34 +13,34 @@ class SettingsTableSeeder extends Seeder
     public function run()
     {
         DB::table('settings')->insert([
-            'section' => 'shop',
-            'name' => 'items_per_page',
+            'group' => 'shop',
+            'key' => 'items_per_page',
             'value' => '18',
         ]);
 
         DB::table('settings')->insert([
-            'section' => 'shop',
-            'name' => 'default_price',
-            'value' => 'retail',
+            'group' => 'shop',
+            'key' => 'default_price',
+            'value' => 'price-1',
         ]);
 
         DB::table('settings')->insert([
-            'section' => 'shop',
-            'name' => 'cashback_amount',
+            'group' => 'shop',
+            'key' => 'cashback_amount',
             'value' => 0.05,
         ]);
 
         DB::table('settings')->insert([
-            'section' => 'shop',
-            'name' => 'prices',
+            'group' => 'shop',
+            'key' => 'prices',
             'value' => json_encode([
-                'retail' => [
+                'price-1' => [
                     'title' => 'retail',
                     'code' => 'грн',
                     'sign' => '₴',
                     'align' => 'right',
                 ],
-                'wholesale' => [
+                'price-2' => [
                     'title' => 'wholesale',
                     'code' => 'USD',
                     'sign' => '$',
@@ -50,8 +50,8 @@ class SettingsTableSeeder extends Seeder
         ]);
 
         DB::table('settings')->insert([
-            'section' => 'shop',
-            'name' => 'stocks',
+            'group' => 'shop',
+            'key' => 'stocks',
             'value' => json_encode([
                 'stock-1' => [
                     'title' => 'Склад 1',

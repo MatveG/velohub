@@ -5,6 +5,16 @@ html,body {
     line-height: 125%;
 }
 
+.table-align-center th {
+    text-align: center !important;
+    vertical-align: middle;
+}
+
+.table-align-center td {
+    text-align: center !important;
+    vertical-align: middle;
+}
+
 .box {
     width: 50%;
     margin: auto;
@@ -13,8 +23,8 @@ html,body {
 .image-block {
     display: inline-block;
     position: relative;
-    width: 75px;
-    height: 75px;
+    width: 100px;
+    height: 100px;
 }
 
 .image-block .image {
@@ -26,3 +36,4 @@ html,body {
     top: 5px;
     right: 5px;
 }
+

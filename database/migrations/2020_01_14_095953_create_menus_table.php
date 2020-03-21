@@ -16,10 +16,10 @@ class CreateMenusTable extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('parent_id')->unsigned()->default(0)->index();
-            $table->integer('sorting')->default('0');
             $table->boolean('is_active')->default(false)->index();
-            $table->boolean('is_parent')->default(false);
-            $table->string('group')->nullable();
+            $table->boolean('is_parent')->default(false)->index();
+            $table->integer('sorting')->default('0');
+            $table->string('group')->nullable()->index();
             $table->string('link')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();

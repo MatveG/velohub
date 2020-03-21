@@ -4,6 +4,14 @@ html, body {
   color: #111;
   line-height: 125%; }
 
+.table-align-center th {
+  text-align: center !important;
+  vertical-align: middle; }
+
+.table-align-center td {
+  text-align: center !important;
+  vertical-align: middle; }
+
 .box {
   width: 50%;
   margin: auto; }
@@ -11,8 +19,8 @@ html, body {
 .image-block {
   display: inline-block;
   position: relative;
-  width: 75px;
-  height: 75px; }
+  width: 100px;
+  height: 100px; }
 
 .image-block .image {
   min-height: 100%; }
@@ -22,10 +30,14 @@ html, body {
   top: 5px;
   right: 5px; }
 
+.modal-card[data-v-39d1c09f] {
+  max-height: 100%;
+}
+
 .less-margin {
   margin-top: -1rem;
 }
-.card-header-title {
-  font-weight: normal;
+.font-weight-normal {
+  font-weight: normal !important;
 }
 

@@ -14,14 +14,13 @@ class SkusTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for($i = 1; $i <= 1000; $i++) {
+        for($i = 1; $i <= 500; $i++) {
             DB::table('skus')->insert([
                 'product_id' => $i,
                 'category_id' => $faker->numberBetween(1, 3),
                 'is_active' => true,
                 'is_default' => true,
                 'barcode' => $faker->randomAscii(),
-                'title' => $faker->word(),
                 'codes' => json_encode([
                     $faker->word(),
                     $faker->word(),
@@ -31,14 +30,14 @@ class SkusTableSeeder extends Seeder
                     'color' => $faker->randomElement(['red', 'white', 'black', 'blue', 'gray', 'orange']),
                 ]),
                 'prices' => json_encode([
-                    'retail' => $faker->numberBetween(1000, 5000),
-                    'sale' => $faker->numberBetween(1000, 4500),
-                    'club' => $faker->numberBetween(1000, 4900),
+                    'price-1' => $faker->numberBetween(1000, 5000),
+                    'price-2' => $faker->numberBetween(1000, 4500),
+                    'price-3' => $faker->numberBetween(1000, 4900),
                 ]),
                 'stocks' => json_encode([
-                    '1' => '5',
-                    '2' => '3',
-                    '3' => '0',
+                    'stock-1' => '5',
+                    'stock-2' => '3',
+                    'stock-3' => '0',
                 ]),
                 'images' => json_encode([
                     '0' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-1.jpg',

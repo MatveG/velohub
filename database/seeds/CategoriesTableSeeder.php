@@ -18,13 +18,13 @@ class CategoriesTableSeeder extends Seeder
             'parent_id' => '0',
             'sorting' => '1',
             'is_active' => '1',
-            'settings' => json_encode([
-                'filters_in_menu' => [
-                    0 => ['latin' => 'brand', 'column' => ''],
-                    1 => ['latin' => 'processor', 'column' => 'features'],
-                    2 => ['latin' => 'size', 'column' => 'options'],
-                ]
-            ]),
+//            'settings' => json_encode([
+//                'filters_in_menu' => [
+//                    0 => ['latin' => 'brand', 'column' => ''],
+//                    1 => ['latin' => 'processor', 'column' => 'features'],
+//                    2 => ['latin' => 'size', 'column' => 'options'],
+//                ]
+//            ]),
             'latin' => $faker->word(),
             'name' => $faker->word(),
             'name_short' => $faker->word(),

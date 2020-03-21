@@ -24,14 +24,15 @@ class CreateProductsTable extends Migration
             $table->string('name')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
-            $table->string('preview', 5000)->nullable();
-            $table->string('text', 50000)->nullable();
+            $table->text('brief')->nullable();
+            $table->text('text')->nullable();
+            $table->text('video')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
-            $table->json('features')->nullable();
-            $table->json('prices')->nullable();
-            $table->json('images')->nullable();
+            $table->jsonb('features')->nullable();
+            $table->jsonb('prices')->nullable();
+            $table->text('images')->nullable();
             $table->timestamps();
         });
 

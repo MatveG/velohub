@@ -180,8 +180,6 @@
             submit() {
                 //this.isLoading = true;
 
-                console.log(this.item);
-
                 if(this.id) {
                     axios.post(`/admin/products/${this.item.id}/update`, this.item)
                         .then(res => {

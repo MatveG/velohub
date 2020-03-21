@@ -14,16 +14,17 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('product_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned()->default(0);
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('product_id')->unsigned()->index();
+            $table->bigInteger('user_id')->unsigned()->default(0)->index();
             $table->boolean('is_active')->default(false)->index();
             $table->smallInteger('rating')->unsigned()->default(0);
-            $table->string('video')->nullable();
             $table->string('author')->nullable();
-            $table->string('pros')->nullable();
-            $table->string('cons')->nullable();
-            $table->mediumText('text')->nullable();
+            $table->string('email')->nullable();
+            $table->text('pros')->nullable();
+            $table->text('cons')->nullable();
+            $table->text('text')->nullable();
+            $table->text('video')->nullable();
             $table->timestamps();
         });
     }
