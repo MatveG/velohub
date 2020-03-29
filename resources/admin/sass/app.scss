@@ -1,8 +1,14 @@
+$thumb-size: 110px;
+
 html,body {
     height: 100%;
     background-color: #fff;
     color: #111;
     line-height: 125%;
+}
+
+.mr-3 {
+    margin-right: 0.3rem;
 }
 
 .table-align-center th {
@@ -23,17 +29,23 @@ html,body {
 .image-block {
     display: inline-block;
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: $thumb-size;
+    height: $thumb-size;
+    padding: 5px;
 }
 
 .image-block .image {
     min-height: 100%;
+    border-radius: 5px;
 }
 
 .image-block .delete {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 10px;
+}
+
+.modal {
+    padding-left: 12rem;
 }
 

@@ -60,7 +60,7 @@
                 <div class="modal-card-body">
                     <form @submit="save(false)" @change="save(false)" @keyup="saved=false">
                         <b-field label="Артикулы (один на строку)" label-position="on-border">
-                            <b-input v-model="item.codesText" type="textarea" required @input="updateCodes" />
+                            <b-input v-model="item.codesText" type="textarea" rows="3" required @input="updateCodes" />
                         </b-field>
                         <b-field label="Штрих-код" label-position="on-border">
                             <b-input v-model="item.barcode" />
@@ -72,6 +72,24 @@
                                 </b-field>
                             </div>
                         </div>
+
+                        <div v-if="item.id" class="card">
+                            <div class="card-content" style="padding: 5px;">
+                                <div class="image-block" v-for="(file, key) in item.images">
+                                    <img class="image" :src="file" alt="">
+                                    <button class="delete" @click="deleteImage(key)">x</button>
+                                </div>
+
+                                <b-field class="file upload-icon">
+                                    <b-upload v-model="file" multiple drag-drop>
+                                        <div class="is-flex">
+                                            <i class="fa fa-upload is-size-3"></i>
+                                        </div>
+                                    </b-upload>
+                                </b-field>
+                            </div>
+                        </div>
+
                         <card-collapse class="font-weight-normal" v-if="item.id" :is-open="false" title="Цены и наличие">
                             <label class="label is-small has-text-centered less-margin">Цены</label>
                             <div class="columns">
@@ -90,28 +108,12 @@
                                 </div>
                             </div>
                         </card-collapse>
-                        <card-collapse v-if="item.id" :is-open="false" title="Фотографии">
-                            <div v-if="item.id">
-                                <div class="control">
-                                    <div class="image-block" v-for="(file, key) in item.images">
-                                        <img class="image" :src="file" alt="">
-                                        <button class="delete" @click="deleteImage(key)">x</button>
-                                    </div>
-                                    <div class="buttons is-centered">
-                                        <b-field class="file">
-                                            <b-upload v-model="file">
-                                                <a class="button is-primary">Загрузить</a>
-                                            </b-upload>
-                                        </b-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </card-collapse>
                     </form>
                 </div>
                 <footer class="modal-card-foot">
-                   <button class="button is-primary" type="button"
-                           :class="{ 'is-loading': loading }" :disabled="saved" @click="save(true)">Сохранить</button>
+                    <button class="button is-primary" type="button"
+                            :class="{ 'is-loading': loading }" :disabled="saved" @click="save(true)">Сохранить</button>
+                    <button class="button" type="button" @click="$parent.close()">Close</button>
                 </footer>
             </div>
         </b-modal>
@@ -152,13 +154,11 @@
                     }
                 })
                 .catch(error => window.error(error.message));
-
-            console.log(this.item);
         },
 
         watch: {
             'file': function () {
-                if(this.file) {
+                if(this.file && this.file.length) {
                     this.uploadImage();
                 }
             }
@@ -251,17 +251,19 @@
             },
 
             uploadImage: function () {
-                let url = `/admin/sku/${this.item.id}/upload-image`;
-                let data = new FormData();
-                let settings = { headers: { 'content-type': 'multipart/form-data' } };
-                data.append('image', this.file);
+                this.file.forEach(file => {
+                    let url = `/admin/sku/${this.item.id}/upload-image`;
+                    let data = new FormData();
+                    let settings = { headers: { 'content-type': 'multipart/form-data' } };
+                    data.append('image', file);
 
-                axios.post(url, data, settings)
-                    .then((res) => {
-                        this.item.images.push(res.data.image);
-                        this.file = null;
-                    })
-                    .catch(error => window.error(error.message));
+                    axios.post(url, data, settings)
+                        .then((res) => {
+                            this.item.images.push(res.data.image);
+                            this.file = null;
+                        })
+                        .catch(error => window.error(error.message));
+                });
             },
 
             deleteImage: function (key) {
@@ -279,10 +281,20 @@
 </script>
 
 <style>
+    .upload-icon {
+        height: 55px;
+        margin: 5px;
+    }
+    .upload-icon div, .upload-icon label {
+        margin: auto;
+        width: 100%;
+        height: 100%;
+    }
+    .upload-icon i {
+        margin: auto;
+        color: #aaa;
+    }
     .less-margin {
         margin-top: -1rem;
-    }
-    .font-weight-normal {
-        font-weight: normal !important;
     }
 </style>

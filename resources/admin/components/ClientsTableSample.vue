@@ -2,7 +2,7 @@
     <div>
         <modal-box :is-active="isModalActive" :trash-object-name="trashObjectName" @confirm="trashConfirm" @cancel="trashCancel"/>
 
-        <b-table
+        <b-table class="table-align-center"
             :checked-rows.sync="checkedRows"
             :checkable="checkable"
             :loading="isLoading"
@@ -17,15 +17,15 @@
                 <b-table-column label="Код" field="id" sortable>
                     {{ props.row.id }}
                 </b-table-column>
-                <b-table-column label="Артикул" field="id" sortable>
-                    <span class="is-italic">{{ props.row.codes }}</span>
-                </b-table-column>
                 <b-table-column label="Фото" class="has-no-head-mobile is-image-cell">
                     <div class="image">
                         <img :src="props.row.thumb" class="is-rounded">
                     </div>
                 </b-table-column>
-                <b-table-column label="Модель" field="model" sortable>
+<!--                <b-table-column label="Артикул" field="id" sortable>-->
+<!--                    <span class="is-italic">{{ props.row.codes }}</span>-->
+<!--                </b-table-column>-->
+                <b-table-column class="has-text-left" label="Модель" field="model" sortable>
                     <a :href="props.row.link">{{ props.row.model }}</a>
                 </b-table-column>
                 <b-table-column label="Бренд" field="brand" sortable>
@@ -33,6 +33,9 @@
                 </b-table-column>
                 <b-table-column label="Категория" field="category_name" sortable>
                     {{ props.row.category_name }}
+                </b-table-column>
+                <b-table-column label="Цена" field="price" sortable>
+                    {{ props.row.price }}
                 </b-table-column>
 
                 <b-table-column label="Активен" field="is_active" sortable>

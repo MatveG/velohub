@@ -47,7 +47,7 @@ class CartService
 
         return $this->items->map(function ($item) {
             $item->amount = $item->pivot->amount;
-            $item->sum = $item->prices->retail * $item->pivot->amount;
+            $item->sum = $item->price * $item->pivot->amount;
             return $item;
         });
     }

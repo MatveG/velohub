@@ -19,6 +19,7 @@ class AdminController extends Controller
                 'brand' => $product->brand,
                 'model' => $product->model,
                 'category_name' => $product->category->name,
+                'price' => number_format($product->price),
                 'is_active' => $product->is_active,
                 'is_stock' => $product->is_stock,
                 'is_sale' => $product->is_sale,

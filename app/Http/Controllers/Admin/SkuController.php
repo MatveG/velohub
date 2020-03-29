@@ -154,7 +154,7 @@ class SkuController extends Controller
     public function updateProductStock(Product $product)
     {
         $result = Sku
-            ::fromRaw('skus, json_each_text(stocks)')
+            ::fromRaw('skus, jsonb_each_text(stocks)')
             ->where('product_id', $product->id)
             ->whereRaw('value <> \'0\'')
             ->first();
