@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use http\Exception\RuntimeException;
 use Illuminate\Http\Request;
 use App\Models\Sku;
 use App\Models\Product;
@@ -92,21 +93,6 @@ class SkuController extends Controller
         return response()->json();
     }
 
-    public function deleteImage(Sku $sku, $id, $key)
-    {
-        $sku = $sku->findOrFail($id);
-        $images = $sku->images;
-
-        if(File::exists(public_path($images[$key]))) {
-            File::delete(public_path($images[$key]));
-        }
-        unset($images[$key]);
-        $sku->images = array_values($images);
-        $sku->save();
-
-        return response()->json();
-    }
-
     public function uploadImage(Request $request, Sku $sku, $id)
     {
         request()->validate([
@@ -149,6 +135,28 @@ class SkuController extends Controller
         }
 
         return response()->json(['image' => $pathLg . $name]);
+    }
+
+    public function deleteImage(Sku $sku, $id, $key)
+    {
+        $sku = $sku->findOrFail($id);
+        $images = $sku->images;
+
+        if(File::exists(public_path($images[$key]))) {
+            File::delete(public_path($images[$key]));
+        }
+        unset($images[$key]);
+        $sku->images = array_values($images);
+        $sku->save();
+
+        return response()->json();
+    }
+
+    public function updateImages(Request $request, Sku $sku, $id)
+    {
+        $sku->where('id', $id)->update($request->only(['images']));
+
+        return response()->json();
     }
 
     public function updateProductStock(Product $product)

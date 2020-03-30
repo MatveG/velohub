@@ -1,4 +1,4 @@
-$thumb-size: 110px;
+$thumb-size: 100px;
 
 html,body {
     height: 100%;
@@ -29,8 +29,6 @@ html,body {
 .image-block {
     display: inline-block;
     position: relative;
-    width: $thumb-size;
-    height: $thumb-size;
     padding: 5px;
 }
 

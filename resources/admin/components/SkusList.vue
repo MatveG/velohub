@@ -60,7 +60,7 @@
                 <div class="modal-card-body">
                     <form @submit="save(false)" @change="save(false)" @keyup="saved=false">
                         <b-field label="Артикулы (один на строку)" label-position="on-border">
-                            <b-input v-model="item.codesText" type="textarea" rows="3" required @input="updateCodes" />
+                            <b-input v-model="item.codesText" type="textarea" rows="2" required @input="updateCodes" />
                         </b-field>
                         <b-field label="Штрих-код" label-position="on-border">
                             <b-input v-model="item.barcode" />
@@ -75,22 +75,27 @@
 
                         <div v-if="item.id" class="card">
                             <div class="card-content" style="padding: 5px;">
-                                <div class="image-block" v-for="(file, key) in item.images">
-                                    <img class="image" :src="file" alt="">
-                                    <button class="delete" @click="deleteImage(key)">x</button>
-                                </div>
+                                <ul @change.stop>
+                                    <draggable v-model="item.images" @end="sortImages" ghost-class="has-background-light">
+                                        <li v-for="(file, key) in item.images" class="image-block is-square">
+                                            <img :src="file" class="image" alt="">
+                                            <button @click="deleteImage(key)" class="delete">x</button>
+                                        </li>
+                                    </draggable>
+                                </ul>
 
                                 <b-field class="file upload-icon">
                                     <b-upload v-model="file" multiple drag-drop>
                                         <div class="is-flex">
-                                            <i class="fa fa-upload is-size-3"></i>
+                                            <i class="fa fa-upload is-size-3 has-text-primary"></i>
                                         </div>
                                     </b-upload>
                                 </b-field>
                             </div>
                         </div>
+                        <br>
 
-                        <card-collapse class="font-weight-normal" v-if="item.id" :is-open="false" title="Цены и наличие">
+                        <card-collapse v-if="item.id" :is-open="false" title="Цены и наличие">
                             <label class="label is-small has-text-centered less-margin">Цены</label>
                             <div class="columns">
                                 <div class="column" v-for="(price, key) in cols.prices">
@@ -117,11 +122,13 @@
                 </footer>
             </div>
         </b-modal>
+
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+    import draggable from 'vuedraggable'
     import CardCollapse from "./CardCollapse";
     import ModalImage from "./ModalImage";
 
@@ -129,13 +136,14 @@
         props: ['productId'],
 
         components: {
+            draggable,
             ModalImage,
             CardCollapse,
         },
 
         data() {
             return {
-                title: 'Артикул товара',
+                title: 'Артикул',
                 modal: false,
                 saved: true,
                 loading: false,
@@ -176,6 +184,7 @@
                     stocks: {},
                     images: [],
                     codesText: '',
+                    drag: false
                 };
 
                 this.modal = true;
@@ -196,6 +205,11 @@
                     window.error('Заполните Артикулы');
                     return;
                 }
+
+                if(this.drag === true) {
+                    return;
+                }
+
                 this.saved = false;
                 this.loading = true;
                 (this.item.id === null) ? this.store() : this.update();
@@ -272,6 +286,19 @@
                     .catch(error => window.error(error.message));
             },
 
+            sortImages() {
+                this.drag = false;
+                this.saved = false;
+                this.loading = true;
+
+                axios.post(`/admin/sku/${this.item.id}/update-images`, { images: this.item.images })
+                    .then(() => {
+                        this.saved = true;
+                        this.loading = false;
+                    })
+                    .catch(error => window.error(error.message));
+            },
+
             formatPrice(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -281,8 +308,11 @@
 </script>
 
 <style>
+    .image-block {
+        width: 20%;
+    }
     .upload-icon {
-        height: 55px;
+        height: 75px;
         margin: 5px;
     }
     .upload-icon div, .upload-icon label {
@@ -292,7 +322,6 @@
     }
     .upload-icon i {
         margin: auto;
-        color: #aaa;
     }
     .less-margin {
         margin-top: -1rem;

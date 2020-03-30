@@ -22,8 +22,6 @@ html, body {
 .image-block {
   display: inline-block;
   position: relative;
-  width: 110px;
-  height: 110px;
   padding: 5px; }
 
 .image-block .image {
@@ -42,8 +40,11 @@ html, body {
   max-height: 100%;
 }
 
+.image-block {
+  width: 20%;
+}
 .upload-icon {
-  height: 55px;
+  height: 75px;
   margin: 5px;
 }
 .upload-icon div, .upload-icon label {
@@ -53,7 +54,6 @@ html, body {
 }
 .upload-icon i {
   margin: auto;
-  color: #aaa;
 }
 .less-margin {
   margin-top: -1rem;

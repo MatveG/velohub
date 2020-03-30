@@ -54,6 +54,7 @@ Route::namespace('Admin')->group(function () {
     Route::post('/admin/sku/{id}/set-default', 'SkuController@setDefault');
     Route::post('/admin/sku/{id}/upload-image', 'SkuController@uploadImage');
     Route::post('/admin/sku/{id}/delete-image/{key}', 'SkuController@deleteImage');
+    Route::post('/admin/sku/{id}/update-images', 'SkuController@updateImages');
     Route::get('/admin/sku/{product_id}', 'SkuController@index');
 
 });
