@@ -59,22 +59,39 @@
                 </div>
                 <div class="modal-card-body">
                     <form @submit="save(false)" @change="save(false)" @keyup="saved=false">
-                        <b-field label="Артикулы (один на строку)" label-position="on-border">
-                            <b-input v-model="item.codesText" type="textarea" rows="2" required @input="updateCodes" />
+                        <b-field label="Артикулы" label-position="on-border">
+                            <b-input v-model="item.codesText" @input="updateCodes" type="textarea" rows="2" placeholder="Один артикул на строку"  required />
                         </b-field>
                         <b-field label="Штрих-код" label-position="on-border">
-                            <b-input v-model="item.barcode" />
+                            <b-input v-model="item.barcode"  placeholder="Штрих-код товара" />
                         </b-field>
-                        <div class="columns">
-                            <div class="column" v-for="(option, key) in cols.options">
+
+                        <div v-if="item.id" class="columns">
+                            <div v-for="(option, key) in cols.options" class="column">
                                 <b-field :label="option.title" label-position="on-border">
-                                    <b-input v-if="item.options" v-model="item.options[key]" />
+                                    <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Опция [' + option.title + ']'" />
+                                </b-field>
+                            </div>
+                        </div>
+
+                        <div v-if="item.id" class="columns">
+                            <div v-for="(price, key) in cols.prices" class="column">
+                                <b-field :label="price.title" label-position="on-border">
+                                    <b-input v-if="item.prices" v-model="item.prices[key]" :placeholder="'Цена [' + price.title + ']'" />
+                                </b-field>
+                            </div>
+                        </div>
+
+                        <div v-if="item.id" class="columns">
+                            <div v-for="(stock, key) in cols.stocks" class="column">
+                                <b-field :label="stock.title" label-position="on-border">
+                                    <b-input v-if="item.stocks" v-model="item.stocks[key]" :placeholder="'Склад [' + stock.title + ']'" />
                                 </b-field>
                             </div>
                         </div>
 
                         <div v-if="item.id" class="card">
-                            <div class="card-content" style="padding: 5px;">
+                            <div class="card-content">
                                 <ul @change.stop>
                                     <draggable v-model="item.images" @end="sortImages" ghost-class="has-background-light">
                                         <li v-for="(file, key) in item.images" class="image-block is-square">
@@ -83,7 +100,7 @@
                                         </li>
                                     </draggable>
                                 </ul>
-
+                                <label v-if="!item.images.length" class="label has-text-centered has-text-grey-light">Загрузите фото</label>
                                 <b-field class="file upload-icon">
                                     <b-upload v-model="file" multiple drag-drop>
                                         <div class="is-flex">
@@ -93,32 +110,13 @@
                                 </b-field>
                             </div>
                         </div>
-                        <br>
 
-                        <card-collapse v-if="item.id" :is-open="false" title="Цены и наличие">
-                            <label class="label is-small has-text-centered less-margin">Цены</label>
-                            <div class="columns">
-                                <div class="column" v-for="(price, key) in cols.prices">
-                                    <b-field :label="price.title" label-position="on-border">
-                                        <b-input v-if="item.prices" v-model="item.prices[key]" />
-                                    </b-field>
-                                </div>
-                            </div>
-                            <label class="label is-small has-text-centered less-margin">Склады</label>
-                            <div class="columns">
-                                <div class="column" v-for="(stock, key) in cols.stocks">
-                                    <b-field :label="stock.title" label-position="on-border">
-                                        <b-input v-if="item.stocks" v-model="item.stocks[key]" />
-                                    </b-field>
-                                </div>
-                            </div>
-                        </card-collapse>
                     </form>
                 </div>
                 <footer class="modal-card-foot">
                     <button class="button is-primary" type="button"
                             :class="{ 'is-loading': loading }" :disabled="saved" @click="save(true)">Сохранить</button>
-                    <button class="button" type="button" @click="$parent.close()">Close</button>
+                    <button class="button" type="button" @click="modal=false">Закрыть</button>
                 </footer>
             </div>
         </b-modal>
@@ -308,12 +306,17 @@
 </script>
 
 <style>
+    .card-content {
+        padding: 1rem;
+    }
+    .sku-images ul {
+        margin: 0;
+    }
     .image-block {
         width: 20%;
     }
     .upload-icon {
-        height: 75px;
-        margin: 5px;
+        height: 70px;
     }
     .upload-icon div, .upload-icon label {
         margin: auto;
@@ -322,8 +325,5 @@
     }
     .upload-icon i {
         margin: auto;
-    }
-    .less-margin {
-        margin-top: -1rem;
     }
 </style>

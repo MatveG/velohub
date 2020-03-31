@@ -22,7 +22,7 @@ html, body {
 .image-block {
   display: inline-block;
   position: relative;
-  padding: 5px; }
+  padding: 2px; }
 
 .image-block .image {
   min-height: 100%;
@@ -40,12 +40,17 @@ html, body {
   max-height: 100%;
 }
 
+.card-content {
+  padding: 1rem;
+}
+.sku-images ul {
+  margin: 0;
+}
 .image-block {
   width: 20%;
 }
 .upload-icon {
-  height: 75px;
-  margin: 5px;
+  height: 70px;
 }
 .upload-icon div, .upload-icon label {
   margin: auto;
@@ -54,8 +59,5 @@ html, body {
 }
 .upload-icon i {
   margin: auto;
-}
-.less-margin {
-  margin-top: -1rem;
 }
 
