@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <div class="image-block">
+    <div class="is-inline">
+        <div>
             <a @click="modal=true">
-                <img :src="image" alt="">
+                <img :src="image" :width="size+'px'" alt="">
             </a>
         </div>
         <b-modal :active.sync="modal" has-modal-card aria-modal scroll="clip">
@@ -18,7 +18,7 @@
 <script>
     export default {
         name: "ModalImage",
-        props: ['image'],
+        props: ['image', 'size'],
 
         data() {
             return {

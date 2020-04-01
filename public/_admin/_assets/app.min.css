@@ -4,8 +4,14 @@ html, body {
   color: #111;
   line-height: 125%; }
 
-.mr-3 {
-  margin-right: 0.3rem; }
+p-0 {
+  padding: 0; }
+
+.pt-0 {
+  padding-top: 0; }
+
+.pb-0 {
+  padding-bottom: 0; }
 
 .table-align-center th {
   text-align: center !important;
@@ -19,16 +25,16 @@ html, body {
   width: 50%;
   margin: auto; }
 
-.image-block {
+.block-image-delete {
   display: inline-block;
   position: relative;
   padding: 2px; }
 
-.image-block .image {
+.block-image-delete img {
   min-height: 100%;
   border-radius: 5px; }
 
-.image-block .delete {
+.block-image-delete button {
   position: absolute;
   top: 10px;
   right: 10px; }
@@ -46,7 +52,7 @@ html, body {
 .sku-images ul {
   margin: 0;
 }
-.image-block {
+.block-image-delete {
   width: 20%;
 }
 .upload-icon {

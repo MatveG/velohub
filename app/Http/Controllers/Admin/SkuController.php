@@ -12,6 +12,13 @@ use Intervention\Image\Facades\Image;
 
 class SkuController extends Controller
 {
+    public function qwe()
+    {
+        $product = Product::fill(55)->category_id;
+
+        dd($product);
+    }
+
     public function index(Product $product, $product_id)
     {
         //$this->checkAjaxRequiredFields($request, ['product_id']);
@@ -30,11 +37,10 @@ class SkuController extends Controller
         ]);
     }
 
-    public function store(Request $request, Product $product, Sku $sku)
+    public function store(Request $request)
     {
-        $product = $product->findOrFail($request->product_id);
-
-        $sku->fill($request->all());
+        $product = Product::findOrFail($request->product_id);
+        $sku = (new Sku())->fill($request->all());
         $sku->category_id = $product->category_id;
 
         foreach (['options', 'prices', 'stocks'] as $item) {
@@ -44,7 +50,6 @@ class SkuController extends Controller
         }
 
         $sku->save();
-
         $this->updateProductStock($product);
 
         return response()->json([
@@ -102,7 +107,7 @@ class SkuController extends Controller
         $sku = $sku->findOrFail($id);
         $upload = $request->file('image');
 
-        // create directories
+        // create path
         $numHash = base_convert( md5_file($upload), 16, 10 );
         $hashPath = chunk_split( substr($numHash, 0, 10), 2, '/' );
         $path = '/media/QQ/' . $hashPath . $id;
@@ -110,16 +115,21 @@ class SkuController extends Controller
         $pathMd = $path . '-md/';
         $pathSm = $path . '-sm/';
 
+        // create image
+        $extension = $upload->getClientOriginalExtension();
+        $image = Image::make($request->file('image'));
+        $name = $sku->product->latin . '.' . $extension;
+
+        if(File::exists(public_path($pathLg . $name))) {
+            return response()->json(['error' => 'Image already exists'], 400);
+        }
+
+        // create directories
         if(!File::exists(public_path($pathLg))) {
             File::makeDirectory(public_path($pathLg), 0775, true);
             File::makeDirectory(public_path($pathMd), 0775, true);
             File::makeDirectory(public_path($pathSm), 0775, true);
         }
-
-        // create image
-        $extension = $upload->getClientOriginalExtension();
-        $image = Image::make($request->file('image'));
-        $name = $sku->product->latin . '.' . $extension;
 
         // save images
         $image->fit(1000)->save(public_path($pathLg . $name), 70);

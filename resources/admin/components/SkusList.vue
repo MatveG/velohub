@@ -18,7 +18,7 @@
                         <input type="radio" name="is_default" :checked="item.is_default" @click="setDefault(item.id)"></input>
                     </td>
                     <td>
-                        <modal-image v-if="item.images" :image="item.images[0]"></modal-image>
+                        <modal-image v-if="item.images" :image="item.images[0]" :size="130"></modal-image>
                     </td>
                     <td>
                         <div v-for="code in item.codes" class="is-italic">{{ code }}</div>
@@ -67,7 +67,7 @@
                         </b-field>
 
                         <div v-if="item.id" class="columns">
-                            <div v-for="(option, key) in cols.options" class="column">
+                            <div v-for="(option, key) in cols.options" class="column pb-0">
                                 <b-field :label="option.title" label-position="on-border">
                                     <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Опция [' + option.title + ']'" />
                                 </b-field>
@@ -75,7 +75,7 @@
                         </div>
 
                         <div v-if="item.id" class="columns">
-                            <div v-for="(price, key) in cols.prices" class="column">
+                            <div v-for="(price, key) in cols.prices" class="column pb-0">
                                 <b-field :label="price.title" label-position="on-border">
                                     <b-input v-if="item.prices" v-model="item.prices[key]" :placeholder="'Цена [' + price.title + ']'" />
                                 </b-field>
@@ -83,7 +83,7 @@
                         </div>
 
                         <div v-if="item.id" class="columns">
-                            <div v-for="(stock, key) in cols.stocks" class="column">
+                            <div v-for="(stock, key) in cols.stocks" class="column pb-0">
                                 <b-field :label="stock.title" label-position="on-border">
                                     <b-input v-if="item.stocks" v-model="item.stocks[key]" :placeholder="'Склад [' + stock.title + ']'" />
                                 </b-field>
@@ -94,8 +94,8 @@
                             <div class="card-content">
                                 <ul @change.stop>
                                     <draggable v-model="item.images" @end="sortImages" ghost-class="has-background-light">
-                                        <li v-for="(file, key) in item.images" class="image-block is-square">
-                                            <img :src="file" class="image" alt="">
+                                        <li v-for="(file, key) in item.images" class="block-image-delete is-square">
+                                            <img :src="file" alt="">
                                             <button @click="deleteImage(key)" class="delete">x</button>
                                         </li>
                                     </draggable>
@@ -241,14 +241,21 @@
 
             destroy(id) {
                 if (this.items.find((item) => item.id === id).is_default === true) {
-                    window.error('Невозможно удалить основную запись');
+                    window.error('Нельзя удалить основной артикул');
 
                     return;
                 }
 
-                this.items = this.items.filter(item => item.id !== id);
-                axios.post(`/admin/sku/${id}/destroy`)
-                    .catch(error => window.error(error.message));
+                this.$buefy.dialog.confirm({
+                    message: 'Удалить?',
+                    confirmText: 'Да',
+                    cancelText: 'Нет',
+                    onConfirm: () => {
+                        this.items = this.items.filter(item => item.id !== id);
+                        axios.post(`/admin/sku/${id}/destroy`)
+                            .catch(error => window.error(error.message));
+                    }
+                });
             },
 
             updateCodes() {
@@ -274,8 +281,9 @@
                             this.item.images.push(res.data.image);
                             this.file = null;
                         })
-                        .catch(error => window.error(error.message));
+                        .catch(res => window.error(res.response.data.error));
                 });
+                this.file = [];
             },
 
             deleteImage: function (key) {
@@ -312,7 +320,7 @@
     .sku-images ul {
         margin: 0;
     }
-    .image-block {
+    .block-image-delete {
         width: 20%;
     }
     .upload-icon {
