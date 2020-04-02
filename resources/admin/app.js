@@ -18,6 +18,10 @@ window.error = (message) => {
     });
 };
 
+window.ajaxError = (response) => {
+    error('Error ' + response.status + ': ' + response.data.error);
+};
+
 window.axios = AxiosInstance;
 window.axios.defaults.headers.common = {
     'X-Requested-With': 'XMLHttpRequest',

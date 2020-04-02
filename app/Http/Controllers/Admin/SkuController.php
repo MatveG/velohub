@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use http\Exception\RuntimeException;
 use Illuminate\Http\Request;
 use App\Models\Sku;
 use App\Models\Product;
@@ -12,25 +11,14 @@ use Intervention\Image\Facades\Image;
 
 class SkuController extends Controller
 {
-    public function qwe()
-    {
-        $product = Product::fill(55)->category_id;
-
-        dd($product);
-    }
-
     public function index(Product $product, $product_id)
     {
-        //$this->checkAjaxRequiredFields($request, ['product_id']);
-
         $product = $product->findOrFail($product_id);
-        $skus = $product->skus()->orderBy('id')->get();
-        $options = $product->category->pluck('options')->first();
 
         return response()->json([
-            'items' => $skus,
+            'items' => $product->skus()->orderBy('id')->get(),
             'cols' => [
-                'options' => $options,
+                'options' => $product->category->pluck('options')->first(),
                 'prices' => settings('shop', 'prices'),
                 'stocks' => settings('shop', 'stocks'),
             ]
@@ -40,16 +28,26 @@ class SkuController extends Controller
     public function store(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
-        $sku = (new Sku())->fill($request->all());
-        $sku->category_id = $product->category_id;
 
-        foreach (['options', 'prices', 'stocks'] as $item) {
-            if (empty($sku->{$item})) {
-                $sku->{$item} = (object)[];
+        $hasDuplicates = Sku::where(function ($query) use ($request) {
+            foreach ($request->codes as $code) {
+                $query->orwhereJsonContains('codes', $code);
             }
+        })->exists();
+
+        if($hasDuplicates) {
+            return response()->json(['error' => 'Code already exists'], 400);
         }
 
+        $sku = new Sku();
+        $sku->fill($request->all());
+        $sku->category_id = $product->category_id;
+
+        if($product->skus->count() === 0) {
+            $sku->is_default = true;
+        }
         $sku->save();
+
         $this->updateProductStock($product);
 
         return response()->json([
@@ -57,11 +55,21 @@ class SkuController extends Controller
         ]);
     }
 
-    public function update(Request $request, Sku $sku, $id)
+    public function update(Request $request, $id)
     {
-        $sku = $sku->findOrFail($id);
-        $sku->update($request->all());
+        $sku = Sku::findOrFail($id);
 
+        $hasDuplicates = Sku::where('id', '!=', $id)->where(function ($query) use ($request) {
+            foreach ($request->codes as $code) {
+                $query->orwhereJsonContains('codes', $code);
+            }
+        })->exists();
+
+        if($hasDuplicates) {
+            return response()->json(['error' => 'Code already exists'], 400);
+        }
+
+        $sku->update($request->all());
         $this->updateProductStock($sku->product);
 
         if ($sku->is_default) {
@@ -74,7 +82,6 @@ class SkuController extends Controller
 
     public function destroy(Sku $sku, $id)
     {
-        // do not delete default!
         $sku = $sku->findOrFail($id);
 
         if(!$sku->is_default) {
@@ -101,7 +108,7 @@ class SkuController extends Controller
     public function uploadImage(Request $request, Sku $sku, $id)
     {
         request()->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:1048',
+            'image' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
         ]);
 
         $sku = $sku->findOrFail($id);
@@ -120,23 +127,21 @@ class SkuController extends Controller
         $image = Image::make($request->file('image'));
         $name = $sku->product->latin . '.' . $extension;
 
-        if(File::exists(public_path($pathLg . $name))) {
+        if(!empty($sku->images) && in_array($pathLg . $name, $sku->images, true)) {
             return response()->json(['error' => 'Image already exists'], 400);
         }
 
-        // create directories
+        // create directories and save images
         if(!File::exists(public_path($pathLg))) {
             File::makeDirectory(public_path($pathLg), 0775, true);
             File::makeDirectory(public_path($pathMd), 0775, true);
             File::makeDirectory(public_path($pathSm), 0775, true);
         }
-
-        // save images
         $image->fit(1000)->save(public_path($pathLg . $name), 70);
         $image->fit(500)->save(public_path($pathMd . $name), 70);
         $image->fit(200)->save(public_path($pathSm . $name), 70);
 
-        // add to Sku images array
+        // save new images array
         $images = $sku->images ?: [];
         if(!in_array($pathLg . $name, $images)) {
             $images[] = $pathLg . $name;
@@ -169,7 +174,7 @@ class SkuController extends Controller
         return response()->json();
     }
 
-    public function updateProductStock(Product $product)
+    private function updateProductStock(Product $product)
     {
         $result = Sku
             ::fromRaw('skus, jsonb_each_text(stocks)')

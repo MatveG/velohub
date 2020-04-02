@@ -26,15 +26,42 @@ class Sku extends Model
     ];
     protected $casts = [
         'codes' => 'array',
-        'options' => 'object',
-        'stocks' => 'object',
-        'prices' => 'object',
         'images' => 'array',
     ];
 
     public function carts()
     {
         return $this->belongsToMany(Cart::class, 'cart_barcode')->withPivot('amount');
+    }
+
+    public function getOptionsAttribute($value)
+    {
+        return json_decode($this->attributes['options']);
+    }
+
+    public function getStocksAttribute($value)
+    {
+        return json_decode($this->attributes['stocks']);
+    }
+
+    public function getPricesAttribute($value)
+    {
+        return json_decode($this->attributes['prices']);
+    }
+
+    public function setOptionsAttribute($value)
+    {
+        $this->attributes['options'] = json_encode((object)($value));
+    }
+
+    public function setStocksAttribute($value)
+    {
+        $this->attributes['stocks'] = json_encode((object)($value));
+    }
+
+    public function setPricesAttribute($value)
+    {
+        $this->attributes['prices'] = json_encode((object)($value));
     }
 
 }

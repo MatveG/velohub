@@ -48,7 +48,6 @@ Route::namespace('Admin')->group(function () {
     Route::get('/admin/categories/tree/', 'AdminController@tree');
 
     // Sku
-    Route::get('/admin/sku/qwe', 'SkuController@qwe');
     Route::post('/admin/sku/store', 'SkuController@store');
     Route::post('/admin/sku/{id}/update', 'SkuController@update');
     Route::post('/admin/sku/{id}/destroy', 'SkuController@destroy');

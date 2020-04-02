@@ -1,56 +1,40 @@
 
 <template>
     <div>
-        <table class="table is-fullwidth table-align-center">
-            <thead>
-            <tr>
-                <th>Основной</th>
-                <th>Фото</th>
-                <th>Артикулы</th>
-                <th>Параметры</th>
-                <th>Цены</th>
-                <th>Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in items">
-                    <td>
-                        <input type="radio" name="is_default" :checked="item.is_default" @click="setDefault(item.id)"></input>
-                    </td>
-                    <td>
-                        <modal-image v-if="item.images" :image="item.images[0]" :size="130"></modal-image>
-                    </td>
-                    <td>
-                        <div v-for="code in item.codes" class="is-italic">{{ code }}</div>
-                    </td>
-                    <td>
-                        <template v-for="(option, key) in cols.options">
-                            <div v-if="item.options[key]">
-                                <span class="has-text-grey-light is-italic">{{ option.title }}:</span>
-                                {{ item.options[key] }}
-                            </div>
-                        </template>
-                    </td>
-                    <td>
-                        <template v-for="(price, key) in cols.prices">
-                            <div v-if="item.prices[key]">
-                                <span class="has-text-grey-light is-italic">{{ price.title }}:</span>
-                                {{ formatPrice(item.prices[key]) }} {{ price.sign }}
-                            </div>
-                        </template>
-                    </td>
-                    <td>
-                        <button class="button fas fa-pen" type="button" @click="edit(item.id)"></button>
-                        <button class="button fas fa-trash-alt" type="button" @click="destroy(item.id)"></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="6">
-                        <button class="button is-primary" type="button" @click="create">Добавить</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <b-table :data="items" :striped="true" :hoverable="true" :narrowed="true" class="table-align-center">
+            <template slot-scope="props">
+                <b-table-column field="id" label="Основной" centered>
+                    <input type="radio" name="is_default" :checked="props.row.is_default" @click="setDefault(props.row.id)"></input>
+                </b-table-column>
+                <b-table-column field="images" label="Фото" centered>
+                    <modal-image v-if="props.row.images" :image="props.row.images[0]" :size="75"></modal-image>
+                </b-table-column>
+                <b-table-column field="codes" label="Артикулы" centered>
+                    <div v-for="code in props.row.codes" class="is-italic">{{ code }}</div>
+                </b-table-column>
+                <b-table-column field="options" label="Параметры" centered>
+                    <template v-for="(option, key) in cols.options">
+                        <div v-if="props.row.options[key]">
+                            <span class="has-text-grey-light is-italic">{{ option.title }}:</span>
+                            {{ props.row.options[key] }}
+                        </div>
+                    </template>
+                </b-table-column>
+                <b-table-column field="prices" label="Цены" centered>
+                    <template v-for="(price, key) in cols.prices">
+                        <div v-if="props.row.prices[key]">
+                            <span class="has-text-grey-light is-italic">{{ price.title }}:</span>
+                            {{ formatPrice(props.row.prices[key]) }} {{ props.row.sign }}
+                        </div>
+                    </template>
+                </b-table-column>
+                <b-table-column field="codes" label="Действия" centered>
+                    <button class="button fas fa-pen" type="button" @click="edit(props.row.id)"></button>
+                    <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row.id)"></button>
+                </b-table-column>
+            </template>
+        </b-table>
+        <button class="button is-primary is-pulled-right" type="button" @click="create">Добавить</button>
 
         <b-modal :active.sync="modal" has-modal-card aria-modal>
             <div class="modal-card">
@@ -60,7 +44,7 @@
                 <div class="modal-card-body">
                     <form @submit="save(false)" @change="save(false)" @keyup="saved=false">
                         <b-field label="Артикулы" label-position="on-border">
-                            <b-input v-model="item.codesText" @input="updateCodes" type="textarea" rows="2" placeholder="Один артикул на строку"  required />
+                            <b-input v-model="item.codesText" type="textarea" rows="2" placeholder="Один артикул на строку" required />
                         </b-field>
                         <b-field label="Штрих-код" label-position="on-border">
                             <b-input v-model="item.barcode"  placeholder="Штрих-код товара" />
@@ -73,15 +57,13 @@
                                 </b-field>
                             </div>
                         </div>
-
                         <div v-if="item.id" class="columns">
                             <div v-for="(price, key) in cols.prices" class="column pb-0">
-                                <b-field :label="price.title" label-position="on-border">
+                                <b-field :label="price.title+' ('+price.sign+')'" label-position="on-border">
                                     <b-input v-if="item.prices" v-model="item.prices[key]" :placeholder="'Цена [' + price.title + ']'" />
                                 </b-field>
                             </div>
                         </div>
-
                         <div v-if="item.id" class="columns">
                             <div v-for="(stock, key) in cols.stocks" class="column pb-0">
                                 <b-field :label="stock.title" label-position="on-border">
@@ -110,12 +92,11 @@
                                 </b-field>
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <footer class="modal-card-foot">
-                    <button class="button is-primary" type="button"
-                            :class="{ 'is-loading': loading }" :disabled="saved" @click="save(true)">Сохранить</button>
+                    <button :disabled="saved" @click="save(true)" :class="{ 'is-loading': loading }"
+                            class="button is-primary" type="button">Сохранить</button>
                     <button class="button" type="button" @click="modal=false">Закрыть</button>
                 </footer>
             </div>
@@ -127,7 +108,6 @@
 <script>
     import axios from 'axios';
     import draggable from 'vuedraggable'
-    import CardCollapse from "./CardCollapse";
     import ModalImage from "./ModalImage";
 
     export default {
@@ -136,18 +116,17 @@
         components: {
             draggable,
             ModalImage,
-            CardCollapse,
         },
 
         data() {
             return {
                 title: 'Артикул',
                 modal: false,
-                saved: true,
                 loading: false,
+                saved: true,
                 item: {},
-                items: {},
-                cols: {},
+                items: [],
+                cols: [],
                 file: null,
             }
         },
@@ -159,7 +138,7 @@
                         this[data] = res.data[data];
                     }
                 })
-                .catch(error => window.error(error.message));
+                .catch(error => window.ajaxError(error.response));
         },
 
         watch: {
@@ -191,6 +170,7 @@
             edit(id) {
                 this.item = this.items.find(item => item.id === id);
                 this.item.codesText = this.item.codes.join('\n');
+                this.item.backupCodes = this.item.codes;
 
                 if(!this.item.images) {
                     this.item.images = [];
@@ -199,18 +179,21 @@
             },
 
             save() {
-                if (!this.item.codesText || this.item.codesText.length < 3) {
-                    window.error('Заполните Артикулы');
-                    return;
-                }
-
                 if(this.drag === true) {
                     return;
                 }
 
+                if (!this.item.codesText || this.item.codesText.length < 3) {
+                    window.ajaxError('Fill at least one code');
+                    return;
+                }
+
+                this.item.codesText = this.item.codesText.replace(/(^[ \t]*\n)/gm, "").trim();
+                this.item.codes = this.item.codesText.split('\n');
+
                 this.saved = false;
                 this.loading = true;
-                (this.item.id === null) ? this.store() : this.update();
+                (this.item.id) ? this.update() : this.store();
             },
 
             store() {
@@ -223,25 +206,29 @@
                         this.saved = true;
                         this.loading = false;
                     })
-                    .catch(error => console.log(error.response));
+                    .catch(error => {
+                        this.loading = false;
+                        window.ajaxError(error.response)
+                    });
             },
 
             update() {
-                if(!this.item.id) {
-                    return;
-                }
-
                 axios.post(`/admin/sku/${this.item.id}/update`, this.item)
                     .then(() => {
                         this.saved = true;
                         this.loading = false;
                     })
-                    .catch(error => window.error(error.message));
+                    .catch(error => {
+                        window.ajaxError(error.response);
+                        this.loading = false;
+                        this.item.codes = this.item.backupCodes;
+                        this.item.codesText = this.item.codes.join('\n');
+                    });
             },
 
             destroy(id) {
                 if (this.items.find((item) => item.id === id).is_default === true) {
-                    window.error('Нельзя удалить основной артикул');
+                    window.error('Cannot delete default code');
 
                     return;
                 }
@@ -253,24 +240,30 @@
                     onConfirm: () => {
                         this.items = this.items.filter(item => item.id !== id);
                         axios.post(`/admin/sku/${id}/destroy`)
-                            .catch(error => window.error(error.message));
+                            .catch(error => window.ajaxError(error.response));
                     }
                 });
-            },
-
-            updateCodes() {
-                this.item.codes = this.item.codesText.split('\n');
             },
 
             setDefault(id) {
                 this.items.map(item => item.is_default = (item.id === id));
 
                 axios.post(`/admin/sku/${id}/set-default`)
-                    .catch(error => window.error(error.message));
+                    .catch(error => window.ajaxError(error.response));
             },
 
             uploadImage: function () {
                 this.file.forEach(file => {
+                    if(!file.name.match(/\.(jpg|jpeg|gif|png)$/i)) {
+                        window.error('Formats allowed: jpg, jpeg, gif, png');
+                        return;
+                    }
+
+                    if(file.size > 1*1024*1024) {
+                        window.error('The maximum supported file sizes is 1 mb');
+                        return;
+                    }
+
                     let url = `/admin/sku/${this.item.id}/upload-image`;
                     let data = new FormData();
                     let settings = { headers: { 'content-type': 'multipart/form-data' } };
@@ -281,7 +274,7 @@
                             this.item.images.push(res.data.image);
                             this.file = null;
                         })
-                        .catch(res => window.error(res.response.data.error));
+                        .catch(error => window.ajaxError(error.response));
                 });
                 this.file = [];
             },
@@ -289,7 +282,7 @@
             deleteImage: function (key) {
                 this.item.images.splice(key, 1);
                 axios.post(`/admin/sku/${this.item.id}/delete-image/${key}`)
-                    .catch(error => window.error(error.message));
+                    .catch(error => window.ajaxError(error.response));
             },
 
             sortImages() {
@@ -302,7 +295,7 @@
                         this.saved = true;
                         this.loading = false;
                     })
-                    .catch(error => window.error(error.message));
+                    .catch(error => window.ajaxError(error.response));
             },
 
             formatPrice(value) {
