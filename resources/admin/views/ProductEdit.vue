@@ -42,6 +42,10 @@
                             <skus-list :product-id="id"></skus-list>
                         </b-tab-item>
 
+                        <b-tab-item label="Фотографии">
+                            <upload-images :web-route="'/admin/product/' + item.id" :images-array="item.images" image-width="20%" />
+                        </b-tab-item>
+
                         <b-tab-item label="Описание">
                             <b-field label="Наименование" message="Пример: Конфеты" horizontal>
                                 <b-input v-model="item.name" required />
@@ -99,11 +103,15 @@
 
 <script>
     import axios from 'axios'
+    import draggable from 'vuedraggable'
     import TitleBar from './../components/TitleBar'
     import CardComponent from './../components/CardComponent'
     import FilePicker from './../components/FilePicker'
     import Notification from './../components/Notification'
     import SkusList from './../components/SkusList'
+    import ModalImage from "../components/ModalImage";
+    import core from "../js/Core";
+    import UploadImages from "./../components/UploadImages";
 
     const blank = {
         item: { category: {} },
@@ -116,10 +124,20 @@
 
     export default {
         name: 'ClientForm',
-        components: {SkusList, FilePicker, CardComponent, TitleBar, Notification },
+
+        components: {
+            draggable,
+            SkusList,
+            FilePicker,
+            CardComponent,
+            TitleBar,
+            Notification,
+            UploadImages,
+        },
 
         props: {
-            id: { default: null }
+            id: { default: null },
+            files: [],
         },
 
         data () {
@@ -188,7 +206,64 @@
                         })
                         .catch(error => console.log(error.response));
                 }
-            }
+            },
+
+
+            uploadImage: function () {
+                let url = `/admin/sku/${this.item.id}/upload-image`;
+
+                this.files.forEach((file) => {
+                    if(!this.validateImage(file)) {
+                        return;
+                    }
+                    this.loadingState();
+
+                    let data = new FormData();
+                    let settings = { headers: { 'content-type': 'multipart/form-data' } };
+                    data.append('image', file);
+
+                    axios.post(url, data, settings)
+                        .then((res) => {
+                            this.item.images.push(res.data.image);
+                            this.savedState();
+                        })
+                        .catch((error) => this.axiosError(error.response));
+                });
+
+                this.files = [];
+            },
+
+            validateImage: function (file) {
+                if(!file.name.match(/\.(jpg|jpeg|gif|png)$/i)) {
+                    core.error('Formats allowed: jpg, jpeg, gif, png');
+                    return false;
+                }
+
+                if(file.size > 1024*1024) {
+                    core.error('The maximum supported file sizes is 1 mb');
+                    return false;
+                }
+
+                return true;
+            },
+
+            deleteImage: function (key) {
+                this.loadingState();
+                this.item.images.splice(key, 1);
+
+                axios.post(`/admin/sku/${this.item.id}/delete-image/${key}`)
+                    .then(() => this.savedState())
+                    .catch((error) => this.axiosError(error.response));
+            },
+
+            sortImages() {
+                this.loadingState();
+                this.drag = false;
+
+                axios.post(`/admin/sku/${this.item.id}/update-images`, { images: this.item.images })
+                    .then(() => this.savedState())
+                    .catch((error) => this.axiosError(error.response));
+            },
         }
     }
 </script>

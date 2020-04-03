@@ -24,7 +24,7 @@
                     <template v-for="(price, key) in cols.prices">
                         <div v-if="props.row.prices[key]">
                             <span class="has-text-grey-light is-italic">{{ price.title }}:</span>
-                            {{ formatPrice(props.row.prices[key]) }} {{ props.row.sign }}
+                            {{ formatPrice(props.row.prices[key]) }} {{ price.sign }}
                         </div>
                     </template>
                 </b-table-column>
@@ -53,7 +53,7 @@
                         <div v-if="item.id" class="columns">
                             <div v-for="(option, key) in cols.options" class="column pb-0">
                                 <b-field :label="option.title" label-position="on-border">
-                                    <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Опция [' + option.title + ']'" />
+                                    <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Параметр [' + option.title + ']'" />
                                 </b-field>
                             </div>
                         </div>
@@ -72,28 +72,30 @@
                             </div>
                         </div>
 
-                        <div v-if="item.id" class="card">
-                            <div class="card-content">
-                                <ul @change.stop>
-                                    <draggable v-model="item.images" @end="sortImages" ghost-class="has-background-light">
-                                        <li v-for="(file, key) in item.images" class="block-image-delete is-square">
-                                            <img :src="file" alt="">
-                                            <button @click="deleteImage(key)" class="delete">x</button>
-                                        </li>
-                                    </draggable>
-                                </ul>
-                                <label v-if="!item.images.length" class="label has-text-centered has-text-grey-light">Загрузите фото</label>
-                                <b-field class="file upload-icon">
-                                    <b-upload v-model="file" multiple drag-drop>
-                                        <div class="is-flex">
-                                            <i class="fa fa-upload is-size-3 has-text-primary"></i>
-                                        </div>
-                                    </b-upload>
-                                </b-field>
-                            </div>
+                        <div v-if="item.id">
+                            <upload-images :web-route="'/admin/sku/' + item.id" :images-array="item.images" image-width="20%">
+
+                            </upload-images>
+<!--                            <ul @change.stop>-->
+<!--                                <draggable v-model="item.images" @end="sortImages" ghost-class="has-background-light">-->
+<!--                                    <li v-for="(image, key) in item.images" class="block-image-delete is-square" style="width: 20%;">-->
+<!--                                        <img :src="image" alt="">-->
+<!--                                        <button @click="deleteImage(key)" class="delete">x</button>-->
+<!--                                    </li>-->
+<!--                                </draggable>-->
+<!--                            </ul>-->
+<!--                            <label v-if="!item.images.length" class="label has-text-centered has-text-grey-light">(Фото)</label>-->
+<!--                            <b-field class="file sku-upload-icon">-->
+<!--                                <b-upload v-model="files" multiple drag-drop>-->
+<!--                                    <div class="is-flex">-->
+<!--                                        <i class="fa fa-upload is-size-3 has-text-primary"></i><br>-->
+<!--                                    </div>-->
+<!--                                </b-upload>-->
+<!--                            </b-field>-->
                         </div>
                     </form>
                 </div>
+
                 <footer class="modal-card-foot">
                     <button :disabled="saved" @click="save(true)" :class="{ 'is-loading': loading }"
                             class="button is-primary" type="button">Сохранить</button>
@@ -108,12 +110,17 @@
 <script>
     import axios from 'axios';
     import draggable from 'vuedraggable'
+    import core from "./../js/Core";
     import ModalImage from "./ModalImage";
+    import UploadImages from "./UploadImages";
 
     export default {
+        name: 'SkusList',
+
         props: ['productId'],
 
         components: {
+            UploadImages,
             draggable,
             ModalImage,
         },
@@ -127,30 +134,57 @@
                 item: {},
                 items: [],
                 cols: [],
-                file: null,
+                files: [],
             }
         },
 
         mounted() {
-            axios.get(`/admin/sku/${this.productId}`)
+            axios.post(`/admin/sku/${this.productId}`)
                 .then((res) => {
                     for (let data in res.data) {
                         this[data] = res.data[data];
                     }
                 })
-                .catch(error => window.ajaxError(error.response));
+                .catch(error => this.axiosError(error.response));
         },
 
         watch: {
-            'file': function () {
-                if(this.file && this.file.length) {
+            'files': function () {
+                if(this.files.length) {
                     this.uploadImage();
                 }
             }
         },
 
         methods: {
+            setDefault(id) {
+                this.items.map((item) => item.is_default = (item.id === id));
+
+                axios.post(`/admin/sku/${id}/set-default`)
+                    .catch((error) => this.axiosError(error.response));
+            },
+
+            destroy(id) {
+                if (this.items.find((item) => item.id === id).is_default === true) {
+                    core.error('Cannot delete default code');
+
+                    return;
+                }
+
+                this.$buefy.dialog.confirm({
+                    message: 'Удалить?',
+                    confirmText: 'Да',
+                    cancelText: 'Нет',
+                    onConfirm: () => {
+                        this.items = this.items.filter((item) => item.id !== id);
+                        axios.post(`/admin/sku/${id}/destroy`)
+                            .catch((error) => this.axiosError(error.response));
+                    }
+                });
+            },
+
             create() {
+                this.modal = true;
                 this.item = {
                     id: null,
                     product_id: this.productId,
@@ -163,12 +197,10 @@
                     codesText: '',
                     drag: false
                 };
-
-                this.modal = true;
             },
 
             edit(id) {
-                this.item = this.items.find(item => item.id === id);
+                this.item = this.items.find((item) => item.id === id);
                 this.item.codesText = this.item.codes.join('\n');
                 this.item.backupCodes = this.item.codes;
 
@@ -179,20 +211,19 @@
             },
 
             save() {
-                if(this.drag === true) {
+                if(this.drag) {
                     return;
                 }
 
                 if (!this.item.codesText || this.item.codesText.length < 3) {
-                    window.ajaxError('Fill at least one code');
+                    core.error('Provide at least one code');
                     return;
                 }
 
                 this.item.codesText = this.item.codesText.replace(/(^[ \t]*\n)/gm, "").trim();
                 this.item.codes = this.item.codesText.split('\n');
 
-                this.saved = false;
-                this.loading = true;
+                this.loadingState();
                 (this.item.id) ? this.update() : this.store();
             },
 
@@ -203,68 +234,30 @@
                         this.items.push(this.item);
                         this.edit(this.item.id);
 
-                        this.saved = true;
-                        this.loading = false;
+                        this.savedState();
                     })
-                    .catch(error => {
-                        this.loading = false;
-                        window.ajaxError(error.response)
-                    });
+                    .catch((error) => this.axiosError(error.response));
             },
 
             update() {
                 axios.post(`/admin/sku/${this.item.id}/update`, this.item)
-                    .then(() => {
-                        this.saved = true;
-                        this.loading = false;
-                    })
-                    .catch(error => {
-                        window.ajaxError(error.response);
-                        this.loading = false;
+                    .then(() => this.savedState())
+                    .catch((error) => {
+                        this.axiosError(error.response);
                         this.item.codes = this.item.backupCodes;
                         this.item.codesText = this.item.codes.join('\n');
                     });
             },
 
-            destroy(id) {
-                if (this.items.find((item) => item.id === id).is_default === true) {
-                    window.error('Cannot delete default code');
-
-                    return;
-                }
-
-                this.$buefy.dialog.confirm({
-                    message: 'Удалить?',
-                    confirmText: 'Да',
-                    cancelText: 'Нет',
-                    onConfirm: () => {
-                        this.items = this.items.filter(item => item.id !== id);
-                        axios.post(`/admin/sku/${id}/destroy`)
-                            .catch(error => window.ajaxError(error.response));
-                    }
-                });
-            },
-
-            setDefault(id) {
-                this.items.map(item => item.is_default = (item.id === id));
-
-                axios.post(`/admin/sku/${id}/set-default`)
-                    .catch(error => window.ajaxError(error.response));
-            },
-
             uploadImage: function () {
-                this.file.forEach(file => {
-                    if(!file.name.match(/\.(jpg|jpeg|gif|png)$/i)) {
-                        window.error('Formats allowed: jpg, jpeg, gif, png');
+                let url = `/admin/sku/${this.item.id}/upload-image`;
+
+                this.files.forEach((file) => {
+                    if(!this.validateImage(file)) {
                         return;
                     }
+                    this.loadingState();
 
-                    if(file.size > 1*1024*1024) {
-                        window.error('The maximum supported file sizes is 1 mb');
-                        return;
-                    }
-
-                    let url = `/admin/sku/${this.item.id}/upload-image`;
                     let data = new FormData();
                     let settings = { headers: { 'content-type': 'multipart/form-data' } };
                     data.append('image', file);
@@ -272,59 +265,68 @@
                     axios.post(url, data, settings)
                         .then((res) => {
                             this.item.images.push(res.data.image);
-                            this.file = null;
+                            this.savedState();
                         })
-                        .catch(error => window.ajaxError(error.response));
+                        .catch((error) => this.axiosError(error.response));
                 });
-                this.file = [];
+
+                this.files = [];
+            },
+
+            validateImage: function (file) {
+                if(!file.name.match(/\.(jpg|jpeg|gif|png)$/i)) {
+                    core.error('Formats allowed: jpg, jpeg, gif, png');
+                    return false;
+                }
+
+                if(file.size > 1024*1024) {
+                    core.error('The maximum supported file sizes is 1 mb');
+                    return false;
+                }
+
+                return true;
             },
 
             deleteImage: function (key) {
+                this.loadingState();
                 this.item.images.splice(key, 1);
+
                 axios.post(`/admin/sku/${this.item.id}/delete-image/${key}`)
-                    .catch(error => window.ajaxError(error.response));
+                    .then(() => this.savedState())
+                    .catch((error) => this.axiosError(error.response));
             },
 
             sortImages() {
+                this.loadingState();
                 this.drag = false;
-                this.saved = false;
-                this.loading = true;
 
                 axios.post(`/admin/sku/${this.item.id}/update-images`, { images: this.item.images })
-                    .then(() => {
-                        this.saved = true;
-                        this.loading = false;
-                    })
-                    .catch(error => window.ajaxError(error.response));
+                    .then(() => this.savedState())
+                    .catch((error) => this.axiosError(error.response));
+            },
+
+            loadingState() {
+                this.saved = false;
+                this.loading = true;
+            },
+
+            savedState() {
+                this.saved = true;
+                this.loading = false;
+            },
+
+            axiosError(response) {
+                this.savedState();
+                core.error('Error ' + response.status + ': ' + response.data.error);
             },
 
             formatPrice(value) {
-                let val = (value/1).toFixed(2).replace('.', ',')
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-            }
+                return(core.formatPrice(value));
+            },
         }
     }
 </script>
 
 <style>
-    .card-content {
-        padding: 1rem;
-    }
-    .sku-images ul {
-        margin: 0;
-    }
-    .block-image-delete {
-        width: 20%;
-    }
-    .upload-icon {
-        height: 70px;
-    }
-    .upload-icon div, .upload-icon label {
-        margin: auto;
-        width: 100%;
-        height: 100%;
-    }
-    .upload-icon i {
-        margin: auto;
-    }
+
 </style>

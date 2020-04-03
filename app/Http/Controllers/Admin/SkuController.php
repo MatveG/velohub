@@ -114,10 +114,10 @@ class SkuController extends Controller
         $sku = $sku->findOrFail($id);
         $upload = $request->file('image');
 
-        // create path
+        // create path //
         $numHash = base_convert( md5_file($upload), 16, 10 );
         $hashPath = chunk_split( substr($numHash, 0, 10), 2, '/' );
-        $path = '/media/QQ/' . $hashPath . $id;
+        $path = '/media/st/' . $hashPath . $id;
         $pathLg = $path . '-lg/';
         $pathMd = $path . '-md/';
         $pathSm = $path . '-sm/';
