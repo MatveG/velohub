@@ -37,15 +37,15 @@ Route::get('/admin/', function () {
 });
 
 Route::namespace('Admin')->group(function () {
-    Route::get('/admin/products/', 'AdminController@index');
-    Route::get('/admin/products/{id}/edit/', 'AdminController@edit');
-    Route::post('/admin/products/{id}/update/', 'AdminController@update');
+    Route::post('/admin/products/', 'ProductContoller@index');
+    Route::post('/admin/products/{id}/edit/', 'ProductContoller@edit');
+    Route::post('/admin/products/{id}/update/', 'ProductContoller@update');
 //    Route::get('/admin/products/suggest/', 'AdminController@suggest');
 //    Route::get('/admin/products/edit/', 'AdminController@edit');
 //    Route::delete('/admin/products/delete/', 'AdminController@delete');
 
     // Categories
-    Route::get('/admin/categories/tree/', 'AdminController@tree');
+    Route::post('/admin/categories/tree/', 'AdminController@tree');
 
     // Sku
     Route::post('/admin/sku/store', 'SkuController@store');

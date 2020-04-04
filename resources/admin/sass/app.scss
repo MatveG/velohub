@@ -7,6 +7,10 @@ html,body {
     line-height: 125%;
 }
 
+img {
+    display: block;
+}
+
 p-0 {
     padding: 0;
 }
@@ -15,6 +19,15 @@ p-0 {
 }
 .pb-0 {
     padding-bottom: 0;
+}
+
+.rounded {
+    border-radius: 5px;
+}
+
+.flex-centered {
+    display: flex;
+    align-items: center;
 }
 
 .table-align-center th {
@@ -32,24 +45,15 @@ p-0 {
     margin: auto;
 }
 
-.block-image-delete {
-    display: inline-block;
-    position: relative;
-    padding: 2px;
-}
-
-.block-image-delete img {
-    min-height: 100%;
-    border-radius: 5px;
-}
-
-.block-image-delete button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
 .modal {
     padding-left: 12rem;
+}
+
+.transparent-30 {
+    opacity: 0.3;
+}
+
+.transparent-50 {
+    opacity: 0.5;
 }
 

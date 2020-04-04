@@ -2,6 +2,10 @@
     <div>
 <!--        <title-bar :title-stack="titleStack"/>-->
         <section class="section is-main-section">
+            <div class="buttons is-right">
+                <button :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
+                <button class="button fas fa-arrow-circle-left"></button>
+            </div>
             <card-component :title="formCardTitle" icon="account-edit" class="tile is-child">
                 <div class="columns">
                     <div class="column">
@@ -36,14 +40,15 @@
             <br>
 
             <card-component class="tile is-child">
-                <form @submit.prevent="submit">
+                <form @submit="update()" @change="update()" @keyup="saved=false">
                     <b-tabs v-model="activeTab" type="is-boxed">
                         <b-tab-item label="Артикулы">
                             <skus-list :product-id="id"></skus-list>
                         </b-tab-item>
 
                         <b-tab-item label="Фотографии">
-                            <upload-images :web-route="'/admin/product/' + item.id" :images-array="item.images" image-width="20%" />
+                            <upload-images v-if="item.images" @update="updateImages" :images-array="item.images"
+                                           :web-route="`/admin/product/${item.id}`" image-width="20%" />
                         </b-tab-item>
 
                         <b-tab-item label="Описание">
@@ -89,11 +94,6 @@
                             </b-field>
                         </b-tab-item>
                     </b-tabs>
-
-                    <div class="buttons is-centered">
-                        <button class="button is-primary">Сохранить</button>
-                        <button class="button">Закрыть</button>
-                    </div>
                 </form>
             </card-component>
 
@@ -109,9 +109,8 @@
     import FilePicker from './../components/FilePicker'
     import Notification from './../components/Notification'
     import SkusList from './../components/SkusList'
-    import ModalImage from "../components/ModalImage";
-    import core from "../js/Core";
     import UploadImages from "./../components/UploadImages";
+    import core from "../js/Core";
 
     const blank = {
         item: { category: {} },
@@ -119,7 +118,10 @@
         activeTab: 0,
         isLoading: false,
         createdReadable: null,
-        isProfileExists: false
+        isProfileExists: false,
+
+        loading: false,
+        saved: true,
     };
 
     export default {
@@ -157,112 +159,48 @@
         },
 
         mounted () {
-            if (this.id) {
-                axios
-                    .get('/admin/products/' + this.id + '/edit/')
-                    .then(res => {
-                        this.item = res.data.item;
-                    })
-                    .catch(e => {
-                        this.$buefy.toast.open({
-                            message: `Error: ${e.message}`,
-                            type: 'is-danger',
-                            queue: false
-                        })
-                    });
-
-                axios
-                    .get('/admin/categories/tree/')
-                    .then(res => {
-                        this.categories = res.data.categories;
-                    })
-                    .catch(e => {
-                        this.$buefy.toast.open({
-                            message: `Error: ${e.message}`,
-                            type: 'is-danger',
-                            queue: false
-                        })
-                    });
+            if (!this.id) {
+                core.error('Error loading product');
             }
+            axios.post('/admin/products/' + this.id + '/edit/')
+                .then((res) => this.item = res.data.item)
+                .catch((error) => this.error(error.response));
+
+            axios.post('/admin/categories/tree/')
+                .then((res) => this.categories = res.data.categories)
+                .catch((error) => this.error(error.response));
         },
 
         methods: {
-            getClearFormObject () {
-                return blank;
-            },
-
-            getData () {
-
-            },
-
-            submit() {
-                //this.isLoading = true;
-
-                if(this.id) {
-                    axios.post(`/admin/products/${this.item.id}/update`, this.item)
-                        .then(res => {
-                            //this.isLoading = false;
-                            this.$buefy.snackbar.open('Сохранено');
-                        })
-                        .catch(error => console.log(error.response));
-                }
-            },
-
-
-            uploadImage: function () {
-                let url = `/admin/sku/${this.item.id}/upload-image`;
-
-                this.files.forEach((file) => {
-                    if(!this.validateImage(file)) {
-                        return;
-                    }
-                    this.loadingState();
-
-                    let data = new FormData();
-                    let settings = { headers: { 'content-type': 'multipart/form-data' } };
-                    data.append('image', file);
-
-                    axios.post(url, data, settings)
-                        .then((res) => {
-                            this.item.images.push(res.data.image);
-                            this.savedState();
-                        })
-                        .catch((error) => this.axiosError(error.response));
-                });
-
-                this.files = [];
-            },
-
-            validateImage: function (file) {
-                if(!file.name.match(/\.(jpg|jpeg|gif|png)$/i)) {
-                    core.error('Formats allowed: jpg, jpeg, gif, png');
-                    return false;
-                }
-
-                if(file.size > 1024*1024) {
-                    core.error('The maximum supported file sizes is 1 mb');
-                    return false;
-                }
-
-                return true;
-            },
-
-            deleteImage: function (key) {
+            update() {
                 this.loadingState();
-                this.item.images.splice(key, 1);
-
-                axios.post(`/admin/sku/${this.item.id}/delete-image/${key}`)
-                    .then(() => this.savedState())
-                    .catch((error) => this.axiosError(error.response));
+                axios.post(`/admin/products/${this.item.id}/update`, this.item)
+                    .then((res) => {
+                        if(res.data.category) {
+                            this.item.category = res.data.category;
+                        }
+                        this.savedState();
+                    })
+                    .catch((error) => this.error(error.response));
             },
 
-            sortImages() {
-                this.loadingState();
-                this.drag = false;
+            updateImages(newImages) {
+                this.item.images = newImages;
+            },
 
-                axios.post(`/admin/sku/${this.item.id}/update-images`, { images: this.item.images })
-                    .then(() => this.savedState())
-                    .catch((error) => this.axiosError(error.response));
+            loadingState() {
+                this.saved = false;
+                this.loading = true;
+            },
+
+            savedState() {
+                this.saved = true;
+                this.loading = false;
+            },
+
+            error(response) {
+                this.savedState();
+                core.error('Error ' + response.status + ': ' + response.data.error);
             },
         }
     }

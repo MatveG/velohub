@@ -1,21 +1,20 @@
 <template>
     <div>
-        <ul @change.stop>
-            <draggable v-model="images" @end="sortImages" ghost-class="has-background-light">
-                <li v-for="(image, key) in images" :style="{ width: imageWidth }" class="block-image-delete is-square">
-                    <img :src="image" alt="">
-                    <button @click="deleteImage(key)" class="delete">x</button>
+        <ul @change.stop class="images">
+            <draggable v-model="images" @end="sortImages" ghost-class="transparent-30" class="has-background-danger">
+                <li v-for="(image, key) in images" :style="{ width: imageWidth }">
+                    <img :src="image" alt="" class="rounded">
+                    <button @click="deleteImage(key)" class="delete" />
                 </li>
             </draggable>
+            <li :style="{ width: imageWidth }" :class="{ 'upload-image-fullwidth': !images || !images.length }" class="upload-image">
+                <b-field class="file">
+                    <b-upload v-model="upload" multiple drag-drop>
+                        <div class="flex-centered"><i class="fa fa-upload is-size-3 has-text-primary"></i></div>
+                    </b-upload>
+                </b-field>
+            </li>
         </ul>
-
-        <b-field class="file field-upload-image">
-            <b-upload v-model="upload" multiple drag-drop>
-                <div class="is-flex">
-                    <i class="fa fa-upload is-size-3 has-text-primary"></i><br>
-                </div>
-            </b-upload>
-        </b-field>
     </div>
 </template>
 
@@ -44,13 +43,20 @@
             }
         },
 
+        watch: {
+            'upload': function () {
+                if(this.upload.length) {
+                    this.uploadImage();
+                }
+            }
+        },
+
         methods: {
             uploadImage: function () {
-                this.files.forEach((file) => {
+                this.upload.forEach((file) => {
                     if(!this.validateImage(file)) {
                         return;
                     }
-                    // this.loadingState();
 
                     let data = new FormData();
                     let settings = { headers: { 'content-type': 'multipart/form-data' } };
@@ -59,29 +65,25 @@
                     axios.post(`${this.webRoute}/upload-image`, data, settings)
                         .then((res) => {
                             this.images.push(res.data.image);
-                            // this.savedState();
+                            this.$emit('update', this.images)
                         })
                         .catch((error) => this.axiosError(error.response));
                 });
 
-                this.files = [];
+                this.upload = [];
             },
 
             deleteImage: function (key) {
-                // this.loadingState();
-                this.item.images.splice(key, 1);
+                this.images.splice(key, 1);
 
                 axios.post(`${this.webRoute}/delete-image/${key}`)
-                    // .then(() => this.savedState())
+                    .then(() => this.$emit('update', this.images))
                     .catch((error) => this.axiosError(error.response));
             },
 
             sortImages() {
-                // this.loadingState();
-                //this.drag = false;
-
                 axios.post(`${this.webRoute}/update-images`, { images: this.images })
-                    // .then(() => this.savedState())
+                    .then(() => this.$emit('update', this.images))
                     .catch((error) => this.axiosError(error.response));
             },
 
@@ -100,7 +102,6 @@
             },
 
             axiosError(response) {
-                // this.savedState();
                 core.error('Error ' + response.status + ': ' + response.data.error);
             },
         }
@@ -108,15 +109,40 @@
 </script>
 
 <style scoped>
-    .field-upload-image {
-        height: 70px;
-    }
-    .field-upload-image div, .field-upload-image label {
-        margin: auto;
+    ul.images {
+        display: table;
         width: 100%;
         height: 100%;
     }
-    .field-upload-image i {
+    ul.images li {
+        float: left;
+        position: relative;
+        height: 100%;
+        padding: 1%;
+    }
+    ul.images .delete {
+        position: absolute;
+        top: 10%;
+        right: 10%;
+    }
+
+    .upload-image-fullwidth {
+        width: 100% !important;
+        height: 8rem !important;
+    }
+    .upload-image * {
+        width: 100%;
+        height: 100%;
+    }
+    .upload-image i {
+        width: auto;
+        height: auto;
         margin: auto;
+    }
+</style>
+
+<style>
+    .upload-draggable {
+        width: 100%;
     }
 </style>
