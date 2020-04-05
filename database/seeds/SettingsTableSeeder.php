@@ -20,32 +20,50 @@ class SettingsTableSeeder extends Seeder
 
         DB::table('settings')->insert([
             'group' => 'shop',
-            'key' => 'default_price',
-            'value' => 'price-1',
+            'key' => 'currency',
+            'value' => 'uah',
         ]);
+
+//        DB::table('settings')->insert([
+//            'group' => 'shop',
+//            'key' => 'default_price',
+//            'value' => 'retail',
+//        ]);
 
         DB::table('settings')->insert([
             'group' => 'shop',
-            'key' => 'cashback_amount',
-            'value' => 0.05,
+            'key' => 'currencies',
+            'value' => json_encode([
+                'uah' => [
+                    'title' => 'гривны',
+                    'abbr' => 'UAH',
+                    'sign' => '₴',
+                    'align' => 'right',
+                    'default' => true,
+                ],
+                'usd' => [
+                    'title' => 'доллары',
+                    'abbr' => 'USD',
+                    'sign' => '$',
+                    'align' => 'left',
+                    'default' => false,
+                ]
+            ]),
         ]);
 
         DB::table('settings')->insert([
             'group' => 'shop',
             'key' => 'prices',
             'value' => json_encode([
-                'price-1' => [
+                'retail' => [
                     'title' => 'retail',
-                    'code' => 'грн',
-                    'sign' => '₴',
-                    'align' => 'right',
                 ],
-                'price-2' => [
+                'old' => [
                     'title' => 'wholesale',
-                    'code' => 'USD',
-                    'sign' => '$',
-                    'align' => 'left',
-                ]
+                ],
+//                'promo' => [
+//                    'title' => 'wholesale',
+//                ]
             ]),
         ]);
 
@@ -60,6 +78,12 @@ class SettingsTableSeeder extends Seeder
                     'title' => 'Склад 2',
                 ]
             ]),
+        ]);
+
+        DB::table('settings')->insert([
+            'group' => 'shop',
+            'key' => 'cashback_amount',
+            'value' => 0.05,
         ]);
     }
 }

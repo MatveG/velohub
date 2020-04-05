@@ -26,13 +26,14 @@ class CreateProductsTable extends Migration
             $table->string('model')->nullable();
             $table->text('brief')->nullable();
             $table->text('text')->nullable();
-            $table->text('video')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
             $table->jsonb('features')->nullable();
             $table->jsonb('prices')->nullable();
             $table->text('images')->nullable();
+            $table->text('videos')->nullable();
+            $table->text('files')->nullable();
             $table->timestamps();
         });
 

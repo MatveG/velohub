@@ -30,9 +30,8 @@ class SkusTableSeeder extends Seeder
                     'color' => $faker->randomElement(['red', 'white', 'black', 'blue', 'gray', 'orange']),
                 ]),
                 'prices' => json_encode([
-                    'price-1' => $faker->numberBetween(1000, 5000),
-                    'price-2' => $faker->numberBetween(1000, 4500),
-                    'price-3' => $faker->numberBetween(1000, 4900),
+                    'retail' => $faker->numberBetween(1000, 5000),
+                    'old' => $faker->numberBetween(1000, 4500),
                 ]),
                 'stocks' => json_encode([
                     'stock-1' => '5',

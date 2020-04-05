@@ -19,13 +19,13 @@ class CreateSkusTable extends Migration
             $table->bigInteger('category_id')->unsigned();
             $table->boolean('is_active')->default(false)->index();
             $table->boolean('is_default')->default(false)->index();
-//            $table->string('title')->nullable();
             $table->string('barcode')->nullable();
-            $table->jsonb('codes')->nullable();
             $table->jsonb('options')->nullable();
+            $table->jsonb('codes')->nullable();
             $table->jsonb('stocks')->nullable();
             $table->jsonb('prices')->nullable();
             $table->text('images')->nullable();
+            $table->float('weight')->nullable();
         });
     }
 

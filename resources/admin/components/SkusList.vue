@@ -236,7 +236,7 @@
 
             error(response) {
                 this.savedState();
-                core.error('Error ' + response.status + ': ' + response.data.error);
+                core.error(`Error ${response.status}: ${response.data.error}`);
             },
         }
     }

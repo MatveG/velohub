@@ -1,5 +1,6 @@
+/.idea
 /node_modules
-/public/media
+/public
 /storage/*.key
 /storage
 /vendor
@@ -7,5 +8,6 @@
 .env
 .env.backup
 .phpunit.result.cache
+_ide_helper.php
 npm-debug.log
 yarn-error.log

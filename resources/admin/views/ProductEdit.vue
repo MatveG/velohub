@@ -6,6 +6,7 @@
                 <button :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
                 <button class="button fas fa-arrow-circle-left"></button>
             </div>
+
             <card-component :title="formCardTitle" icon="account-edit" class="tile is-child">
                 <div class="columns">
                     <div class="column">
@@ -28,10 +29,7 @@
                             <b-input v-model="item.updated_at" disabled />
                         </b-field>
                         <b-field label="Свойства">
-                            <div>
                             <b-switch v-model="item.is_active">Активный</b-switch>
-                            <b-switch v-model="item.is_sale">Акционный</b-switch>
-                            </div>
                         </b-field>
                     </div>
                 </div>
@@ -80,18 +78,19 @@
                             <b-field label="URL товара" horizontal>
                                 <b-input v-model="item.latin" custom-class="is-static" readonly />
                             </b-field>
-
                             <b-field label="Заголовок" message="Тег title" horizontal>
                                 <b-input v-model="item.seo_title" />
                             </b-field>
-
                             <b-field label="Описание" message="Тег description" horizontal>
                                 <b-input v-model="item.seo_description" />
                             </b-field>
-
                             <b-field label="Ключевые слова" message="Тег keywords" horizontal>
                                 <b-input v-model="item.seo_keywords" />
                             </b-field>
+                        </b-tab-item>
+
+                        <b-tab-item label="Скидка">
+                            Sale
                         </b-tab-item>
                     </b-tabs>
                 </form>
@@ -162,7 +161,7 @@
             if (!this.id) {
                 core.error('Error loading product');
             }
-            axios.post('/admin/products/' + this.id + '/edit/')
+            axios.post(`/admin/products/${this.id}/edit/`)
                 .then((res) => this.item = res.data.item)
                 .catch((error) => this.error(error.response));
 
@@ -200,7 +199,7 @@
 
             error(response) {
                 this.savedState();
-                core.error('Error ' + response.status + ': ' + response.data.error);
+                core.error(`Error ${response.status}: ${response.data.error}`);
             },
         }
     }
