@@ -7,12 +7,76 @@
                 <button class="button fas fa-arrow-circle-left"></button>
             </div>
 
-            <card-component :title="formCardTitle" icon="account-edit" class="tile is-child">
-                <div class="columns">
-                    <div class="column">
-                        <b-field label="ID товара">
-                            <b-input v-model="id" disabled />
-                        </b-field>
+            <div class="columns">
+                <div class="column is-three-quarters">
+                    <card-component title="Информация">
+                        <form @submit="update()" @change="update()" @keyup="saved=false">
+                            <b-tabs v-model="activeTab" type="is-boxed">
+                                <b-tab-item label="Название">
+                                    <b-field label="Наименование" message="Пример: Конфеты" horizontal>
+                                        <b-input v-model="item.name" required />
+                                    </b-field>
+                                    <b-field label="Бренд" message="Пример: M&M's" horizontal>
+                                        <b-input v-model="item.brand" required />
+                                    </b-field>
+                                    <b-field label="Модель" message="Пример: Milk Chocolate" horizontal>
+                                        <b-input v-model="item.model" required />
+                                    </b-field>
+                                </b-tab-item>
+                                <b-tab-item label="Описание">
+                                    <b-field label="Короткое описание" horizontal>
+                                        <b-input v-model="item.preview" type="textarea" />
+                                    </b-field>
+                                    <b-field label="Полное описание" horizontal>
+                                        <b-input v-model="item.text" type="textarea" />
+                                    </b-field>
+                                </b-tab-item>
+
+                                <b-tab-item label="Характеристики">
+                                    <b-field v-for="(feature, key) in item.category.features" :label="feature.title" :message="feature.units" horizontal>
+                                        <b-input v-model="item.features[key]" />
+                                    </b-field>
+                                </b-tab-item>
+
+                                <b-tab-item label="SEO">
+                                    <b-field label="URL товара" horizontal>
+                                        <b-input v-model="item.latin" custom-class="is-static" readonly />
+                                    </b-field>
+                                    <b-field label="Заголовок" message="Тег title" horizontal>
+                                        <b-input v-model="item.seo_title" />
+                                    </b-field>
+                                    <b-field label="Описание" message="Тег description" horizontal>
+                                        <b-input v-model="item.seo_description" />
+                                    </b-field>
+                                    <b-field label="Ключевые слова" message="Тег keywords" horizontal>
+                                        <b-input v-model="item.seo_keywords" />
+                                    </b-field>
+                                </b-tab-item>
+
+                            </b-tabs>
+                        </form>
+                    </card-component>
+                    <br>
+                    <card-component title="Фотографии">
+                        <upload-images v-if="item.images" @update="updateImages" :images-array="item.images"
+                                       :web-route="`/admin/product/${item.id}`" image-width="20%" />
+                    </card-component>
+                    <br>
+                    <card-component title="Варианты товара">
+                        <skus-list :product-id="id"></skus-list>
+                        <div class="is-clearfix"></div>
+                    </card-component>
+                </div>
+
+                <div class="column">
+                    <card-component :title="`ID товара: ${id}`" class="tile is-child">
+                        <div class="has-text-centered">
+                            <div>
+                                <a href="" class="button is-info">Товар на сайте</a>
+                            </div>
+                            <br>
+                            <b-switch v-model="item.is_active">{{ item.is_active ? 'Активен' : 'Скрыт' }}</b-switch>
+                        </div>
                         <b-field label="Категория">
                             <b-select v-model="item.category_id" expanded @select="alert(item.category_id)">
                                 <template v-for="category in categories">
@@ -23,78 +87,52 @@
                                 </template>
                             </b-select>
                         </b-field>
-                    </div>
-                    <div class="column">
-                        <b-field label="Последнее редактирование">
-                            <b-input v-model="item.updated_at" disabled />
+                    </card-component>
+                    <br>
+                    <card-component title="Цена">
+                        <b-field label="Цена" label-position="on-border">
+                            <b-input v-model="item.seo_keywords" />
                         </b-field>
-                        <b-field label="Свойства">
-                            <b-switch v-model="item.is_active">Активный</b-switch>
+                        <b-field class="has-text-centered">
+                            <b-switch v-model="item.is_sale">{{ (item.is_sale) ? 'Со скидкой' : 'Без скидки' }}</b-switch>
                         </b-field>
-                    </div>
+                        <br>
+                        <div class="columns">
+                            <b-field label="Размер скидки" label-position="on-border" class="column">
+                                <b-input v-model="item.seo_keywords" :disabled="!item.is_sale" />
+                                <div class="control"><div class="button is-static">%</div></div>
+                            </b-field>
+                            <b-field label="Цена со скидкой" label-position="on-border" class="column">
+                                <b-input v-model="item.seo_keywords" :disabled="!item.is_sale" />
+                            </b-field>
+                        </div>
+                    </card-component>
+                    <br>
+                    <card-component title="Наличие">
+                        <b-field label="Артикул" label-position="on-border">
+                            <b-input v-model="item.seo_keywords" />
+                        </b-field>
+                        <b-field class="has-text-centered">
+                            <b-switch v-model="item.is_stock">{{ (item.is_stock) ? 'Есть в наличии' : 'Нет в наличии' }}</b-switch>
+                        </b-field>
+                        <br>
+                        <div class="columns">
+                            <b-field label="Запас на складе" label-position="on-border" class="column">
+                                <b-input v-model="item.seo_keywords" :disabled="!item.is_stock" />
+                                <div class="control"><div class="button is-static">шт</div></div>
+                            </b-field>
+                            <b-field label="Вес" label-position="on-border" class="column">
+                                <b-input v-model="item.seo_keywords" :disabled="!item.is_stock" />
+                                <div class="control"><div class="button is-static">кг</div></div>
+                            </b-field>
+                        </div>
+                    </card-component>
+                    <br>
+                    <card-component title="Промо-коды">
+
+                    </card-component>
                 </div>
-            </card-component>
-
-            <br>
-
-            <card-component class="tile is-child">
-                <form @submit="update()" @change="update()" @keyup="saved=false">
-                    <b-tabs v-model="activeTab" type="is-boxed">
-                        <b-tab-item label="Артикулы">
-                            <skus-list :product-id="id"></skus-list>
-                        </b-tab-item>
-
-                        <b-tab-item label="Фотографии">
-                            <upload-images v-if="item.images" @update="updateImages" :images-array="item.images"
-                                           :web-route="`/admin/product/${item.id}`" image-width="20%" />
-                        </b-tab-item>
-
-                        <b-tab-item label="Описание">
-                            <b-field label="Наименование" message="Пример: Конфеты" horizontal>
-                                <b-input v-model="item.name" required />
-                            </b-field>
-                            <b-field label="Бренд" message="Пример: M&M's" horizontal>
-                                <b-input v-model="item.brand" required />
-                            </b-field>
-                            <b-field label="Модель" message="Пример: Milk Chocolate" horizontal>
-                                <b-input v-model="item.model" required />
-                            </b-field>
-                            <hr>
-                            <b-field label="Короткое описание" horizontal>
-                                <b-input v-model="item.preview" type="textarea" />
-                            </b-field>
-                            <b-field label="Полное описание" horizontal>
-                                <b-input v-model="item.text" type="textarea" />
-                            </b-field>
-                        </b-tab-item>
-
-                        <b-tab-item label="Характеристики">
-                            <b-field v-for="(feature, key) in item.category.features" :label="feature.title" :message="feature.units" horizontal>
-                                <b-input v-model="item.features[key]" />
-                            </b-field>
-                        </b-tab-item>
-
-                        <b-tab-item label="SEO">
-                            <b-field label="URL товара" horizontal>
-                                <b-input v-model="item.latin" custom-class="is-static" readonly />
-                            </b-field>
-                            <b-field label="Заголовок" message="Тег title" horizontal>
-                                <b-input v-model="item.seo_title" />
-                            </b-field>
-                            <b-field label="Описание" message="Тег description" horizontal>
-                                <b-input v-model="item.seo_description" />
-                            </b-field>
-                            <b-field label="Ключевые слова" message="Тег keywords" horizontal>
-                                <b-input v-model="item.seo_keywords" />
-                            </b-field>
-                        </b-tab-item>
-
-                        <b-tab-item label="Скидка">
-                            Sale
-                        </b-tab-item>
-                    </b-tabs>
-                </form>
-            </card-component>
+            </div>
 
         </section>
     </div>
@@ -121,6 +159,10 @@
 
         loading: false,
         saved: true,
+        settings: {
+            singlePrice: true,
+            singleStock: true,
+        }
     };
 
     export default {
@@ -161,13 +203,19 @@
             if (!this.id) {
                 core.error('Error loading product');
             }
-            axios.post(`/admin/products/${this.id}/edit/`)
+            axios.get(`/admin/products/${this.id}/edit/`)
                 .then((res) => this.item = res.data.item)
                 .catch((error) => this.error(error.response));
 
-            axios.post('/admin/categories/tree/')
+            axios.get('/admin/categories/tree/')
                 .then((res) => this.categories = res.data.categories)
                 .catch((error) => this.error(error.response));
+        },
+
+        watch: {
+            'toggleStock': function () {
+                console.log(this.toggleStock);
+            }
         },
 
         methods: {

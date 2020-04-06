@@ -34,10 +34,7 @@ class ProductsTableSeeder extends Seeder
                     'os' =>  $faker->randomElement(['Windows', 'Linux', 'DOS']),
                     'options' => ['Wi-Fi', 'BT', 'scaner', 'more1', 'more2', 'more3'],
                 ]),
-                'prices' => json_encode([
-                    'retail' => $faker->numberBetween(1000, 5000),
-                    'old' => $faker->numberBetween(1000, 4500),
-                ]),
+                'price' => $faker->numberBetween(1000, 5000),
                 'images' => json_encode([
                     '0' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-1.jpg',
                     '1' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-2.jpg',

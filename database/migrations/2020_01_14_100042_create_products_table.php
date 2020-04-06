@@ -17,23 +17,35 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('category_id')->unsigned()->index();
-            $table->boolean('is_stock')->default(false)->index();
+
             $table->boolean('is_active')->default(false)->index();
+            $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
-            $table->string('latin')->nullable();
+            $table->boolean('is_parent')->default(false)->index();
+
+            $table->float('price')->nullable();
+            $table->float('price_sale')->nullable();
+            $table->integer('stock')->nullable();
+            $table->float('weight')->nullable();
+
+            $table->string('code')->nullable();
             $table->string('name')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
-            $table->text('brief')->nullable();
-            $table->text('text')->nullable();
+            $table->string('latin')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
-            $table->jsonb('features')->nullable();
-            $table->jsonb('prices')->nullable();
+
+            $table->text('brief')->nullable();
+            $table->text('text')->nullable();
             $table->text('images')->nullable();
             $table->text('videos')->nullable();
             $table->text('files')->nullable();
+
+            $table->jsonb('features')->nullable();
+            $table->text('settings')->nullable();
+
             $table->timestamps();
         });
 

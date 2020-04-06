@@ -67,7 +67,8 @@
                             this.images.push(res.data.image);
                             this.$emit('update', this.images)
                         })
-                        .catch((error) => this.axiosError(error.response));
+                        .catch((error) => console.log(error.response));
+                        //.catch((error) => this.axiosError(error.response));
                 });
 
                 this.upload = [];

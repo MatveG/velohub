@@ -37,24 +37,27 @@ Route::get('/admin/', function () {
 });
 
 Route::namespace('Admin')->group(function () {
-    Route::post('/admin/products/', 'ProductContoller@index');
-    Route::post('/admin/products/{id}/edit/', 'ProductContoller@edit');
+    Route::get('/admin/products/', 'ProductContoller@index');
+    Route::get('/admin/products/{id}/edit/', 'ProductContoller@edit');
     Route::post('/admin/products/{id}/update/', 'ProductContoller@update');
 //    Route::get('/admin/products/suggest/', 'AdminController@suggest');
 //    Route::get('/admin/products/edit/', 'AdminController@edit');
 //    Route::delete('/admin/products/delete/', 'AdminController@delete');
+    Route::post('/admin/product/{id}/upload-image', 'ProductContoller@uploadImage');
+    Route::post('/admin/product/{id}/update-images', 'ProductContoller@updateImages');
+    Route::post('/admin/product/{id}/delete-image/{key}', 'ProductContoller@deleteImage');
 
     // Categories
-    Route::post('/admin/categories/tree/', 'AdminController@tree');
+    Route::get('/admin/categories/tree/', 'AdminController@tree');
 
     // Sku
-    Route::post('/admin/sku/store', 'SkuController@store');
+    Route::get('/admin/sku/store', 'SkuController@store');
     Route::post('/admin/sku/{id}/set-default', 'SkuController@setDefault');
     Route::post('/admin/sku/{id}/destroy', 'SkuController@destroy');
     Route::post('/admin/sku/{id}/update', 'SkuController@update');
     Route::post('/admin/sku/{id}/upload-image', 'SkuController@uploadImage');
     Route::post('/admin/sku/{id}/update-images', 'SkuController@updateImages');
     Route::post('/admin/sku/{id}/delete-image/{key}', 'SkuController@deleteImage');
-    Route::post('/admin/sku/{product_id}', 'SkuController@index');
+    Route::get('/admin/sku/{product_id}', 'SkuController@index');
 
 });

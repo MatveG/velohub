@@ -59,7 +59,7 @@
                         </div>
                         <div v-if="item.id" class="columns">
                             <div v-for="(price, key) in cols.prices" class="column pb-0">
-                                <b-field :label="price.title+' ('+price.sign+')'" label-position="on-border">
+                                <b-field :label="price.title" label-position="on-border">
                                     <b-input v-if="item.prices" v-model="item.prices[key]" :placeholder="'Цена [' + price.title + ']'" />
                                 </b-field>
                             </div>
@@ -119,7 +119,7 @@
         },
 
         mounted() {
-            axios.post(`/admin/sku/${this.productId}`)
+            axios.get(`/admin/sku/${this.productId}`)
                 .then((res) => {
                     for (let data in res.data) {
                         this[data] = res.data[data];
