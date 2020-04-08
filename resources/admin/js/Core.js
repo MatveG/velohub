@@ -10,9 +10,10 @@ export default new class Core {
         });
     };
 
-    // ajaxError(response) {
-    //     this.error('Error ' + response.status + ': ' + response.data.error);
-    // };
+    axiosError(response) {
+        console.log(response);
+        this.error('Error ' + response.status + ': ' + response.data.error);
+    };
 
     formatPrice(value) {
         let val = (value/1).toFixed(2).replace('.', ',')

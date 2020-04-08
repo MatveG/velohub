@@ -29,6 +29,7 @@ class CreateProductsTable extends Migration
             $table->float('weight')->nullable();
 
             $table->string('code')->nullable();
+            $table->string('barcode')->nullable();
             $table->string('name')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
@@ -44,7 +45,7 @@ class CreateProductsTable extends Migration
             $table->text('files')->nullable();
 
             $table->jsonb('features')->nullable();
-            $table->text('settings')->nullable();
+            $table->text('settings')->nullable();  // ???
 
             $table->timestamps();
         });

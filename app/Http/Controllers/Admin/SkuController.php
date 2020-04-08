@@ -105,7 +105,7 @@ class SkuController extends Controller
         return response()->json();
     }
 
-    public function uploadImage(Request $request, Sku $sku, $id)
+    public function imagesUpload(Request $request, Sku $sku, $id)
     {
         request()->validate([
             'image' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',

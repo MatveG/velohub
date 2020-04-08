@@ -19,24 +19,15 @@ class SkusTableSeeder extends Seeder
                 'product_id' => $i,
                 'category_id' => $faker->numberBetween(1, 3),
                 'is_active' => true,
-                'is_default' => true,
+                'is_stock' => true,
+                'price_change' => 0,
+                'stock' =>  $faker->numberBetween(0, 3),
+                'weight' => 10,
+                'code' => $faker->word(),
                 'barcode' => $faker->randomAscii(),
-                'codes' => json_encode([
-                    $faker->word(),
-                    $faker->word(),
-                ]),
                 'options' => json_encode([
                     'size' => $faker->randomElement(['XS', 'S', 'M', 'L', 'XL']),
                     'color' => $faker->randomElement(['red', 'white', 'black', 'blue', 'gray', 'orange']),
-                ]),
-                'prices' => json_encode([
-                    'retail' => $faker->numberBetween(1000, 5000),
-                    'old' => $faker->numberBetween(1000, 4500),
-                ]),
-                'stocks' => json_encode([
-                    'stock-1' => '5',
-                    'stock-2' => '3',
-                    'stock-3' => '0',
                 ]),
                 'images' => json_encode([
                     '0' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-1.jpg',

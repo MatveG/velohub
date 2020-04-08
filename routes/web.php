@@ -43,9 +43,8 @@ Route::namespace('Admin')->group(function () {
 //    Route::get('/admin/products/suggest/', 'AdminController@suggest');
 //    Route::get('/admin/products/edit/', 'AdminController@edit');
 //    Route::delete('/admin/products/delete/', 'AdminController@delete');
-    Route::post('/admin/product/{id}/upload-image', 'ProductContoller@uploadImage');
-    Route::post('/admin/product/{id}/update-images', 'ProductContoller@updateImages');
-    Route::post('/admin/product/{id}/delete-image/{key}', 'ProductContoller@deleteImage');
+    Route::post('/admin/product/{id}/images-upload', 'ProductContoller@imagesUpload');
+    Route::post('/admin/product/{id}/images-update', 'ProductContoller@imagesUpdate');
 
     // Categories
     Route::get('/admin/categories/tree/', 'AdminController@tree');
@@ -55,9 +54,8 @@ Route::namespace('Admin')->group(function () {
     Route::post('/admin/sku/{id}/set-default', 'SkuController@setDefault');
     Route::post('/admin/sku/{id}/destroy', 'SkuController@destroy');
     Route::post('/admin/sku/{id}/update', 'SkuController@update');
-    Route::post('/admin/sku/{id}/upload-image', 'SkuController@uploadImage');
-    Route::post('/admin/sku/{id}/update-images', 'SkuController@updateImages');
-    Route::post('/admin/sku/{id}/delete-image/{key}', 'SkuController@deleteImage');
+    Route::post('/admin/sku/{id}/images-upload', 'SkuController@imagesUpload');
+    Route::post('/admin/sku/{id}/images-update', 'SkuController@imagesUpdate');
     Route::get('/admin/sku/{product_id}', 'SkuController@index');
 
 });

@@ -69,7 +69,7 @@ class ProductContoller extends Controller
 //
 //        return response()->json();
 //    }
-    public function uploadImage(Request $request, $id)
+    public function imagesUpload(Request $request, $id)
     {
         request()->validate([
             'image' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
@@ -93,25 +93,17 @@ class ProductContoller extends Controller
         return response()->json(['image' => $newImagePath]);
     }
 
-    public function deleteImage($id, $key)
+    public function imagesUpdate(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-        $images = $product->images;
-
-        if(array_key_exists($key, $images)) {
-            $this->delete($images[$key]);
-            unset($images[$key]);
-        }
-
-        $product->images = array_values($images);
+        $product->images = $request->images;
         $product->save();
 
-        return response()->json();
-    }
-
-    public function updateImages(Request $request, $id)
-    {
-        Product::where('id', $id)->update($request->only(['images']));
+        foreach ($product->images as $image) {
+            if(!in_array($image, $request->images)) {
+                $this->delete($image);
+            }
+        }
 
         return response()->json();
     }
@@ -152,10 +144,10 @@ class ProductContoller extends Controller
         return $pathLg . $fullName;
     }
 
-    public function delete($path)
+    public function delete($filePath)
     {
-        if(File::exists(public_path($path))) {
-            File::delete(public_path($path));
+        if(File::exists(public_path($filePath))) {
+            File::delete(public_path($filePath));
         }
     }
 }

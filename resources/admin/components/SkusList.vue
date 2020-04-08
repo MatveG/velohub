@@ -34,7 +34,9 @@
                 </b-table-column>
             </template>
         </b-table>
-        <button class="button is-primary is-pulled-right fa fa-plus" type="button" @click="create"></button>
+        <div class="buttons is-centered">
+            <button class="button is-primary fa fa-plus" type="button" @click="create"></button>
+        </div>
 
         <b-modal :active.sync="modal" has-modal-card aria-modal>
             <div class="modal-card">
@@ -72,7 +74,7 @@
                             </div>
                         </div>
 
-                        <upload-images v-if="item.id" @update="updateImages" :images-array="item.images"
+                        <images-upload v-if="item.id" @update="updateImages" :images-array="item.images"
                                        :web-route="`/admin/sku/${item.id}`" image-width="20%" />
                     </form>
                 </div>
@@ -93,18 +95,18 @@
     import draggable from 'vuedraggable'
     import core from "./../js/Core";
     import ModalImage from "./ModalImage";
-    import UploadImages from "./UploadImages";
+    import ImagesUpload from "./ImagesUpload";
 
     export default {
         name: 'SkusList',
 
-        props: ['productId'],
-
         components: {
             draggable,
             ModalImage,
-            UploadImages,
+            ImagesUpload,
         },
+
+        props: ['productId'],
 
         data() {
             return {

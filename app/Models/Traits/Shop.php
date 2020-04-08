@@ -26,10 +26,10 @@ trait Shop
 
     // ------------------------------
 
-    public function getPriceAttribute()
-    {
-        return $this->prices->{self::shopPrice()} ?? null;
-    }
+//    public function getPriceAttribute()
+//    {
+//        return $this->prices->{self::shopPrice()} ?? null;
+//    }
 
     public function getThumbAttribute()
     {

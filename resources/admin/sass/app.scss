@@ -49,11 +49,11 @@ p-0 {
     padding-left: 12rem;
 }
 
-.transparent-30 {
+.opacity-30 {
     opacity: 0.3;
 }
 
-.transparent-50 {
-    opacity: 0.5;
+// buefy upload fix
+.upload-draggable {
+    width: 100%;
 }
-

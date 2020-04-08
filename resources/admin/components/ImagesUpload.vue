@@ -1,13 +1,14 @@
+
 <template>
     <div>
-        <ul @change.stop class="images">
-            <draggable v-model="images" @end="sortImages" ghost-class="transparent-30" class="has-background-danger">
+        <ul @change.stop>
+            <draggable v-model="images" @end="updateImages" ghost-class="opacity-30">
                 <li v-for="(image, key) in images" :style="{ width: imageWidth }">
                     <img :src="image" alt="" class="rounded">
                     <button @click="deleteImage(key)" class="delete" />
                 </li>
             </draggable>
-            <li :style="{ width: imageWidth }" :class="{ 'upload-image-fullwidth': !images || !images.length }" class="upload-image">
+            <li :style="{ width: imageWidth }" :class="{ 'fill-if-empty': !images || !images.length }">
                 <b-field class="file">
                     <b-upload v-model="upload" multiple drag-drop>
                         <div class="flex-centered"><i class="fa fa-upload is-size-3 has-text-primary"></i></div>
@@ -24,17 +25,17 @@
     import core from "../js/Core";
 
     export default {
-        name: "UploadImages",
+        name: "ImagesUpload",
+
+        components: {
+            draggable,
+        },
 
         props: [
             'webRoute',
             'imagesArray',
             'imageWidth'
         ],
-
-        components: {
-            draggable,
-        },
 
         data() {
             return {
@@ -46,46 +47,37 @@
         watch: {
             'upload': function () {
                 if(this.upload.length) {
-                    this.uploadImage();
+                    this.upload.forEach((file) => this.uploadImage(file));
+                    this.upload = [];
                 }
             }
         },
 
         methods: {
-            uploadImage: function () {
-                this.upload.forEach((file) => {
-                    if(!this.validateImage(file)) {
-                        return;
-                    }
+            uploadImage: function (file) {
+                if(!this.validateImage(file)) return;
 
-                    let data = new FormData();
-                    let settings = { headers: { 'content-type': 'multipart/form-data' } };
-                    data.append('image', file);
+                let data = new FormData();
+                let settings = { headers: { 'content-type': 'multipart/form-data' } };
+                data.append('image', file);
 
-                    axios.post(`${this.webRoute}/upload-image`, data, settings)
-                        .then((res) => {
-                            this.images.push(res.data.image);
-                            this.$emit('update', this.images)
-                        })
-                        .catch((error) => console.log(error.response));
-                        //.catch((error) => this.axiosError(error.response));
-                });
-
-                this.upload = [];
+                axios.post(`${this.webRoute}/images-upload`, data, settings)
+                    .then((res) => {
+                        this.images.push(res.data.image);
+                        this.$emit('update', this.images)
+                    })
+                    .catch((error) => core.axiosError(error.response));
             },
 
             deleteImage: function (key) {
                 this.images.splice(key, 1);
-
-                axios.post(`${this.webRoute}/delete-image/${key}`)
-                    .then(() => this.$emit('update', this.images))
-                    .catch((error) => this.axiosError(error.response));
+                this.updateImages();
             },
 
-            sortImages() {
-                axios.post(`${this.webRoute}/update-images`, { images: this.images })
+            updateImages: function() {
+                axios.post(`${this.webRoute}/images-update`, { images: this.images })
                     .then(() => this.$emit('update', this.images))
-                    .catch((error) => this.axiosError(error.response));
+                    .catch((error) => core.axiosError(error.response));
             },
 
             validateImage: function (file) {
@@ -101,49 +93,39 @@
 
                 return true;
             },
-
-            axiosError(response) {
-                core.error('Error ' + response.status + ': ' + response.data.error);
-            },
         }
     }
 </script>
 
 <style scoped>
-    ul.images {
+    ul {
         display: table;
         width: 100%;
         height: 100%;
     }
-    ul.images li {
+    li {
         float: left;
         position: relative;
         height: 100%;
         padding: 1%;
     }
-    ul.images .delete {
-        position: absolute;
-        top: 10%;
-        right: 10%;
-    }
-
-    .upload-image-fullwidth {
-        width: 100% !important;
-        height: 8rem !important;
-    }
-    .upload-image * {
+    li:last-child * {
         width: 100%;
         height: 100%;
     }
-    .upload-image i {
+    li:last-child i {
         width: auto;
         height: auto;
         margin: auto;
     }
-</style>
-
-<style>
-    .upload-draggable {
-        width: 100%;
+    .delete {
+        position: absolute;
+        top: 10%;
+        right: 10%;
+    }
+    .fill-if-empty {
+        width: 100% !important;
+        height: 8rem !important;
     }
 </style>
+
