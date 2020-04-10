@@ -44,6 +44,7 @@ class ProductContoller extends Controller
     public function edit(Request $request, Product $product, $id)
     {
         $product = $product->with('category')->find($id)->toArray();
+        $product['currency'] = settings('shop', 'currency');
 
         return response()->json(['item' => $product]);
     }
@@ -78,6 +79,7 @@ class ProductContoller extends Controller
         $product = Product::findOrFail($id);
 
         $newImagePath = $this->upload(
+            '/media/pt/',
             $request->file('image'),
             $product->id,
             $product->latin
@@ -110,12 +112,12 @@ class ProductContoller extends Controller
 
 
 
-    public function upload($file, $id, $name)
+    public function upload($folder, $file, $id, $name)
     {
         // create path
         $numHash = base_convert( md5_file($file), 16, 10 );
         $hashPath = chunk_split( substr($numHash, 0, 10), 2, '/' );
-        $path = '/media/st/' . $hashPath . $id;
+        $path = $folder . $hashPath . $id;
         $pathLg = $path . '-lg/';
         $pathMd = $path . '-md/';
         $pathSm = $path . '-sm/';
@@ -125,17 +127,11 @@ class ProductContoller extends Controller
         $image = Image::make($file);
         $fullName = $name . '.' . $extension;
 
-//        if(!empty($product->images) && in_array($pathLg . $fullName, $product->images, true)) {
-//            return response()->json(['error' => 'Image already exists'], 400);
-//        }
-
         // create directories and save images
         if(!File::exists(public_path($pathLg))) {
             File::makeDirectory(public_path($pathLg), 0775, true);
             File::makeDirectory(public_path($pathMd), 0775, true);
             File::makeDirectory(public_path($pathSm), 0775, true);
-
-            return 'Image already exists';
         }
         $image->fit(1000)->save(public_path($pathLg . $fullName), 70);
         $image->fit(500)->save(public_path($pathMd . $fullName), 70);

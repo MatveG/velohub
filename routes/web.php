@@ -50,10 +50,9 @@ Route::namespace('Admin')->group(function () {
     Route::get('/admin/categories/tree/', 'AdminController@tree');
 
     // Sku
-    Route::get('/admin/sku/store', 'SkuController@store');
-    Route::post('/admin/sku/{id}/set-default', 'SkuController@setDefault');
+    Route::post('/admin/sku/store', 'SkuController@store');
+    Route::post('/admin/sku/update', 'SkuController@update');
     Route::post('/admin/sku/{id}/destroy', 'SkuController@destroy');
-    Route::post('/admin/sku/{id}/update', 'SkuController@update');
     Route::post('/admin/sku/{id}/images-upload', 'SkuController@imagesUpload');
     Route::post('/admin/sku/{id}/images-update', 'SkuController@imagesUpdate');
     Route::get('/admin/sku/{product_id}', 'SkuController@index');

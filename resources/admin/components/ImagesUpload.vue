@@ -1,14 +1,16 @@
 
 <template>
     <div>
+        <button role="button" class="hidden" />
         <ul @change.stop>
             <draggable v-model="images" @end="updateImages" ghost-class="opacity-30">
                 <li v-for="(image, key) in images" :style="{ width: imageWidth }">
                     <img :src="image" alt="" class="rounded">
-                    <button @click="deleteImage(key)" class="delete" />
+                    <button @click="deleteImage(key)" role="button" class="delete"/>
                 </li>
             </draggable>
-            <li :style="{ width: imageWidth }" :class="{ 'fill-if-empty': !images || !images.length }">
+            <li :class="{ 'fill-if-empty': !images || !images.length }" :style="{ width: imageWidth, height: imageHeight + 'px' }"
+                ref="upload" class="upload-new-image">
                 <b-field class="file">
                     <b-upload v-model="upload" multiple drag-drop>
                         <div class="flex-centered"><i class="fa fa-upload is-size-3 has-text-primary"></i></div>
@@ -41,6 +43,7 @@
             return {
                 images: this.imagesArray,
                 upload: [],
+                imageHeight: 0,
             }
         },
 
@@ -51,6 +54,11 @@
                     this.upload = [];
                 }
             }
+        },
+
+        mounted() {
+            let element = this.$refs.upload;
+            this.imageHeight = (this.images.length) ? element.offsetWidth*0.98 : element.offsetWidth*0.2;
         },
 
         methods: {
@@ -74,7 +82,7 @@
                 this.updateImages();
             },
 
-            updateImages: function() {
+            updateImages: function () {
                 axios.post(`${this.webRoute}/images-update`, { images: this.images })
                     .then(() => this.$emit('update', this.images))
                     .catch((error) => core.axiosError(error.response));
@@ -109,23 +117,22 @@
         height: 100%;
         padding: 1%;
     }
-    li:last-child * {
-        width: 100%;
-        height: 100%;
-    }
-    li:last-child i {
-        width: auto;
-        height: auto;
-        margin: auto;
-    }
     .delete {
         position: absolute;
         top: 10%;
         right: 10%;
     }
+    .upload-new-image * {
+        width: 100%;
+        height: 100%;
+    }
+    .upload-new-image i {
+        width: auto;
+        height: auto;
+        margin: auto;
+    }
     .fill-if-empty {
         width: 100% !important;
-        height: 8rem !important;
     }
 </style>
 

@@ -25,6 +25,7 @@ class Product extends Model
         'stock',
         'weight',
         'code',
+        'barcode',
         'name',
         'brand',
         'model',
@@ -39,6 +40,8 @@ class Product extends Model
         'features',
     ];
     protected $casts = [
+        'price' => 'double(2)',
+        'price_sale' => 'double',
         'features' => 'object',
         'prices' => 'object',
         'images' => 'array',

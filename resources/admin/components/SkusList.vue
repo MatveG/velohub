@@ -1,86 +1,95 @@
 
 <template>
     <div>
-        <b-table :data="items" :striped="true" :hoverable="true" :narrowed="true" class="table-align-center">
+        <b-table :data="items"
+                 :striped="true"
+                 :hoverable="true"
+                 :narrowed="true"
+                 default-sort="code"
+                 class="table-vertical-center">
             <template slot-scope="props">
-                <b-table-column field="id" label="Основной" centered>
-                    <input type="radio" name="is_default" :checked="props.row.is_default" @click="setDefault(props.row.id)"></input>
+                <b-table-column field="code" label="Артикул" class="has-text-left is-italic">
+                    {{ props.row.code }}
+                </b-table-column>
+                <b-table-column field="options" label="Параметры" centered class="nowrap">
+                    <button v-for="(option, key) in options" v-if="props.row.options[key]" class="button is-small is-static">
+                        {{ props.row.options[key] }}
+                    </button>
+                </b-table-column>
+                <b-table-column field="extra_charge" label="Наценка" centered>
+                    <b-input v-model.number="props.row.extra_charge" @input.native="updatePrice(props.row)" @change.native="update(props.row)" type="number" />
+                </b-table-column>
+                <b-table-column field="price" label="Цена" centered>
+                    <b-input v-model.number="props.row.price" @change.native="update(props.row)" disabled />
+                </b-table-column>
+                <b-table-column field="code" label="Остаток" centered>
+                    <b-input v-model.number="props.row.stock" width="5" @change.native="update(props.row)"
+                             @keypress.native="banDecimal($event)" type="number" />
                 </b-table-column>
                 <b-table-column field="images" label="Фото" centered>
-                    <modal-image v-if="props.row.images" :image="props.row.images[0]" :size="75"></modal-image>
+                    <span v-if="props.row.images.length" class="icon has-text-info">
+                        <i class="fas fa-check-square"></i>
+                    </span>
                 </b-table-column>
-                <b-table-column field="codes" label="Артикулы" centered>
-                    <div v-for="code in props.row.codes" class="is-italic">{{ code }}</div>
+                <b-table-column field="id" label="Активен" centered>
+                    <b-switch v-model="props.row.is_active"  @change.native="update(props.row)" />
                 </b-table-column>
-                <b-table-column field="options" label="Параметры" centered>
-                    <template v-for="(option, key) in cols.options">
-                        <div v-if="props.row.options[key]">
-                            <span class="has-text-grey-light is-italic">{{ option.title }}:</span>
-                            {{ props.row.options[key] }}
-                        </div>
-                    </template>
-                </b-table-column>
-                <b-table-column field="prices" label="Цены" centered>
-                    <template v-for="(price, key) in cols.prices">
-                        <div v-if="props.row.prices[key]">
-                            <span class="has-text-grey-light is-italic">{{ price.title }}:</span>
-                            {{ formatPrice(props.row.prices[key]) }} {{ price.sign }}
-                        </div>
-                    </template>
-                </b-table-column>
-                <b-table-column field="codes" label="Действия" centered>
-                    <button class="button fas fa-pen" type="button" @click="edit(props.row.id)"></button>
-                    <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row.id)"></button>
+                <b-table-column field="id" label="Действия" centered>
+                    <button class="button fas fa-pen" type="button" @click="edit(props.row)"></button>
+                    <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row)"></button>
                 </b-table-column>
             </template>
         </b-table>
+        <br>
         <div class="buttons is-centered">
-            <button class="button is-primary fa fa-plus" type="button" @click="create"></button>
+            <button class="button is-primary" type="button" @click="create">Добавить</button>
         </div>
 
         <b-modal :active.sync="modal" has-modal-card aria-modal>
             <div class="modal-card">
-                <div class="modal-card-head">
-                    <p class="modal-card-title">{{ title }}</p>
-                </div>
+                <div class="modal-card-head" />
                 <div class="modal-card-body">
-                    <form @submit="save()" @change="save()" @keyup="saved=false">
-                        <b-field label="Артикулы" label-position="on-border">
-                            <b-input v-model="item.codesText" type="textarea" rows="2" placeholder="Один артикул на строку" required />
-                        </b-field>
-                        <b-field label="Штрих-код" label-position="on-border">
-                            <b-input v-model="item.barcode"  placeholder="Штрих-код товара" />
-                        </b-field>
-
-                        <div v-if="item.id" class="columns">
-                            <div v-for="(option, key) in cols.options" class="column pb-0">
-                                <b-field :label="option.title" label-position="on-border">
-                                    <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Параметр [' + option.title + ']'" />
-                                </b-field>
+                    <form @submit.prevent="save" @change="autoSave" @keyup="saved=false">
+                        <card-component title="Характеристики">
+                            <div class="columns">
+                                <div class="column">
+                                    <b-field label="Артикул" label-position="on-border">
+                                        <b-input v-model="item.code" placeholder="Уникальный идентификатор" required />
+                                    </b-field>
+                                </div>
+                                <div class="column">
+                                    <b-field label="Штрих-код" label-position="on-border">
+                                        <b-input v-model="item.barcode" placeholder="Штрих-код товара" />
+                                    </b-field>
+                                </div>
                             </div>
-                        </div>
-                        <div v-if="item.id" class="columns">
-                            <div v-for="(price, key) in cols.prices" class="column pb-0">
-                                <b-field :label="price.title" label-position="on-border">
-                                    <b-input v-if="item.prices" v-model="item.prices[key]" :placeholder="'Цена [' + price.title + ']'" />
-                                </b-field>
+                            <div class="columns">
+                                <div v-for="(option, key) in options" class="column">
+                                    <b-field :label="option.title" label-position="on-border">
+                                        <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Параметр [' + option.title + ']'" required />
+                                    </b-field>
+                                </div>
                             </div>
-                        </div>
-                        <div v-if="item.id" class="columns">
-                            <div v-for="(stock, key) in cols.stocks" class="column pb-0">
-                                <b-field :label="stock.title" label-position="on-border">
-                                    <b-input v-if="item.stocks" v-model="item.stocks[key]" :placeholder="'Склад [' + stock.title + ']'" />
-                                </b-field>
+                            <div class="columns">
+                                <div class="column" />
+                                <div class="column">
+                                    <b-field label="Вес" label-position="on-border">
+                                        <b-input v-model="item.weight" placeholder="Вес доставки" />
+                                        <div class="control"><div class="button is-static">кг</div></div>
+                                    </b-field>
+                                </div>
+                                <div class="column" />
                             </div>
-                        </div>
-
-                        <images-upload v-if="item.id" @update="updateImages" :images-array="item.images"
-                                       :web-route="`/admin/sku/${item.id}`" image-width="20%" />
+                        </card-component>
+                        <br>
+                        <card-component v-if="item.id" title="Фотографии (опционально)">
+                            <images-upload @update="updateImages" :images-array="item.images"
+                                           :web-route="`/admin/sku/${item.id}`" image-width="20%" />
+                        </card-component>
                     </form>
                 </div>
-
                 <footer class="modal-card-foot">
-                    <button :disabled="saved" @click="save()" :class="{ 'is-loading': loading }"
+                    <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
                             class="button is-primary" type="button">Сохранить</button>
                     <button class="button" type="button" @click="modal=false">Закрыть</button>
                 </footer>
@@ -92,152 +101,157 @@
 
 <script>
     import axios from 'axios';
-    import draggable from 'vuedraggable'
     import core from "./../js/Core";
-    import ModalImage from "./ModalImage";
     import ImagesUpload from "./ImagesUpload";
+    import CardComponent from "./CardComponent";
+
+    // format price
+    // error
+
+    // save sku prices
 
     export default {
         name: 'SkusList',
 
         components: {
-            draggable,
-            ModalImage,
             ImagesUpload,
+            CardComponent
         },
 
-        props: ['productId'],
+        props: ['product', 'discount'],
 
         data() {
             return {
-                title: 'Артикул',
                 item: {},
                 items: [],
-                cols: [],
+                options: [],
                 modal: false,
                 loading: false,
                 saved: true,
             }
         },
 
+        watch: {
+            'items.length': function () {
+                this.$emit('update', this.items.length);
+            },
+
+            'product.price': function () {
+                this.items.forEach((item) => this.updatePrice(item));
+            },
+
+            'discount': function () {
+                this.items.forEach((item) => this.updatePrice(item));
+            },
+        },
+
         mounted() {
-            axios.get(`/admin/sku/${this.productId}`)
+            axios.get(`/admin/sku/${this.product.id}`)
                 .then((res) => {
-                    for (let data in res.data) {
-                        this[data] = res.data[data];
-                    }
+                    this.items = res.data.items;
+                    this.options = res.data.options;
                 })
                 .catch(error => this.error(error.response));
         },
 
         methods: {
-            setDefault(id) {
-                this.items.map((item) => item.is_default = (item.id === id));
+            create() {
+                this.modal = true;
+                this.item = {
+                    id: null,
+                    product_id: this.product.id,
+                    category_id: this.product.category_id,
+                    is_active: true,
+                    extra_charge: 0,
+                    price: this.product.price,
+                    stock: 0,
+                    options: {},
+                    images: [],
+                };
+            },
 
-                axios.post(`/admin/sku/${id}/set-default`)
+            edit(item) {
+                this.item = item;
+                this.item.savedCode = this.item.code;
+                this.modal = true;
+            },
+
+            save(submit = true) {
+                for(let option in this.options) {
+                    if(!this.item.options[option]) {
+                        if(submit) {
+                            core.error('Заполните параметры товара');
+                        }
+                        return;
+                    }
+                }
+                this[(this.item.id) ? 'update' : 'store'](this.item);
+            },
+
+            autoSave() {
+                this.save(false);
+            },
+
+            store(item) {
+                this.statusLoading();
+                axios.post(`/admin/sku/store`, item)
+                    .then((res) => {
+                        this.item.id = res.data.id;
+                        this.items.push(item);
+                        this.edit(item.id);
+                        this.statusSaved();
+                    })
                     .catch((error) => this.error(error.response));
             },
 
-            destroy(id) {
-                if (this.items.find((item) => item.id === id).is_default === true) {
-                    core.error('Cannot delete default code');
+            update(item) {
+                this.statusLoading();
+                axios.post(`/admin/sku/update`, { items: [item] })
+                    .then(() => this.statusSaved())
+                    .catch((error) => {
+                        this.error(error.response);
+                        this.item.code = this.item.savedCode;
+                    });
+            },
 
-                    return;
-                }
-
-                this.$buefy.dialog.confirm({
-                    message: 'Удалить?',
-                    confirmText: 'Да',
-                    cancelText: 'Нет',
+            destroy(item) {
+                this.$buefy.dialog.confirm({ message: 'Удалить?', confirmText: 'Да', cancelText: 'Нет',
                     onConfirm: () => {
-                        this.items = this.items.filter((item) => item.id !== id);
-                        axios.post(`/admin/sku/${id}/destroy`)
+                        this.items = this.items.filter((each) => each !== item);
+
+                        axios.post(`/admin/sku/${item.id}/destroy`)
                             .catch((error) => this.error(error.response));
                     }
                 });
             },
 
-            create() {
-                this.modal = true;
-                this.item = {
-                    id: null,
-                    product_id: this.productId,
-                    is_active: false,
-                    is_default: false,
-                    options: {},
-                    prices: {},
-                    stocks: {},
-                    images: [],
-                    codesText: '',
-                    drag: false
-                };
-            },
-
-            edit(id) {
-                this.item = this.items.find((item) => item.id === id);
-                this.item.codesText = this.item.codes.join('\n');
-                this.item.backupCodes = this.item.codes;
-                this.modal = true;
-            },
-
-            save() {
-                if(this.drag) {
-                    return;
+            updatePrice(item) {
+                if(Number.isFinite(+this.product.price) && Number.isFinite(+item.extra_charge)) {
+                    item.price = ((+this.product.price + +item.extra_charge) * (100 - this.discount) / 100).toFixed(2);
                 }
-
-                if (!this.item.codesText || this.item.codesText.length < 3) {
-                    core.error('Provide at least one code');
-                    return;
-                }
-                this.loadingState();
-
-                this.item.codesText = this.item.codesText.replace(/(^[ \t]*\n)/gm, "").trim();
-                this.item.codes = this.item.codesText.split('\n');
-                (this.item.id) ? this.update() : this.store();
             },
 
-            store() {
-                axios.post(`/admin/sku/store`, this.item)
-                    .then((res) => {
-                        this.item.id = res.data.id;
-                        this.items.push(this.item);
-
-                        this.edit(this.item.id);
-                        this.savedState();
-                    })
-                    .catch((error) => this.error(error.response));
+            updateImages(value) {
+                this.item.images = value;
             },
 
-            update() {
-                axios.post(`/admin/sku/${this.item.id}/update`, this.item)
-                    .then(() => this.savedState())
-                    .catch((error) => {
-                        this.error(error.response);
-                        this.item.codes = this.item.backupCodes;
-                        this.item.codesText = this.item.codes.join('\n');
-                    });
-            },
-
-            updateImages(newImages) {
-                this.item.images = newImages;
-            },
-
-            loadingState() {
+            statusLoading() {
                 this.saved = false;
                 this.loading = true;
             },
 
-            savedState() {
+            statusSaved() {
                 this.saved = true;
                 this.loading = false;
             },
 
-            formatPrice(value) {
-                return core.formatPrice(value);
+            banDecimal(event) {
+                core.banDecimal(event);
             },
 
             error(response) {
-                this.savedState();
+                this.statusSaved();
+                console.log(response);
                 core.error(`Error ${response.status}: ${response.data.error}`);
             },
         }

@@ -16,13 +16,17 @@ class Sku extends Model
     protected $fillable = [
         'product_id',
         'category_id',
-        'title',
+        'is_active',
+        'is_stock',
+        'extra_charge',
+        'price',
+        'stock',
+        'weight',
+        'code',
         'barcode',
         'options',
-        'stocks',
-        'prices',
-        'codes',
-        'is_active',
+        'images'
+
     ];
     protected $casts = [
         'codes' => 'array',

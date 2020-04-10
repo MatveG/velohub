@@ -6,7 +6,7 @@
                 <button :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
                 <button class="button fas fa-arrow-circle-left"></button>
             </div>
-z
+
             <form @submit.prevent="update()" @change="autoUpdate()" @keyup="saved=false">
             <div class="columns">
                 <div class="column is-three-quarters">
@@ -52,7 +52,6 @@ z
                                         <b-input v-model="item.seo_keywords" />
                                     </b-field>
                                 </b-tab-item>
-
                             </b-tabs>
                     </card-component>
                     <br>
@@ -61,20 +60,23 @@ z
                     </card-component>
                     <br>
                     <card-component title="Варианты товара">
-<!--                        <skus-list v-if="item.id" :product-id="item.id"></skus-list>-->
-                        <div class="is-clearfix"></div>
+                        <skus-list v-if="item.id" @update="skusUpdate" :product="item" :discount="discountAmount" />
                     </card-component>
                 </div>
 
                 <div class="column">
                     <card-component :title="`ID товара: ${id}`" class="tile is-child">
+                        <b-field class="has-text-centered">
+                            <b-switch v-model="item.is_active">Активен</b-switch>
+                        </b-field>
                         <div class="has-text-centered">
-                            <p><a href="" class="button is-info">Посмотреть на сайте</a></p>
-                            <br>
-                            <b-switch v-model="item.is_active">{{ item.is_active ? 'Активен' : 'Скрыт' }}</b-switch>
+                            <p><a href="" class="button" target="_blank">Посмотреть на сайте</a></p>
                         </div>
                         <br>
-                        <b-field label="Категория">
+                        <b-field label="Артикул" label-position="on-border">
+                            <b-input v-model="item.code" />
+                        </b-field>
+                        <b-field label="Категория" label-position="on-border">
                             <b-select v-model="item.category_id" @select="autoUpdate()" expanded>
                                 <template v-for="category in categories">
                                     <optgroup v-if="category.is_parent" :label="category.name">
@@ -88,43 +90,44 @@ z
                     <br>
                     <card-component title="Цена">
                         <b-field label="Цена" label-position="on-border">
-                            <b-input v-model="item.price" />
+                            <b-input v-model.number="item.price" type="number" step="any" />
+                            <div class="control"><div class="button is-static">{{ item.currency.sign }}</div></div>
                         </b-field>
                         <b-field class="has-text-centered">
-                            <b-switch v-model="item.is_sale">{{ (item.is_sale) ? 'Со скидкой' : 'Без скидки' }}</b-switch>
+                            <b-switch v-model="item.is_sale">Скидка</b-switch>
                         </b-field>
                         <br>
                         <div class="columns">
                             <b-field label="Размер скидки" label-position="on-border" class="column">
-                                <b-input v-model="discountAmount" :disabled="!item.is_sale" />
+                                <b-input v-model.number="discountAmount" :disabled="!item.is_sale" type="number" />
                                 <div class="control"><div class="button is-static">%</div></div>
                             </b-field>
                             <b-field label="Цена со скидкой" label-position="on-border" class="column">
-                                <b-input v-model="item.price_sale" :disabled="!item.is_sale" />
+                                <b-input v-model.number="item.price_sale" :disabled="!item.is_sale" type="number" step="any" />
+                                <div class="control"><div class="button is-static">{{ item.currency.sign }}</div></div>
                             </b-field>
                         </div>
                     </card-component>
                     <br>
-                    <card-component title="Наличие">
-                        <b-field label="Артикул" label-position="on-border">
-                            <b-input v-model="item.code" />
+                    <card-component title="Наличие" v-if="!skusCount">
+                        <b-field label="Штрих-код" label-position="on-border">
+                            <b-input v-model="item.barcode" />
                         </b-field>
                         <b-field class="has-text-centered">
-                            <b-switch v-model="toggleStock">{{ (toggleStock) ? 'Есть в наличии' : 'Нет в наличии' }}</b-switch>
+                            <b-switch v-model="item.is_stock">Наличие</b-switch>
                         </b-field>
                         <br>
                         <div class="columns">
                             <b-field label="Запас на складе" label-position="on-border" class="column">
-                                <b-input v-model="item.stock" :disabled="!toggleStock" />
+                                <b-input v-model.number="item.stock" :disabled="!item.is_stock" type="number" />
                                 <div class="control"><div class="button is-static">шт</div></div>
                             </b-field>
                             <b-field label="Вес" label-position="on-border" class="column">
-                                <b-input v-model="item.weight" />
+                                <b-input v-model.number="item.weight" type="number" step="any" />
                                 <div class="control"><div class="button is-static">кг</div></div>
                             </b-field>
                         </div>
                     </card-component>
-                    <br>
                     <card-component title="Промо-коды"></card-component>
                 </div>
             </div>
@@ -156,19 +159,16 @@ z
 
         data () {
             return {
-                item: { category: {} },
+                item: {
+                    category: {},
+                    currency: {},
+                },
                 categories: [],
                 discountAmount: 0,
-                toggleStock: 0,
                 activeTab: 0,
+                skusCount: 0,
                 loading: false,
                 saved: true,
-            }
-        },
-
-        computed: {
-            'toggleStock': {
-                return (stock) ? true : false;
             }
         },
 
@@ -180,6 +180,8 @@ z
                 .then((res) => {
                     this.item = res.data.item;
                     this.discountAmount = 100-this.item.price_sale/this.item.price*100;
+
+                    this.$watch('item.is_stock', () => this.item.stock = +this.item.is_stock);
                 })
                 .catch((error) => this.error(error.response));
 
@@ -189,18 +191,18 @@ z
         },
 
         watch: {
+            'item.is_sale': function () {
+                this.item.price_sale = (this.item.is_sale) ? this.item.price : 0;
+            },
             'item.price': function () {
                 this.item.price_sale = (this.item.price*(100-this.discountAmount)/100).toFixed(2);
             },
             'item.price_sale': function () {
-                this.discountAmount = Math.round(100-this.item.price_sale/this.item.price*100);
+                this.discountAmount = (this.item.is_sale) ? Math.round(100-this.item.price_sale/this.item.price*100) : 0;
             },
             'discountAmount': function () {
-                this.item.price_sale = (this.item.price*(100-this.discountAmount)/100).toFixed(2);
+                this.item.price_sale = (this.item.price*(100-this.discountAmount)/100).toFixed();
             },
-            'toggleStock': function () {
-                this.item.stock = (this.toggleStock) ? 1 : 0;
-            }
         },
 
         methods: {
@@ -224,6 +226,10 @@ z
                 this.item.images = newImages;
             },
 
+            skusUpdate(skusCount) {
+                this.skusCount = skusCount;
+            },
+
             loadingState() {
                 this.saved = false;
                 this.loading = true;
@@ -236,6 +242,7 @@ z
 
             error(response) {
                 this.savedState();
+                console.log(response);
                 core.error(`Error ${response.status}: ${response.data.error}`);
             },
         }

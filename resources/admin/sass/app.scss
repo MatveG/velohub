@@ -11,16 +11,9 @@ img {
     display: block;
 }
 
-p-0 {
-    padding: 0;
+.hidden {
+    display: none;
 }
-.pt-0 {
-    padding-top: 0;
-}
-.pb-0 {
-    padding-bottom: 0;
-}
-
 .rounded {
     border-radius: 5px;
 }
@@ -30,14 +23,11 @@ p-0 {
     align-items: center;
 }
 
-.table-align-center th {
-    text-align: center !important;
+.table-vertical-center td {
     vertical-align: middle;
 }
-
-.table-align-center td {
-    text-align: center !important;
-    vertical-align: middle;
+.nowrap {
+    white-space: nowrap;
 }
 
 .box {
