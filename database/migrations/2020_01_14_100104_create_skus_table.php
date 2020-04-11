@@ -19,12 +19,12 @@ class CreateSkusTable extends Migration
             $table->bigInteger('category_id')->unsigned();
 
             $table->boolean('is_active')->default(false)->index();
-            $table->boolean('is_stock')->default(false)->index();
-            //$table->boolean('is_sale')->default(false)->index();
+            //$table->boolean('is_stock')->default(false)->index();
+            $table->boolean('is_sale')->default(false)->index();
 
+            $table->float('increment')->nullable();
             $table->float('price')->nullable();
-            $table->float('price_modifier')->nullable();
-            $table->float('price_sale')->nullable();
+            //$table->float('price_sale')->nullable();
             $table->integer('stock')->nullable();
             $table->float('weight')->nullable();
 

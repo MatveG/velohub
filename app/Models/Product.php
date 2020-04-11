@@ -40,9 +40,6 @@ class Product extends Model
         'features',
     ];
     protected $casts = [
-        'price' => 'decimal:2',
-        'price_sale' => 'decimal:2',
-        'weight' => 'decimal:2',
         'features' => 'object',
         'prices' => 'object',
         'images' => 'array',
@@ -51,6 +48,11 @@ class Product extends Model
     public function getSkuAttribute()
     {
         return $this->skus()->where('is_default', true)->firstOrFail();
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' ' . $this->brand . ' ' . $this->model;
     }
 
     public function getLinkAttribute()

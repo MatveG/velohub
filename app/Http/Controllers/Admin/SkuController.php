@@ -28,7 +28,8 @@ class SkuController extends Controller
         }
 
         $sku = new Sku();
-        $sku->fill($request->all())->save();
+        $sku->fill($request->all());
+        $sku->save();
 
         $this->updateProductStock($sku->product_id);
 
@@ -37,18 +38,15 @@ class SkuController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        foreach ($request->items as $item) {
-            $sku = Sku::findOrFail($item['id']);
+        $sku = Sku::findOrFail($id);
 
-            if(Sku::where('id', '!=', $item['id'])->where('code', '=', $item['code'])->exists()) {
-                return response()->json(['error' => 'Code already exists'], 400);
-            }
-
-            $sku->update($item);
+        if(isset($request->code) && Sku::where('id', '!=', $sku->id)->where('code', '=', $request->code)->exists()) {
+            return response()->json(['error' => 'Code already exists'], 400);
         }
 
+        $sku->update($request->all());
         $this->updateProductStock($sku->product_id);
 
         return response()->json();
@@ -67,9 +65,8 @@ class SkuController extends Controller
 
     private function updateProductStock(int $productId)
     {
-        $result = Sku::where('product_id', $productId)->where('stock', '>', '0')->first();
         $product = Product::find($productId);
-        $product->is_stock = ($result) ? 1 : 0;
+        $product->is_stock = Sku::where('product_id', $productId)->where('stock', '>', 0)->exists();
         $product->save();
     }
 

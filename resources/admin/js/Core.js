@@ -1,5 +1,6 @@
 
 import { ToastProgrammatic as Toast } from 'buefy'
+import { DialogProgrammatic as Dialog } from 'buefy'
 
 export default new class Core {
     error(message) {
@@ -10,15 +11,25 @@ export default new class Core {
         });
     }
 
-    axiosError(response) {
+    ajaxError(response) {
+        this.error(`Error ${response.status}: ${response.data.error}`);
         console.log(response);
-        this.error('Error ' + response.status + ': ' + response.data.error);
     }
+
 
     // formatPrice(value) {
     //     let val = (value/1).toFixed(2).replace('.', ',')
     //     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
     // }
+
+    confirm(message, callback) {
+        Dialog.confirm({
+            message: message,
+            confirmText: 'Да',
+            cancelText: 'Нет',
+            onConfirm: () => callback()
+        });
+    }
 
     banDecimal(event) {
         event = (event) ? event : window.event;

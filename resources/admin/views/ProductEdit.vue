@@ -59,7 +59,7 @@
                         </card-component>
                         <br>
                         <card-component title="Варианты товара">
-                            <skus-list v-if="item.id" @update="skusUpdate" :product="item" :discount="discount" />
+                            <skus-list v-if="item.id" @update="skusUpdate" :product="item" :currency="currency" :discount="discount" />
                         </card-component>
                     </div>
 
@@ -87,7 +87,7 @@
                         <card-component title="Цена">
                             <b-field label="Цена" label-position="on-border">
                                 <b-input v-model.number="item.price" type="number" step="any" />
-                                <div class="control"><div class="button is-static">{{ item.currency.sign }}</div></div>
+                                <div class="control"><div class="button is-static">{{ currency.sign }}</div></div>
                             </b-field>
                             <b-field class="has-text-centered">
                                 <b-switch v-model="item.is_sale" @change.native="toggleDiscount">Скидка</b-switch>
@@ -98,6 +98,7 @@
                                 <button @click="setDiscount(3)" type="button" class="button is-info is-outlined is-rounded is-small">3%</button>
                                 <button @click="setDiscount(5)" type="button" class="button is-info is-outlined is-rounded is-small">5%</button>
                                 <button @click="setDiscount(7)" type="button" class="button is-info is-outlined is-rounded is-small">7%</button>
+                                <button @click="setDiscount(10)" type="button" class="button is-info is-outlined is-rounded is-small">10%</button>
                                 <button @click="setDiscount(15)" type="button" class="button is-info is-outlined is-rounded is-small">15%</button>
                                 <button @click="setDiscount(20)" type="button" class="button is-info is-outlined is-rounded is-small">20%</button>
                                 <button @click="setDiscount(25)" type="button" class="button is-info is-outlined is-rounded is-small">25%</button>
@@ -105,11 +106,14 @@
 
                             <b-field v-if="item.is_sale" label="Цена со скидкой" label-position="on-border">
                                 <b-input v-model.number="item.price_sale" :disabled="!item.is_sale" type="number" step="any" />
-                                <div class="control"><div class="button is-static">{{ item.currency.sign }}</div></div>
+                                <div class="control"><div class="button is-static">{{ currency.sign }}</div></div>
+                            </b-field>
+                            <b-field label="Детали акции" label-position="on-border">
+                                <b-input v-model="item.brief" type="textarea" rows="2" />
                             </b-field>
                         </card-component>
                         <br>
-                        <card-component title="Наличие" v-if="!skusCount">
+                        <card-component v-if="!skusCount" title="Наличие">
                             <b-field label="Артикул" label-position="on-border">
                                 <b-input v-model="item.code" />
                             </b-field>
@@ -168,6 +172,7 @@
                 discount: 0,
                 activeTab: 0,
                 skusCount: 0,
+                currency: '',
                 loading: false,
                 saved: true,
             }
@@ -180,6 +185,8 @@
             axios.get(`/admin/products/${this.id}/edit/`)
                 .then((res) => {
                     this.item = res.data.item;
+                    this.skusCount = res.data.skusCount;
+                    this.currency = res.data.currency;
                     //this.discountAmount = 100-this.item.price_sale/this.item.price*100;
 
                     this.$watch('item.is_stock', () => this.item.stock = +this.item.is_stock);
@@ -192,30 +199,20 @@
         },
 
         watch: {
-            // 'item.is_sale': function () {
-            //     if (this.item.is_sale) {
-            //         this.item.price_sale = this.item.price;
-            //     } else {
-            //         this.discount = 0;
-            //         this.item.price_sale = this.item.price;
-            //     }
-            // },
-            // 'item.price': function () {
-            //     this.item.price_sale = (this.item.price*(100-this.discountAmount)/100).toFixed(2);
-            // },
             'item.price_sale': function () {
                 this.discount = this.item.price - this.item.price_sale;
             },
-            // 'discountAmount': function () {
-            //     this.item.price_sale = (this.item.price*(100-this.discountAmount)/100).toFixed();
-            // },
         },
 
         methods: {
             update() {
-                this.loadingState();
+                this.statusLoading();
                 axios.post(`/admin/products/${this.item.id}/update`, this.item)
                     .then((res) => {
+                        if(res.data.latin) {
+                            this.item.latin = res.data.latin;
+                        }
+
                         if(res.data.category) {
                             this.item.category = res.data.category;
                         }
@@ -244,10 +241,17 @@
             },
 
             skusUpdate(skusCount) {
+                if(skusCount > 0) {
+                    this.item.code = '';
+                    this.item.barcode = '';
+                    this.item.stock = '';
+                    this.item.weight = '';
+                    this.item.is_stock = false;
+                }
                 this.skusCount = skusCount;
             },
 
-            loadingState() {
+            statusLoading() {
                 this.saved = false;
                 this.loading = true;
             },

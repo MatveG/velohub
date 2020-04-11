@@ -24,13 +24,6 @@ trait Shop
         return self::shopCurrency()->{self::shopPrice()}->sign;
     }
 
-    // ------------------------------
-
-//    public function getPriceAttribute()
-//    {
-//        return $this->prices->{self::shopPrice()} ?? null;
-//    }
-
     public function getThumbAttribute()
     {
         return (isset($this->images[0]))

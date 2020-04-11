@@ -8,37 +8,49 @@
                  default-sort="code"
                  class="table-vertical-center">
             <template slot-scope="props">
+                <b-table-column field="images" label="Фото" centered>
+                    <span v-if="props.row.images.length" class="icon has-text-dark">
+                        <i class="fas fa-check-square"></i>
+                    </span>
+                </b-table-column>
+
                 <b-table-column field="code" label="Артикул" class="has-text-left is-italic">
                     {{ props.row.code }}
                 </b-table-column>
-                <b-table-column field="options" label="Параметры" centered>
+
+                <b-table-column field="options" label="Параметры" width="150" centered>
                     <div class="buttons is-centered">
-                        <button v-for="(option, key) in options" v-if="props.row.options[key]" class="button is-small is-static">
+                        <button v-for="(option, key) in options" v-if="props.row.options[key]" class="button is-rounded is-small is-static">
                             {{ props.row.options[key] }}
                         </button>
                     </div>
                 </b-table-column>
-                <b-table-column field="extra_charge" label="Наценка" centered>
-                    <b-input v-model.number="props.row.extra_charge" @input.native="updatePrice(props.row)" @change.native="update(props.row)" type="number" />
+
+                <b-table-column field="code" label="Остаток" width="110" centered>
+                    <b-field>
+                        <b-input v-model.number="props.row.stock" @change.native="update(props.row)"
+                                 @keypress.native="banDecimal($event)" size="is-small" type="number" />
+                        <div class="control"><div class="button is-static is-small">шт</div></div>
+                    </b-field>
                 </b-table-column>
-                <b-table-column field="price" label="Цена" centered>
-                    <b-input v-model.number="props.row.price" @change.native="update(props.row)" disabled />
+
+                <b-table-column field="images" label="Скидка" width="50" centered>
+                    <b-checkbox v-model="props.row.is_sale" :disabled="!product.is_sale"
+                                @change.native="updatePrice(props.row); update(props.row);" />
                 </b-table-column>
-                <b-table-column field="code" label="Остаток" centered>
-                    <b-input v-model.number="props.row.stock" width="5" @change.native="update(props.row)"
-                             @keypress.native="banDecimal($event)" type="number" />
+
+                <b-table-column field="increment" label="Наценка(+/-)" width="100" centered>
+                    <b-field>
+                        <b-input v-model.number="props.row.price" size="is-small" disabled />
+                        <div class="control"><div class="button is-static is-small">{{ currency.sign }}</div></div>
+                    </b-field>
+                    <b-input v-model.number="props.row.increment" @input.native="updatePrice(props.row)"
+                             @change.native="update(props.row)" size="is-small" type="number" />
                 </b-table-column>
-                <b-table-column field="images" label="Фото" centered>
-                    <span v-if="props.row.images.length" class="icon has-text-info">
-                        <i class="fas fa-check-square"></i>
-                    </span>
-                </b-table-column>
-                <b-table-column field="id" label="Активен" centered>
-                    <b-switch v-model="props.row.is_active"  @change.native="update(props.row)" />
-                </b-table-column>
+
                 <b-table-column field="id" label="Действия" centered>
-                    <button class="button fas fa-pen" type="button" @click="edit(props.row)"></button>
-                    <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row)"></button>
+                    <button class="button fas fa-pen" type="button" @click="edit(props.row)" />
+                    <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row)" />
                 </b-table-column>
             </template>
         </b-table>
@@ -103,17 +115,6 @@
     import ImagesUpload from "./ImagesUpload";
     import CardComponent from "./CardComponent";
 
-    // скидка глючит
-    // create new sku
-    // искать дубликаты и в товарах?
-    // перенос скидки в ску
-    // generate latin
-    // save sku prices with product price
-
-    // чистить характеристики при смене категории? удалять только те которые не сходятся!
-    // currency
-    // error
-
     export default {
         name: 'SkusList',
 
@@ -122,7 +123,7 @@
             CardComponent
         },
 
-        props: ['product', 'discount'],
+        props: ['product', 'currency', 'discount'],
 
         data() {
             return {
@@ -136,16 +137,16 @@
         },
 
         watch: {
-            'items.length': function () {
-                this.$emit('update', this.items.length);
+            'discount': function () {
+                this.items.forEach((item) => this.updatePrice(item));
             },
 
             'product.price': function () {
                 this.items.forEach((item) => this.updatePrice(item));
             },
 
-            'discount': function () {
-                this.items.forEach((item) => this.updatePrice(item));
+            'product.is_sale': function () {
+                this.items.forEach((item) => item.is_sale = this.product.is_sale);
             },
         },
 
@@ -155,23 +156,26 @@
                     this.items = res.data.items;
                     this.options = res.data.options;
                 })
-                .catch(error => this.error(error.response));
+                .catch(error => core.ajaxError(error.response))
+                .then(() => this.statusSaved());
         },
 
         methods: {
             create() {
-                this.modal = true;
                 this.item = {
                     id: null,
                     product_id: this.product.id,
                     category_id: this.product.category_id,
-                    is_active: true,
-                    extra_charge: 0,
-                    price: this.product.price,
+                    is_active: this.product.is_active,
+                    is_sale: this.product.is_sale,
+                    price: (this.product.is_sale) ? this.product.price_sale : this.product.price,
+                    increment: 0,
                     stock: 0,
                     options: {},
                     images: [],
                 };
+
+                this.modal = true;
             },
 
             edit(item) {
@@ -202,36 +206,40 @@
                     .then((res) => {
                         this.item.id = res.data.id;
                         this.items.push(item);
-                        this.edit(item.id);
-                        this.statusSaved();
+
+                        this.item.savedCode = this.item.code;
+                        this.$emit('update', this.items.length);
                     })
-                    .catch((error) => this.error(error.response));
+                    .catch((error) => core.ajaxError(error.response))
+                    .then(() => this.statusSaved());
             },
 
             update(item) {
                 this.statusLoading();
-                axios.post(`/admin/sku/update`, { items: [item] })
-                    .then(() => this.statusSaved())
+                axios.post(`/admin/sku/${item.id}/update`, item)
+                    .then(() => this.$emit('update', this.items.length))
                     .catch((error) => {
-                        this.error(error.response);
+                        core.ajaxError(error.response);
                         this.item.code = this.item.savedCode;
-                    });
+                    })
+                    .then(() => this.statusSaved());
             },
 
             destroy(item) {
-                this.$buefy.dialog.confirm({ message: 'Удалить?', confirmText: 'Да', cancelText: 'Нет',
-                    onConfirm: () => {
-                        this.items = this.items.filter((each) => each !== item);
+                core.confirm('Удалить?', () => {
+                    this.items = this.items.filter((each) => each !== item);
+                    this.$emit('update', this.items.length);
 
-                        axios.post(`/admin/sku/${item.id}/destroy`)
-                            .catch((error) => this.error(error.response));
-                    }
+                    axios.post(`/admin/sku/${item.id}/destroy`)
+                        .catch((error) => core.ajaxError(error.response))
+                        .then(() => this.statusSaved());
                 });
             },
 
             updatePrice(item) {
-                if(Number.isFinite(+this.product.price) && Number.isFinite(+item.extra_charge)) {
-                    item.price = ((+this.product.price + +item.extra_charge) * (100 - this.discount) / 100).toFixed(2);
+                if(Number.isFinite(+this.product.price) && Number.isFinite(+item.increment)) {
+                    item.price = +this.product.price + +item.increment;
+                    item.price -= (this.product.is_sale && item.is_sale) ? this.discount : 0;
                 }
             },
 
@@ -252,15 +260,15 @@
             banDecimal(event) {
                 core.banDecimal(event);
             },
-
-            error(response) {
-                this.statusSaved();
-                console.log(response);
-                core.error(`Error ${response.status}: ${response.data.error}`);
-            },
         }
     }
 </script>
+
+<style scoped>
+    .field {
+        margin-bottom: .2rem !important;
+    }
+</style>
 
 <style>
     .modal-edit-sku .modal-content {
