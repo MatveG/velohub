@@ -40,8 +40,9 @@ class Product extends Model
         'features',
     ];
     protected $casts = [
-        'price' => 'double(2)',
-        'price_sale' => 'double',
+        'price' => 'decimal:2',
+        'price_sale' => 'decimal:2',
+        'weight' => 'decimal:2',
         'features' => 'object',
         'prices' => 'object',
         'images' => 'array',

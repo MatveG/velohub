@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->boolean('is_active')->default(false)->index();
             $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
-            $table->boolean('is_parent')->default(false)->index();
+            //$table->boolean('is_parent')->default(false)->index();
 
             $table->float('price')->nullable();
             $table->float('price_sale')->nullable();

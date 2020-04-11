@@ -15,10 +15,10 @@ export default new class Core {
         this.error('Error ' + response.status + ': ' + response.data.error);
     }
 
-    formatPrice(value) {
-        let val = (value/1).toFixed(2).replace('.', ',')
-        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-    }
+    // formatPrice(value) {
+    //     let val = (value/1).toFixed(2).replace('.', ',')
+    //     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+    // }
 
     banDecimal(event) {
         event = (event) ? event : window.event;

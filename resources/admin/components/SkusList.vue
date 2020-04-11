@@ -11,10 +11,12 @@
                 <b-table-column field="code" label="Артикул" class="has-text-left is-italic">
                     {{ props.row.code }}
                 </b-table-column>
-                <b-table-column field="options" label="Параметры" centered class="nowrap">
-                    <button v-for="(option, key) in options" v-if="props.row.options[key]" class="button is-small is-static">
-                        {{ props.row.options[key] }}
-                    </button>
+                <b-table-column field="options" label="Параметры" centered>
+                    <div class="buttons is-centered">
+                        <button v-for="(option, key) in options" v-if="props.row.options[key]" class="button is-small is-static">
+                            {{ props.row.options[key] }}
+                        </button>
+                    </div>
                 </b-table-column>
                 <b-table-column field="extra_charge" label="Наценка" centered>
                     <b-input v-model.number="props.row.extra_charge" @input.native="updatePrice(props.row)" @change.native="update(props.row)" type="number" />
@@ -40,59 +42,55 @@
                 </b-table-column>
             </template>
         </b-table>
-        <br>
         <div class="buttons is-centered">
             <button class="button is-primary" type="button" @click="create">Добавить</button>
         </div>
 
-        <b-modal :active.sync="modal" has-modal-card aria-modal>
-            <div class="modal-card">
-                <div class="modal-card-head" />
-                <div class="modal-card-body">
-                    <form @submit.prevent="save" @change="autoSave" @keyup="saved=false">
-                        <card-component title="Характеристики">
-                            <div class="columns">
-                                <div class="column">
-                                    <b-field label="Артикул" label-position="on-border">
-                                        <b-input v-model="item.code" placeholder="Уникальный идентификатор" required />
-                                    </b-field>
-                                </div>
-                                <div class="column">
-                                    <b-field label="Штрих-код" label-position="on-border">
-                                        <b-input v-model="item.barcode" placeholder="Штрих-код товара" />
-                                    </b-field>
-                                </div>
+        <b-modal :active.sync="modal" aria-modal class="modal-edit-sku">
+            <div class="box">
+                <form @submit.prevent="save" @change="autoSave" @keyup="saved=false">
+                    <card-component title="Параметры варианта">
+                        <div class="columns">
+                            <div class="column">
+                                <b-field label="Артикул" label-position="on-border">
+                                    <b-input v-model="item.code" placeholder="Уникальный идентификатор" required />
+                                </b-field>
                             </div>
-                            <div class="columns">
-                                <div v-for="(option, key) in options" class="column">
-                                    <b-field :label="option.title" label-position="on-border">
-                                        <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Параметр [' + option.title + ']'" required />
-                                    </b-field>
-                                </div>
+                            <div class="column">
+                                <b-field label="Штрих-код" label-position="on-border">
+                                    <b-input v-model="item.barcode" placeholder="Штрих-код товара" />
+                                </b-field>
                             </div>
-                            <div class="columns">
-                                <div class="column" />
-                                <div class="column">
-                                    <b-field label="Вес" label-position="on-border">
-                                        <b-input v-model="item.weight" placeholder="Вес доставки" />
-                                        <div class="control"><div class="button is-static">кг</div></div>
-                                    </b-field>
-                                </div>
-                                <div class="column" />
+                        </div>
+                        <div class="columns">
+                            <div v-for="(option, key) in options" class="column">
+                                <b-field :label="option.title" label-position="on-border">
+                                    <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Параметр [' + option.title + ']'" required />
+                                </b-field>
                             </div>
-                        </card-component>
-                        <br>
-                        <card-component v-if="item.id" title="Фотографии (опционально)">
-                            <images-upload @update="updateImages" :images-array="item.images"
-                                           :web-route="`/admin/sku/${item.id}`" image-width="20%" />
-                        </card-component>
-                    </form>
-                </div>
-                <footer class="modal-card-foot">
-                    <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
-                            class="button is-primary" type="button">Сохранить</button>
-                    <button class="button" type="button" @click="modal=false">Закрыть</button>
-                </footer>
+                        </div>
+                        <div class="columns">
+                            <div class="column" />
+                            <div class="column">
+                                <b-field label="Вес" label-position="on-border">
+                                    <b-input v-model="item.weight" placeholder="Вес доставки" />
+                                    <div class="control"><div class="button is-static">кг</div></div>
+                                </b-field>
+                            </div>
+                            <div class="column" />
+                        </div>
+                    </card-component>
+                    <br v-if="item.id">
+                    <card-component v-if="item.id" title="Собственные фото" class="card-images">
+                        <images-upload @update="updateImages" :web-route="`/admin/sku/${item.id}`" :images-array="item.images" image-width="20%" />
+                    </card-component>
+                    <br>
+                    <div class="buttons is-centered">
+                        <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
+                                class="button is-primary" type="button">Сохранить</button>
+                        <button class="button" type="button" @click="modal=false">Закрыть</button>
+                    </div>
+                </form>
             </div>
         </b-modal>
 
@@ -105,10 +103,16 @@
     import ImagesUpload from "./ImagesUpload";
     import CardComponent from "./CardComponent";
 
-    // format price
-    // error
+    // скидка глючит
+    // create new sku
+    // искать дубликаты и в товарах?
+    // перенос скидки в ску
+    // generate latin
+    // save sku prices with product price
 
-    // save sku prices
+    // чистить характеристики при смене категории? удалять только те которые не сходятся!
+    // currency
+    // error
 
     export default {
         name: 'SkusList',
@@ -258,6 +262,14 @@
     }
 </script>
 
-<style scoped>
-
+<style>
+    .modal-edit-sku .modal-content {
+        width: 650px;
+    }
+    .modal-edit-sku .box {
+        width: 100%;
+    }
+    .modal-edit-sku .card-images .card-content {
+        padding: .5rem;
+    }
 </style>
