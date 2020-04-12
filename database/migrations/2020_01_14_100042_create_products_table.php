@@ -28,6 +28,7 @@ class CreateProductsTable extends Migration
             $table->integer('stock')->nullable();
             $table->float('weight')->nullable();
 
+            $table->string('sale_text')->nullable();
             $table->string('code')->nullable();
             $table->string('barcode')->nullable();
             $table->string('name')->nullable();

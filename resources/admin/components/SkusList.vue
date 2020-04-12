@@ -2,9 +2,7 @@
 <template>
     <div>
         <b-table :data="items"
-                 :striped="true"
                  :hoverable="true"
-                 :narrowed="true"
                  default-sort="code"
                  class="table-vertical-center">
             <template slot-scope="props">
@@ -92,20 +90,17 @@
                             <div class="column" />
                         </div>
                     </card-component>
-                    <br v-if="item.id">
-                    <card-component v-if="item.id" title="Собственные фото" class="card-images">
+                    <card-component v-if="item.id" title="Собственные фото" class="card-images margin-line">
                         <images-upload @update="updateImages" :web-route="`/admin/sku/${item.id}`" :images-array="item.images" image-width="20%" />
                     </card-component>
-                    <br>
-                    <div class="buttons is-centered">
+                    <div class="buttons margin-line is-centered">
                         <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
-                                class="button is-primary" type="button">Сохранить</button>
-                        <button class="button" type="button" @click="modal=false">Закрыть</button>
+                                type="button" class="button is-primary">Сохранить</button>
+                        <button @click="modal=false" type="button"s class="button">Закрыть</button>
                     </div>
                 </form>
             </div>
         </b-modal>
-
     </div>
 </template>
 
@@ -160,6 +155,10 @@
                 .then(() => this.statusSaved());
         },
 
+        // rename 'name' in Product
+        // format info block
+        // modal scroll?
+
         methods: {
             create() {
                 this.item = {
@@ -184,6 +183,10 @@
                 this.modal = true;
             },
 
+            autoSave() {
+                this.save(false);
+            },
+
             save(submit = true) {
                 for(let option in this.options) {
                     if(!this.item.options[option]) {
@@ -194,10 +197,6 @@
                     }
                 }
                 this[(this.item.id) ? 'update' : 'store'](this.item);
-            },
-
-            autoSave() {
-                this.save(false);
             },
 
             store(item) {
@@ -216,6 +215,7 @@
 
             update(item) {
                 this.statusLoading();
+                console.log('update sku');
                 axios.post(`/admin/sku/${item.id}/update`, item)
                     .then(() => this.$emit('update', this.items.length))
                     .catch((error) => {

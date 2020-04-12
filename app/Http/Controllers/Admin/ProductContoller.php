@@ -47,8 +47,8 @@ class ProductContoller extends Controller
     {
         $product = Product::with('category')->find($id);
 
-        if ($product->features) {
-            $features = $product->features;
+        if (isset($product->features)) {
+            $features = (array)$product->features;
 
             foreach ($features as $key => $feature) {
                 if(empty($product->category->features->{$key})) {
@@ -62,7 +62,7 @@ class ProductContoller extends Controller
         return response()->json([
             'item' => $product->toArray(),
             'skusCount' => $product->skus->count(),
-            'currency' => $product['currency'] = settings('shop', 'currency'),
+            'currency' => settings('shop', 'currency'),
         ]);
     }
 
@@ -73,19 +73,17 @@ class ProductContoller extends Controller
         $product->latin = $this->stringToLatin($product->fullName);
         $product->save();
 
-        Sku::where('product_id', $product->id)->update([
-            'category_id' => $product->category_id,
-            'is_active' => $product->is_active,
-            'price' => DB::raw($product->price . ' + increment - is_sale::int * ' . ($product->price - $product->price_sale))
-        ]);
+        $this->updateChildSkus($product);
 
-        $return = [];
+        $return = null;
 
-        if($product->category_id !== $request->category_id) {
+        //return response()->json( isset($product->getChanges()['category_id']) , 400);
+
+        if(isset($product->getChanges()['category_id'])) {
             $return['category'] = $product->category;
         }
 
-        if($product->latin !== $request->latin) {
+        if(isset($product->getChanges()['latin'])) {
             $return['latin'] = $product->latin;
         }
 
@@ -272,5 +270,24 @@ class ProductContoller extends Controller
         $str = trim($str, $options['delimiter']);
 
         return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
+    }
+
+    protected function updateChildSkus(Product $product)
+    {
+        $update = [
+            'category_id' => $product->category_id,
+            'is_active' => $product->is_active,
+        ];
+
+        if(isset($product->getChanges()['is_sale'])) {
+            $update['is_sale'] = $product->is_sale;
+        }
+
+        Sku::where('product_id', $product->id)->update($update);
+
+        $increment = $product->price - $product->price_sale;
+        Sku::where('product_id', $product->id)->update([
+            'price' => DB::raw("{$product->price} + increment - is_sale::int * {$increment}")
+        ]);
     }
 }

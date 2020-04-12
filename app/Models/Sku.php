@@ -17,7 +17,6 @@ class Sku extends Model
         'product_id',
         'category_id',
         'is_active',
-        'is_stock',
         'is_sale',
         'increment',
         'price',

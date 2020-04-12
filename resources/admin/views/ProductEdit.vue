@@ -8,7 +8,7 @@
             </div>
             <form @submit.prevent="update()" @change="autoUpdate()" @keyup="saved=false">
                 <div class="columns">
-                    <div class="column is-three-quarters">
+                    <div class="column is-two-thirds">
                         <card-component title="Информация">
                             <b-tabs v-model="activeTab" type="is-boxed">
                                 <b-tab-item label="Название">
@@ -32,8 +32,9 @@
                                 </b-tab-item>
 
                                 <b-tab-item label="Характеристики">
-                                    <b-field v-for="(feature, key) in item.category.features" :label="feature.title" :message="feature.units" horizontal>
+                                    <b-field v-for="(feature, key) in item.category.features" :label="feature.title" horizontal>
                                         <b-input v-model="item.features[key]" />
+                                        <p v-if="feature.units" class="control"><button class="button is-static">{{ feature.units }}</button></p>
                                     </b-field>
                                 </b-tab-item>
 
@@ -58,9 +59,6 @@
                             <images-upload v-if="item.id" @update="imagesUpdate" :images-array="item.images" :web-route="`/admin/product/${item.id}`" image-width="20%" />
                         </card-component>
                         <br>
-                        <card-component title="Варианты товара">
-                            <skus-list v-if="item.id" @update="skusUpdate" :product="item" :currency="currency" :discount="discount" />
-                        </card-component>
                     </div>
 
                     <div class="column">
@@ -102,6 +100,7 @@
                                 <button @click="setDiscount(15)" type="button" class="button is-info is-outlined is-rounded is-small">15%</button>
                                 <button @click="setDiscount(20)" type="button" class="button is-info is-outlined is-rounded is-small">20%</button>
                                 <button @click="setDiscount(25)" type="button" class="button is-info is-outlined is-rounded is-small">25%</button>
+                                <button @click="setDiscount(30)" type="button" class="button is-info is-outlined is-rounded is-small">30%</button>
                             </div>
 
                             <b-field v-if="item.is_sale" label="Цена со скидкой" label-position="on-border">
@@ -109,7 +108,7 @@
                                 <div class="control"><div class="button is-static">{{ currency.sign }}</div></div>
                             </b-field>
                             <b-field label="Детали акции" label-position="on-border">
-                                <b-input v-model="item.brief" type="textarea" rows="2" />
+                                <b-input v-model="item.sale_text" type="textarea" rows="2" />
                             </b-field>
                         </card-component>
                         <br>
@@ -138,6 +137,9 @@
                     </div>
                 </div>
             </form>
+            <card-component title="Варианты товара">
+                <skus-list v-if="item.id" @update="skusUpdate" :product="item" :currency="currency" :discount="discount" />
+            </card-component>
         </section>
     </div>
 </template>
@@ -187,9 +189,8 @@
                     this.item = res.data.item;
                     this.skusCount = res.data.skusCount;
                     this.currency = res.data.currency;
-                    //this.discountAmount = 100-this.item.price_sale/this.item.price*100;
 
-                    this.$watch('item.is_stock', () => this.item.stock = +this.item.is_stock);
+                    this.$watch('item.is_stock', () => this.item.stock = +this.item.is_stock); // !!!
                 })
                 .catch((error) => this.error(error.response));
 
@@ -207,6 +208,7 @@
         methods: {
             update() {
                 this.statusLoading();
+                console.log('update product');
                 axios.post(`/admin/products/${this.item.id}/update`, this.item)
                     .then((res) => {
                         if(res.data.latin) {

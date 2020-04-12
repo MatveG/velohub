@@ -24,11 +24,17 @@ class SettingsTableSeeder extends Seeder
             'value' => 'uah',
         ]);
 
-//        DB::table('settings')->insert([
-//            'group' => 'shop',
-//            'key' => 'default_price',
-//            'value' => 'retail',
-//        ]);
+        DB::table('settings')->insert([
+            'group' => 'shop',
+            'key' => 'currency',
+            'value' => json_encode([
+                'title' => 'гривны',
+                'abbr' => 'UAH',
+                'sign' => '₴',
+                'align' => 'right',
+                'default' => true,
+            ]),
+        ]);
 
         DB::table('settings')->insert([
             'group' => 'shop',
