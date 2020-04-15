@@ -37,24 +37,27 @@ Route::get('/admin/', function () {
 });
 
 Route::namespace('Admin')->group(function () {
-    Route::get('/admin/products/', 'ProductContoller@index');
-    Route::get('/admin/products/{id}/edit/', 'ProductContoller@edit');
-    Route::post('/admin/products/{id}/update/', 'ProductContoller@update');
+    Route::get('/admin/product/{id}/edit/', 'ProductContoller@edit');
+    Route::post('/admin/product/{id}/update/', 'ProductContoller@update');
 //    Route::get('/admin/products/suggest/', 'AdminController@suggest');
 //    Route::get('/admin/products/edit/', 'AdminController@edit');
 //    Route::delete('/admin/products/delete/', 'AdminController@delete');
     Route::post('/admin/product/{id}/images-upload', 'ProductContoller@imagesUpload');
     Route::post('/admin/product/{id}/images-update', 'ProductContoller@imagesUpdate');
+    Route::get('/admin/product/', 'ProductContoller@index');
 
     // Categories
-    Route::get('/admin/categories/tree/', 'AdminController@tree');
+    Route::post('/admin/category/{id}/update', 'AdminController@update');
+    Route::post('/admin/category/list/', 'AdminController@list');
+    Route::get('/admin/category/{id}/edit/', 'AdminController@edit');
+    Route::get('/admin/category/', 'AdminController@index');
 
-    // Sku
-    Route::post('/admin/sku/store', 'SkuController@store');
-    Route::post('/admin/sku/{id}/update', 'SkuController@update');
-    Route::post('/admin/sku/{id}/destroy', 'SkuController@destroy');
-    Route::post('/admin/sku/{id}/images-upload', 'SkuController@imagesUpload');
-    Route::post('/admin/sku/{id}/images-update', 'SkuController@imagesUpdate');
-    Route::get('/admin/sku/{product_id}', 'SkuController@index');
+    // Variant
+    Route::post('/admin/variant/store', 'VariantController@store');
+    Route::post('/admin/variant/{id}/update', 'VariantController@update');
+    Route::post('/admin/variant/{id}/destroy', 'VariantController@destroy');
+    Route::post('/admin/variant/{id}/images-upload', 'VariantController@imagesUpload');
+    Route::post('/admin/variant/{id}/images-update', 'VariantController@imagesUpdate');
+    Route::get('/admin/variant/{product_id}', 'VariantController@index');
 
 });

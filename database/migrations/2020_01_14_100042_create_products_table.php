@@ -21,17 +21,16 @@ class CreateProductsTable extends Migration
             $table->boolean('is_active')->default(false)->index();
             $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
-            //$table->boolean('is_parent')->default(false)->index();
 
+            $table->integer('stock')->nullable();
             $table->float('price')->nullable();
             $table->float('price_sale')->nullable();
-            $table->integer('stock')->nullable();
             $table->float('weight')->nullable();
 
             $table->string('sale_text')->nullable();
             $table->string('code')->nullable();
             $table->string('barcode')->nullable();
-            $table->string('name')->nullable();
+            $table->string('title')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
             $table->string('latin')->nullable();
@@ -39,20 +38,20 @@ class CreateProductsTable extends Migration
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
 
-            $table->text('brief')->nullable();
-            $table->text('text')->nullable();
+            $table->text('summary')->nullable();
+            $table->text('description')->nullable();
             $table->text('images')->nullable();
             $table->text('videos')->nullable();
             $table->text('files')->nullable();
 
             $table->jsonb('features')->nullable();
-            $table->text('settings')->nullable();  // ???
+            $table->jsonb('settings')->nullable();
 
             $table->timestamps();
         });
 
         DB::statement("ALTER TABLE products ADD COLUMN search tsvector");
-        DB::statement("UPDATE products SET search = (setweight(to_tsvector(name), 'B') ||
+        DB::statement("UPDATE products SET search = (setweight(to_tsvector(title), 'B') ||
             setweight(to_tsvector(brand), 'C') ||
             setweight(to_tsvector(model), 'A')) WHERE id > 0");
         DB::statement("CREATE INDEX products_search_index ON products USING GIN(search)");

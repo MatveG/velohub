@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\Sku;
+use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -14,21 +14,17 @@ class ProductContoller extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->with('skus')->orderBy('id', 'desc')->paginate();
+        $products = Product::with('category')->with('variants')->orderBy('id', 'desc')->paginate();
         $products = $products->map(function ($product) {
             return [
                 'id' => $product->id,
-                'codes' => implode(PHP_EOL, $product->sku->codes),
+                'code' => $product->code,
+                'thumb' => $product->thumb,
                 'brand' => $product->brand,
                 'model' => $product->model,
-                'category_name' => $product->category->name,
-                'price' => number_format($product->price),
+                'category_title' => $product->category->title,
+                'price' => $product->price,
                 'is_active' => $product->is_active,
-                'is_stock' => $product->is_stock,
-                'is_sale' => $product->is_sale,
-                'thumb' => $product->thumb,
-                'link' => $product->link,
-                'updated_at' => $product->updated_at,
             ];
         });
 
@@ -61,7 +57,7 @@ class ProductContoller extends Controller
 
         return response()->json([
             'item' => $product->toArray(),
-            'skusCount' => $product->skus->count(),
+            'variantsCount' => $product->variants->count(),
             'currency' => settings('shop', 'currency'),
         ]);
     }
@@ -73,7 +69,7 @@ class ProductContoller extends Controller
         $product->latin = $this->stringToLatin($product->fullName);
         $product->save();
 
-        $this->updateChildSkus($product);
+        $this->syncVariants($product);
 
         $return = null;
 
@@ -272,7 +268,7 @@ class ProductContoller extends Controller
         return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
     }
 
-    protected function updateChildSkus(Product $product)
+    protected function syncVariants(Product $product)
     {
         $update = [
             'category_id' => $product->category_id,
@@ -283,11 +279,11 @@ class ProductContoller extends Controller
             $update['is_sale'] = $product->is_sale;
         }
 
-        Sku::where('product_id', $product->id)->update($update);
+        Variant::where('product_id', $product->id)->update($update);
 
-        $increment = $product->price - $product->price_sale;
-        Sku::where('product_id', $product->id)->update([
-            'price' => DB::raw("{$product->price} + increment - is_sale::int * {$increment}")
+        $surcharge = $product->price - $product->surcharge;
+        Variant::where('product_id', $product->id)->update([
+            'price' => DB::raw("{$product->price} + surcharge - is_sale::int * {$surcharge}")
         ]);
     }
 }

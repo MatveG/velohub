@@ -14,18 +14,18 @@ class ProductsTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for($i = 1; $i < 500; $i++) {
+        for($i = 1; $i < 1000; $i++) {
             DB::table('products')->insert([
                 'category_id' => $faker->numberBetween(1, 3),
                 'is_stock' => '1',
                 'is_active' => '1',
                 'is_sale' => $faker->numberBetween(0, 1),
                 'latin' => $faker->slug(),
-                'name' => $faker->name,
+                'title' => $faker->name,
                 'brand' => $faker->randomElement(['Asus', 'Intel', 'Apple', 'Acer', 'HP', 'Razer']),
                 'model' => $faker->name,
-                'brief' => $faker->text,
-                'text' => $faker->realText,
+                'summary' => $faker->text,
+                'description' => $faker->realText,
                 'features' => json_encode([
                     'year' => $faker->randomElement([2018, 2019, 2020]),
                     'processor' => $faker->randomElement(['Intel', 'AMD']),
@@ -44,7 +44,7 @@ class ProductsTableSeeder extends Seeder
             ]);
         }
 
-        DB::statement("UPDATE products SET search = (setweight(to_tsvector(name), 'B') ||
+        DB::statement("UPDATE products SET search = (setweight(to_tsvector(title), 'B') ||
             setweight(to_tsvector(brand), 'C') ||
             setweight(to_tsvector(model), 'A')) WHERE id > 0");
     }

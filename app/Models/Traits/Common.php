@@ -4,7 +4,7 @@ namespace App\Models\Traits;
 
 use Carbon\Carbon;
 
-trait General
+trait Common
 {
     public function getName()
     {

@@ -6,7 +6,8 @@ Vue.use(Router)
 
 import Products from './views/Products.vue';
 import ProductEdit from './views/ProductEdit.vue';
-import Categories from './views/Categories.vue';
+import Category from "./views/Category";
+import CategoryEdit from "./views/CategoryEdit";
 
 export default new Router({
     routes: [
@@ -19,6 +20,17 @@ export default new Router({
             path: '/product/:id',
             name: 'product.edit',
             component: ProductEdit,
+            props: true
+        },
+        {
+            path: '/category',
+            name: 'category',
+            component: Category
+        },
+        {
+            path: '/category/:id',
+            name: 'category.edit',
+            component: CategoryEdit,
             props: true
         },
     ],

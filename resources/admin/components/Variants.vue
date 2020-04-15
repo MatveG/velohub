@@ -4,49 +4,52 @@
         <b-table :data="items"
                  :hoverable="true"
                  default-sort="code"
+                 icon-pack="fas"
                  class="table-vertical-center">
             <template slot-scope="props">
-                <b-table-column field="images" label="Фото" centered>
+                <b-table-column field="images" label="Фото" width="5%" sortable centered>
                     <span v-if="props.row.images.length" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
                 </b-table-column>
 
-                <b-table-column field="code" label="Артикул" class="has-text-left is-italic">
-                    {{ props.row.code }}
+                <b-table-column field="code" label="Артикул" width="10%" sortable class="has-text-left is-italic">
+                    <span :class="[!props.row.code ? 'has-text-grey-light' : '']">{{ (props.row.code) ? props.row.code : '[empty]' }}</span>
                 </b-table-column>
 
-                <b-table-column field="options" label="Параметры" width="150" centered>
+                <b-table-column field="parameters" label="Параметры" width="30%" centered>
                     <div class="buttons is-centered">
-                        <button v-for="(option, key) in options" v-if="props.row.options[key]" class="button is-rounded is-small is-static">
-                            {{ props.row.options[key] }}
+                        <button v-for="(parameter, key) in parameters" v-if="props.row.parameters[key]" class="button is-rounded is-small is-static">
+                            {{ props.row.parameters[key] }}
                         </button>
                     </div>
                 </b-table-column>
 
-                <b-table-column field="code" label="Остаток" width="110" centered>
+                <b-table-column field="stock" label="Остаток" width="15%" sortable centered>
                     <b-field>
                         <b-input v-model.number="props.row.stock" @change.native="update(props.row)"
-                                 @keypress.native="banDecimal($event)" size="is-small" type="number" />
-                        <div class="control"><div class="button is-static is-small">шт</div></div>
+                                 @keypress.native="banDecimal($event)" type="number" />
+                        <div class="control"><div class="button is-static">шт</div></div>
                     </b-field>
                 </b-table-column>
 
-                <b-table-column field="images" label="Скидка" width="50" centered>
+                <b-table-column field="surcharge" label="Цена/наценка" width="20%" sortable centered>
+                    <b-field>
+                        <div class="control has-icons-right">
+                            <b-input v-model.number="props.row.price" disabled />
+                            <span class="icon is-small is-right">{{ currency.sign }}</span>
+                        </div>
+                        <b-input v-model.number="props.row.surcharge" @input.native="updatePrice(props.row)"
+                                 @change.native="update(props.row)" type="number" step="any" />
+                    </b-field>
+                </b-table-column>
+
+                <b-table-column field="is_sale" label="Скидка" width="10%" sortable centered>
                     <b-checkbox v-model="props.row.is_sale" :disabled="!product.is_sale"
                                 @change.native="updatePrice(props.row); update(props.row);" />
                 </b-table-column>
 
-                <b-table-column field="increment" label="Наценка(+/-)" width="100" centered>
-                    <b-field>
-                        <b-input v-model.number="props.row.price" size="is-small" disabled />
-                        <div class="control"><div class="button is-static is-small">{{ currency.sign }}</div></div>
-                    </b-field>
-                    <b-input v-model.number="props.row.increment" @input.native="updatePrice(props.row)"
-                             @change.native="update(props.row)" size="is-small" type="number" />
-                </b-table-column>
-
-                <b-table-column field="id" label="Действия" centered>
+                <b-table-column field="id" label="Действия" width="10%" centered>
                     <button class="button fas fa-pen" type="button" @click="edit(props.row)" />
                     <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row)" />
                 </b-table-column>
@@ -56,14 +59,14 @@
             <button class="button is-primary" type="button" @click="create">Добавить</button>
         </div>
 
-        <b-modal :active.sync="modal" aria-modal class="modal-edit-sku">
+        <b-modal :active.sync="modal" aria-modal class="modal-edit-variant">
             <div class="box">
                 <form @submit.prevent="save" @change="autoSave" @keyup="saved=false">
                     <card-component title="Параметры варианта">
                         <div class="columns">
                             <div class="column">
                                 <b-field label="Артикул" label-position="on-border">
-                                    <b-input v-model="item.code" placeholder="Уникальный идентификатор" required />
+                                    <b-input v-model="item.code" placeholder="Уникальный идентификатор" />
                                 </b-field>
                             </div>
                             <div class="column">
@@ -72,13 +75,15 @@
                                 </b-field>
                             </div>
                         </div>
+
                         <div class="columns">
-                            <div v-for="(option, key) in options" class="column">
-                                <b-field :label="option.title" label-position="on-border">
-                                    <b-input v-if="item.options" v-model="item.options[key]" :placeholder="'Параметр [' + option.title + ']'" required />
+                            <div v-for="(parameter, key) in parameters" class="column">
+                                <b-field :label="parameter.title" label-position="on-border">
+                                    <b-input v-if="item.parameters" v-model="item.parameters[key]" :placeholder="'Параметр [' + parameter.title + ']'" required />
                                 </b-field>
                             </div>
                         </div>
+
                         <div class="columns">
                             <div class="column" />
                             <div class="column">
@@ -90,9 +95,11 @@
                             <div class="column" />
                         </div>
                     </card-component>
+
                     <card-component v-if="item.id" title="Собственные фото" class="card-images margin-line">
-                        <images-upload @update="updateImages" :web-route="`/admin/sku/${item.id}`" :images-array="item.images" image-width="20%" />
+                        <images-upload @update="updateImages" :web-route="`/admin/variant/${item.id}`" :images-array="item.images" image-width="20%" />
                     </card-component>
+
                     <div class="buttons margin-line is-centered">
                         <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
                                 type="button" class="button is-primary">Сохранить</button>
@@ -111,7 +118,7 @@
     import CardComponent from "./CardComponent";
 
     export default {
-        name: 'SkusList',
+        name: 'Variants',
 
         components: {
             ImagesUpload,
@@ -124,7 +131,7 @@
             return {
                 item: {},
                 items: [],
-                options: [],
+                parameters: [],
                 modal: false,
                 loading: false,
                 saved: true,
@@ -146,18 +153,14 @@
         },
 
         mounted() {
-            axios.get(`/admin/sku/${this.product.id}`)
+            axios.get(`/admin/variant/${this.product.id}`)
                 .then((res) => {
                     this.items = res.data.items;
-                    this.options = res.data.options;
+                    this.parameters = res.data.parameters;
                 })
                 .catch(error => core.ajaxError(error.response))
                 .then(() => this.statusSaved());
         },
-
-        // rename 'name' in Product
-        // format info block
-        // modal scroll?
 
         methods: {
             create() {
@@ -167,10 +170,8 @@
                     category_id: this.product.category_id,
                     is_active: this.product.is_active,
                     is_sale: this.product.is_sale,
-                    price: (this.product.is_sale) ? this.product.price_sale : this.product.price,
-                    increment: 0,
-                    stock: 0,
-                    options: {},
+                    price: (this.product.is_sale) ? this.product.surcharge : this.product.price,
+                    parameters: {},
                     images: [],
                 };
 
@@ -188,8 +189,8 @@
             },
 
             save(submit = true) {
-                for(let option in this.options) {
-                    if(!this.item.options[option]) {
+                for(let parameter in this.parameters) {
+                    if(!this.item.parameters[parameter]) {
                         if(submit) {
                             core.error('Заполните параметры товара');
                         }
@@ -201,11 +202,10 @@
 
             store(item) {
                 this.statusLoading();
-                axios.post(`/admin/sku/store`, item)
+                axios.post(`/admin/variant/store`, item)
                     .then((res) => {
-                        this.item.id = res.data.id;
+                        this.item = res.data.variant;
                         this.items.push(item);
-
                         this.item.savedCode = this.item.code;
                         this.$emit('update', this.items.length);
                     })
@@ -215,8 +215,7 @@
 
             update(item) {
                 this.statusLoading();
-                console.log('update sku');
-                axios.post(`/admin/sku/${item.id}/update`, item)
+                axios.post(`/admin/variant/${item.id}/update`, item)
                     .then(() => this.$emit('update', this.items.length))
                     .catch((error) => {
                         core.ajaxError(error.response);
@@ -230,15 +229,15 @@
                     this.items = this.items.filter((each) => each !== item);
                     this.$emit('update', this.items.length);
 
-                    axios.post(`/admin/sku/${item.id}/destroy`)
+                    axios.post(`/admin/variant/${item.id}/destroy`)
                         .catch((error) => core.ajaxError(error.response))
                         .then(() => this.statusSaved());
                 });
             },
 
             updatePrice(item) {
-                if(Number.isFinite(+this.product.price) && Number.isFinite(+item.increment)) {
-                    item.price = +this.product.price + +item.increment;
+                if(Number.isFinite(+this.product.price) && Number.isFinite(+item.surcharge)) {
+                    item.price = +this.product.price + +item.surcharge;
                     item.price -= (this.product.is_sale && item.is_sale) ? this.discount : 0;
                 }
             },
@@ -271,13 +270,13 @@
 </style>
 
 <style>
-    .modal-edit-sku .modal-content {
+    .modal-edit-variant .modal-content {
         width: 650px;
     }
-    .modal-edit-sku .box {
+    .modal-edit-variant .box {
         width: 100%;
     }
-    .modal-edit-sku .card-images .card-content {
+    .modal-edit-variant .card-images .card-content {
         padding: .5rem;
     }
 </style>

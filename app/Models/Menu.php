@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    use Traits\General;
+    use Traits\Common;
 
     protected $name = 'menu';
     public $timestamps = false;

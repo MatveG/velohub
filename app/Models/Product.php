@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use Traits\General;
+    use Traits\Common;
     use Traits\Shop;
     use Traits\Relations\BelongsTo\Category;
-    use Traits\Relations\HasMany\Skus;
+    use Traits\Relations\HasMany\Variants;
     use Traits\Relations\HasMany\Comments;
 
     protected $name = 'product';
@@ -19,21 +19,21 @@ class Product extends Model
         'is_active',
         'is_stock',
         'is_sale',
-        'is_parent',
         'price',
         'price_sale',
         'stock',
         'weight',
+        'sale_text',
         'code',
         'barcode',
-        'name',
+        'title',
         'brand',
         'model',
         'seo_title',
         'seo_description',
         'seo_keywords',
         'brief',
-        'text',
+        'description',
         'images',
         'videos',
         'files',
@@ -45,14 +45,9 @@ class Product extends Model
         'images' => 'array',
     ];
 
-    public function getSkuAttribute()
-    {
-        return $this->skus()->where('is_default', true)->firstOrFail();
-    }
-
     public function getFullNameAttribute()
     {
-        return $this->name . ' ' . $this->brand . ' ' . $this->model;
+        return $this->title . ' ' . $this->brand . ' ' . $this->model;
     }
 
     public function getLinkAttribute()

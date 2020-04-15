@@ -11,6 +11,7 @@ img {
     display: block;
 }
 
+// common
 .hidden {
     display: none;
 }
@@ -26,12 +27,15 @@ img {
     align-items: center;
 }
 
-.table-vertical-center td {
+// table
+.table-align-center th, .table-align-center td {
+    text-align: center;
+}
+.table-valign-center th, .table-valign-center td {
     vertical-align: middle;
 }
-.nowrap {
-    white-space: nowrap;
-}
+
+
 
 .box {
     width: 50%;

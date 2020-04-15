@@ -4,69 +4,63 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Sku;
+use App\Models\Variant;
 use App\Models\Product;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
-class SkuController extends Controller
+class VariantController extends Controller
 {
     public function index(Product $product, $product_id)
     {
         $product = $product->findOrFail($product_id);
 
         return response()->json([
-            'items' => $product->skus()->orderBy('id')->get(),
-            'options' => $product->category->pluck('options')->first(),
+            'items' => $product->variants()->orderBy('id')->get(),
+            'parameters' => $product->category->pluck('parameters')->first(),
         ]);
     }
 
     public function store(Request $request)
     {
-        if(Sku::where('code', '=', $request->code)->exists()) {
+        if(Variant::where('code', '=', $request->code)->exists()) {
             return response()->json(['error' => 'This Code already exists'], 400);
         }
+        $variant = new Variant();
+        $variant->fill($request->all());
+        $variant->save();
+        $this->syncProducts($variant->product_id);
 
-        $sku = new Sku();
-        $sku->fill($request->all());
-        $sku->save();
-
-        $this->updateProductStock($sku->product_id);
-
-        return response()->json([
-            'id' => $sku->id,
-        ]);
+        return response()->json(['variant' => $variant]);
     }
 
     public function update(Request $request, $id)
     {
-        $sku = Sku::findOrFail($id);
-
-        if(isset($request->code) && Sku::where('id', '!=', $sku->id)->where('code', '=', $request->code)->exists()) {
+        if(isset($request->code) && Variant::where('id', '!=', $id)->where('code', '=', $request->code)->exists()) {
             return response()->json(['error' => 'Code already exists'], 400);
         }
-
-        $sku->update($request->all());
-        $this->updateProductStock($sku->product_id);
+        $variant = Variant::findOrFail($id);
+        $variant->update($request->all());
+        $this->syncProducts($variant->product_id);
 
         return response()->json();
     }
 
-    public function destroy(Sku $sku, $id)
+    public function destroy(Variant $variant, $id)
     {
-        $sku = $sku->findOrFail($id);
-        $product_id = $sku->product_id;
-        $sku->delete();
+        $variant = $variant->findOrFail($id);
+        $product_id = $variant->product_id;
+        $variant->delete();
 
-        $this->updateProductStock($product_id);
+        $this->syncProducts($product_id);
 
         return response()->json();
     }
 
-    private function updateProductStock(int $productId)
+    protected function syncProducts(int $productId)
     {
         $product = Product::find($productId);
-        $product->is_stock = Sku::where('product_id', $productId)->where('stock', '>', 0)->exists();
+        $product->is_stock = Variant::where('product_id', $productId)->where('stock', '>', 0)->exists();
         $product->save();
     }
 
@@ -81,7 +75,7 @@ class SkuController extends Controller
             'image' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
         ]);
 
-        $sku = Sku::findOrFail($id);
+        $variant = Variant::findOrFail($id);
 
 //        if(!empty($sku->images) && in_array($pathLg . $fullName, $product->images, true)) {
 //            return response()->json(['error' => 'Image already exists'], 400);
@@ -90,15 +84,15 @@ class SkuController extends Controller
         $newImagePath = $this->upload(
             '/media/su/',
             $request->file('image'),
-            $sku->id,
-            $sku->product->latin
+            $variant->id,
+            $variant->product->latin
         );
 
-        $images = $sku->images ?: [];
+        $images = $variant->images ?: [];
         if(!in_array($newImagePath, $images)) {
             $images[] = $newImagePath;
-            $sku->images = array_values($images);
-            $sku->save();
+            $variant->images = array_values($images);
+            $variant->save();
         }
 
         return response()->json(['image' => $newImagePath]);
@@ -106,11 +100,11 @@ class SkuController extends Controller
 
     public function imagesUpdate(Request $request, $id)
     {
-        $sku = Sku::findOrFail($id);
-        $sku->images = $request->images;
-        $sku->save();
+        $variant = Variant::findOrFail($id);
+        $variant->images = $request->images;
+        $variant->save();
 
-        foreach ($sku->images as $image) {
+        foreach ($variant->images as $image) {
             if(!in_array($image, $request->images)) {
                 $this->delete($image);
             }

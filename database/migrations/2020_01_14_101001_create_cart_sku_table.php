@@ -18,9 +18,9 @@ class CreateCartSkuTable extends Migration
           $table->bigInteger('sku_id')->unsigned();
           $table->integer('amount')->default('1');
 
-          $table->unique(['cart_id', 'sku_id']);
-          $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
-          $table->foreign('sku_id')->references('id')->on('skus')->onDelete('cascade');
+//          $table->unique(['cart_id', 'sku_id']);
+//          $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
+//          $table->foreign('sku_id')->references('id')->on('skus')->onDelete('cascade');
         });
     }
 

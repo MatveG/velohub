@@ -4,27 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sku extends Model
+class Variant extends Model
 {
-    use Traits\General;
+    use Traits\Common;
     use Traits\Shop;
     use Traits\Relations\BelongsTo\Product;
     use Traits\Relations\BelongsTo\Category;
 
-    protected $name = 'sku';
+    protected $name = 'variant';
     public $timestamps = false;
     protected $fillable = [
         'product_id',
         'category_id',
         'is_active',
         'is_sale',
-        'increment',
         'price',
+        'surcharge',
         'stock',
         'weight',
         'code',
         'barcode',
-        'options',
+        'parameters',
         'images'
 
     ];
@@ -38,9 +38,9 @@ class Sku extends Model
         return $this->belongsToMany(Cart::class, 'cart_barcode')->withPivot('amount');
     }
 
-    public function getOptionsAttribute($value)
+    public function getParametersAttribute($value)
     {
-        return json_decode($this->attributes['options']);
+        return json_decode($this->attributes['parameters']);
     }
 
     public function getStocksAttribute($value)
@@ -53,9 +53,9 @@ class Sku extends Model
         return json_decode($this->attributes['prices']);
     }
 
-    public function setOptionsAttribute($value)
+    public function setParametersAttribute($value)
     {
-        $this->attributes['options'] = json_encode((object)($value));
+        $this->attributes['parameters'] = json_encode((object)($value));
     }
 
     public function setStocksAttribute($value)

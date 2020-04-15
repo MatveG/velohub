@@ -16,8 +16,9 @@ class CategoriesTableSeeder extends Seeder
 
         DB::table('categories')->insert([
             'parent_id' => '0',
-            'sorting' => '1',
             'is_active' => '1',
+            'is_parent' => '1',
+            'sorting' => '1',
 //            'settings' => json_encode([
 //                'filters_in_menu' => [
 //                    0 => ['latin' => 'brand', 'column' => ''],
@@ -26,8 +27,8 @@ class CategoriesTableSeeder extends Seeder
 //                ]
 //            ]),
             'latin' => $faker->word(),
-            'name' => $faker->word(),
-            'name_short' => $faker->word(),
+            'title' => $faker->word(),
+            'title_short' => $faker->word(),
             'features' => json_encode([
                 'processor' => [
                     'order' => 1,
@@ -54,7 +55,7 @@ class CategoriesTableSeeder extends Seeder
                     'units' => 'Гб',
                 ],
             ]),
-            'options' => json_encode([
+            'parameters' => json_encode([
                 'size' => [
                     'order' => 1,
                     'filter' => 1,
@@ -77,8 +78,8 @@ class CategoriesTableSeeder extends Seeder
             'sorting' => '2',
             'is_active' => '1',
             'latin' => $faker->word(),
-            'name' => $faker->word(),
-            'name_short' => $faker->word(),
+            'title' => $faker->word(),
+            'title_short' => $faker->word(),
             'features' => null,
             'created_at' => NOW(),
             'updated_at' => NOW(),
@@ -89,8 +90,8 @@ class CategoriesTableSeeder extends Seeder
             'sorting' => '3',
             'is_active' => '1',
             'latin' => $faker->word(),
-            'name' => $faker->word(),
-            'name_short' => $faker->word(),
+            'title' => $faker->word(),
+            'title_short' => $faker->word(),
             'features' => null,
             'created_at' => NOW(),
             'updated_at' => NOW(),
@@ -101,8 +102,8 @@ class CategoriesTableSeeder extends Seeder
             'sorting' => '2',
             'is_active' => '1',
             'latin' => $faker->word(),
-            'name' => $faker->word(),
-            'name_short' => $faker->word(),
+            'title' => $faker->word(),
+            'title_short' => $faker->word(),
             'features' => null,
             'created_at' => NOW(),
             'updated_at' => NOW(),
@@ -113,8 +114,8 @@ class CategoriesTableSeeder extends Seeder
             'sorting' => '3',
             'is_active' => '1',
             'latin' => $faker->word(),
-            'name' => $faker->word(),
-            'name_short' => $faker->word(),
+            'title' => $faker->word(),
+            'title_short' => $faker->word(),
             'features' => null,
             'created_at' => NOW(),
             'updated_at' => NOW(),

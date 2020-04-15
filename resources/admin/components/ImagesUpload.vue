@@ -9,7 +9,7 @@
                     <button @click="deleteImage(key)" role="button" class="delete"/>
                 </li>
             </draggable>
-            <li :class="{ 'fill-if-empty': !images || !images.length }" :style="{ width: imageWidth, height: imageHeight + 'px' }"
+            <li v-if="images.length < maxAmount" :style="{ width: (images && images.length) ? imageWidth : '100%', height: imageHeight + 'px' }"
                 ref="upload" class="upload-new-image">
                 <b-field class="file">
                     <b-upload v-model="upload" multiple drag-drop>
@@ -36,12 +36,13 @@
         props: [
             'webRoute',
             'imagesArray',
-            'imageWidth'
+            'imageWidth',
+            'maxAmount'
         ],
 
         data() {
             return {
-                images: this.imagesArray,
+                images: [],
                 upload: [],
                 imageHeight: 0,
             }
@@ -58,7 +59,8 @@
 
         mounted() {
             let element = this.$refs.upload;
-            this.imageHeight = (this.images.length) ? element.offsetWidth*0.98 : element.offsetWidth*0.2;
+            this.images = this.imagesArray;
+            this.imageHeight = (this.images.length) ? element.offsetWidth*0.98 : element.offsetWidth*0.3;
         },
 
         methods: {
@@ -130,9 +132,6 @@
         width: auto;
         height: auto;
         margin: auto;
-    }
-    .fill-if-empty {
-        width: 100% !important;
     }
 </style>
 

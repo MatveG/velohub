@@ -14,37 +14,44 @@
             :data='clients'>
 
             <template slot-scope="props">
-                <b-table-column label="Код" field="id" sortable>
+                <b-table-column label="Код" field="id" searchable sortable centered>
                     {{ props.row.id }}
                 </b-table-column>
-                <b-table-column label="Фото" class="has-no-head-mobile is-image-cell">
+
+                <b-table-column label="Фото" class="has-no-head-mobile is-image-cell" >
                     <div class="image">
                         <img :src="props.row.thumb" class="is-rounded">
                     </div>
                 </b-table-column>
-<!--                <b-table-column label="Артикул" field="id" sortable>-->
-<!--                    <span class="is-italic">{{ props.row.codes }}</span>-->
-<!--                </b-table-column>-->
-                <b-table-column class="has-text-left" label="Модель" field="model" sortable>
+
+                <b-table-column label="Артикул" field="id" sortable>
+                    <span class="is-italic">{{ props.row.codes }}</span>
+                </b-table-column>
+
+                <b-table-column class="has-text-left" label="Модель" field="model" searchable sortable>
                     <a :href="props.row.link">{{ props.row.model }}</a>
                 </b-table-column>
-                <b-table-column label="Бренд" field="brand" sortable>
+
+                <b-table-column label="Бренд" field="brand" searchable sortable centered>
                     <span class="is-italic">{{ props.row.brand }}</span>
                 </b-table-column>
-                <b-table-column label="Категория" field="category_name" sortable>
+
+                <b-table-column label="Категория" field="category_name" searchable sortable>
                     {{ props.row.category_name }}
                 </b-table-column>
+
                 <b-table-column label="Цена" field="price" sortable>
                     {{ props.row.price }}
                 </b-table-column>
 
-                <b-table-column label="Активен" field="is_active" sortable>
+                <b-table-column label="Активен" field="is_active" sortable centered>
                     <label class="b-checkbox checkbox ce">
                         <input type="checkbox" :checked="props.row.is_active">
                         <span class="check"></span>
                     </label>
                 </b-table-column>
-                <b-table-column label="Наличие" field="is_stock" sortable>
+
+                <b-table-column label="Наличие" field="is_stock" sortable centered>
                     <label class="b-checkbox checkbox">
                         <input type="checkbox" :checked="props.row.is_stock">
                         <span class="check"></span>

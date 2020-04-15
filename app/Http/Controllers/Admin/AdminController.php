@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -60,19 +62,67 @@ class AdminController extends Controller
 //        }
 //    }
 
-
-    public function tree()
+    public function edit(Request $request, $id)
     {
-        $categories = $this->getMenuTree(0);
+        $category = Category::find($id);
 
-        return response()->json(['categories' => $categories]);
+//        if (isset($product->features)) {
+//            $features = (array)$product->features;
+//
+//            foreach ($features as $key => $feature) {
+//                if(empty($product->category->features->{$key})) {
+//                    unset($features->{$key});
+//                }
+//            }
+//        }
+//        $product->features = $features;
+//        $product->save();
+
+        return response()->json([
+            'item' => $category->toArray(),
+//            'variantsCount' => $product->variants->count(),
+//            'currency' => settings('shop', 'currency'),
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // if parent_id changed -> change sorting
+        $category = Category::findOrFail($id);
+        $category->fill($request->all());
+        //$category->latin = $this->stringToLatin($product->fullName);
+        $category->save();
+
+//        $return = null;
+//
+//        if(isset($product->getChanges()['category_id'])) {
+//            $return['category'] = $product->category;
+//        }
+//
+//        if(isset($product->getChanges()['latin'])) {
+//            $return['latin'] = $product->latin;
+//        }
+
+        return response()->json();
+    }
+
+    public function list(Request $request)
+    {
+        return response()->json([
+            'items' => Category::where(($request->where) ?: [])->orderBy('sorting')->get(['id', 'parent_id', 'title'])
+        ]);
+    }
+
+    public function index()
+    {
+        return response()->json(['items' => $this->getMenuTree()]);
     }
 
     public function getMenuTree($parentId = 0)
     {
         return Category::where('parent_id', $parentId)
             ->orderBy('sorting')
-            ->get(['id', 'is_active', 'is_parent', 'name'])
+            ->get()
             ->map(function ($item) {
                 $item->child = $this->getMenuTree($item->id);
                 return $item;

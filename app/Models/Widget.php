@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Widget extends Model
 {
-    use Traits\General;
+    use Traits\Common;
 
     protected $name = 'widget';
     public $timestamps = false;

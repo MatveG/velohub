@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use Traits\General;
+    use Traits\Common;
     use Traits\Relations\BelongsTo\User;
 
     protected $name = 'order';

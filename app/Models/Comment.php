@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    use Traits\General;
+    use Traits\Common;
     use Traits\Relations\BelongsTo\Product;
 
     protected $name = 'comment';

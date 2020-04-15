@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    use Traits\General;
+    use Traits\Common;
 
     protected $name = 'cart';
     public $timestamps = false;
