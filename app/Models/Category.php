@@ -25,14 +25,13 @@ class Category extends Model
         'seo_keywords',
         'description',
         'images',
-        //'features',
+        'features',
         //'parameters',
     ];
     protected $casts = [
-        'settings' => 'object',
-        'features' => 'object',
-        'parameters' => 'object',
         'images' => 'array',
+        'features' => 'array',
+        'parameters' => 'array',
     ];
 
     public function getLinkAttribute() {

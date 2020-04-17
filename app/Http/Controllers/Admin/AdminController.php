@@ -93,6 +93,8 @@ class AdminController extends Controller
         //$category->latin = $this->stringToLatin($product->fullName);
         $category->save();
 
+        //return response()->json($category, 400);
+
 //        $return = null;
 //
 //        if(isset($product->getChanges()['category_id'])) {

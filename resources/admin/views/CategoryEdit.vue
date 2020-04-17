@@ -4,9 +4,10 @@
             <button :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
             <button class="button fas fa-arrow-circle-left"></button>
         </div>
-        <form @submit.prevent="update()" @change="autoUpdate()" @keyup="saved=false">
+
             <div class="columns">
                 <div class="column is-three-quarters">
+                    <form @submit.prevent="update" @change="autoUpdate" @keyup="saved=false">
                     <card-component title="Основное">
                         <b-tabs v-model="activeTab" type="is-boxed">
                             <b-tab-item label="Название">
@@ -37,9 +38,10 @@
                             </b-tab-item>
                         </b-tabs>
                     </card-component>
+                    </form>
 
                     <card-component v-if="!item.is_parent" title="Характеристики товаров" class="margin-line">
-                        <category-features v-if="item.id" :prop-items="item.features"/>
+                        <category-features v-if="item.id" @update="featuresUpdate" :prop-items="item.features"/>
                     </card-component>
                 </div>
 
@@ -48,10 +50,10 @@
                 <div class="column">
                     <card-component :title="`Идентификатор: ${id}`" class="tile is-child">
                         <b-field>
-                            <b-switch v-model="item.is_active">Активна</b-switch>
+                            <b-switch v-model="item.is_active" @change.native="update">Активна</b-switch>
                           </b-field>
                         <b-field>
-                            <b-switch v-model="item.is_parent">С подкатегориями</b-switch>
+                            <b-switch v-model="item.is_parent" @change.native="update">С подкатегориями</b-switch>
                         </b-field>
 
                         <b-field label="Родительская категория" label-position="on-border">
@@ -142,6 +144,11 @@
         },
 
         methods: {
+            featuresUpdate(value) {
+                this.item.features = value;
+                this.update();
+            },
+
             changeParent(category) {
                 console.log(this.categories);
                 this.item.parent_id = category.id;
@@ -149,7 +156,7 @@
             },
 
             update() {
-                console.log(this.item);
+                console.log('updating item');
 
                 this.statusLoading();
                 axios.post(`/admin/category/${this.item.id}/update`, this.item)
@@ -161,13 +168,14 @@
                         // if(res.data.category) {
                         //     this.item.category = res.data.category;
                         // }
-                        console.log(res);
+                        //console.log(res);
                         this.savedState();
                     })
                     .catch((error) => this.error(error.response));
             },
 
             autoUpdate() {
+                console.log('auto updating item');
                 this.update();
             },
 

@@ -165,14 +165,14 @@
         methods: {
             create() {
                 this.item = {
-                    id: null,
+                    //id: null,
                     product_id: this.product.id,
                     category_id: this.product.category_id,
                     is_active: this.product.is_active,
                     is_sale: this.product.is_sale,
                     price: (this.product.is_sale) ? this.product.surcharge : this.product.price,
                     parameters: {},
-                    images: [],
+                    //images: [],
                 };
 
                 this.modal = true;
