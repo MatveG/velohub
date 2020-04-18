@@ -9,6 +9,8 @@ export default new class Core {
             type: 'is-danger',
             queue: false
         });
+
+        return false;
     }
 
     ajaxError(response) {

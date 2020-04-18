@@ -31,10 +31,9 @@ class CreateCategoriesTable extends Migration
 
             $table->text('description')->nullable();
             $table->text('images')->default('[]');
-
-            $table->jsonb('features')->nullable();
-            $table->jsonb('parameters')->nullable();
-            $table->jsonb('settings')->nullable();
+            $table->text('features')->default('[]');
+            $table->text('parameters')->default('[]');
+            $table->text('settings')->default('[]');
 
             $table->timestamps();
         });

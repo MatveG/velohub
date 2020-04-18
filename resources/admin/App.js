@@ -1,11 +1,13 @@
 
-import "./sass/app.scss";
+import "./sass/app.scss"
 
-import Vue from 'vue';
-import Buefy from 'buefy';
-import router from './Router';
+import Vue from 'vue'
+import Buefy from 'buefy'
+import Vuelidate from 'vuelidate'
+import router from './Router'
 
 Vue.use(Buefy);
+Vue.use(Vuelidate);
 
 const app = new Vue({
     router
