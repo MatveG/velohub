@@ -17,7 +17,6 @@ class Category extends Model
         'is_active',
         'is_parent',
         'sorting',
-        'latin',
         'title',
         'title_short',
         'seo_title',
@@ -25,8 +24,6 @@ class Category extends Model
         'seo_keywords',
         'description',
         'images',
-        'features',
-        //'parameters',
     ];
     protected $casts = [
         'images' => 'array',

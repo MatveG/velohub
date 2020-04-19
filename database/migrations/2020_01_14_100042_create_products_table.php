@@ -40,12 +40,13 @@ class CreateProductsTable extends Migration
 
             $table->text('summary')->nullable();
             $table->text('description')->nullable();
-            $table->text('images')->nullable();
-            $table->text('videos')->nullable();
-            $table->text('files')->nullable();
 
-            $table->jsonb('features')->nullable();
-            $table->jsonb('settings')->nullable();
+            $table->text('images')->default('[]');
+            $table->text('videos')->default('[]');
+            $table->text('files')->default('[]');
+            $table->text('settings')->default('{}');
+
+            $table->jsonb('features')->default('{}');
 
             $table->timestamps();
         });

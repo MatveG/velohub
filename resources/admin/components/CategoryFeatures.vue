@@ -1,11 +1,11 @@
 <template>
     <div>
         <b-table ref="table" class="table-valign-center"
-                 hoverable
                  :data='items'
                  default-sort="sorting"
                  custom-row-key="sorting"
                  icon-pack="fa"
+                 hoverable
                  draggable
                  @dragstart="dragstart"
                  @drop="drop"
@@ -25,28 +25,22 @@
                 <b-table-column field="type" label="Тип данных" width="25%" sortable centered>
                     <template v-if="props.row.key === item.key">
                         <b-field :type="{ 'is-danger': $v.item.type.$error }">
-                            <b-select v-model="item.type" @change.native="resetType" expanded>
-                                <option v-for="(title, key) in dataTypes" :value="key">{{ title }}</option>
+                            <b-select v-model="item.type" @change.native="reset" expanded>
+                                <option v-for="(title, key) in inputTypes" :value="key">{{ title }}</option>
                             </b-select>
                         </b-field>
                         <template v-if="item.type === 'number'">
                             <b-field label="Единицы измерения" label-position="on-border">
                                 <b-input v-model="item.units" placeholder="кг" />
                             </b-field>
-                            <b-field  label="Знаков после точки" label-position="on-border">
-                                <b-input v-model.number="item.accuracy" placeholder="0" />
-                            </b-field>
                         </template>
                         <template v-if="item.type === 'select'">
-                            <b-field>
-                                <b-checkbox v-model="item.multiple">мультивыбор</b-checkbox>
-                            </b-field>
-                            <b-field label="Список значений" label-position="on-border" >
-                                <b-taginput v-model="item.values" ellipsis placeholder="Добавить" check-infinite-scroll />
+                            <b-field label="Список значений" label-position="on-border" :type="{ 'is-danger': $v.item.values.$error }">
+                                <b-taginput v-model="item.values" placeholder="Добавить"  />
                             </b-field>
                         </template>
                     </template>
-                    <span v-else>{{ dataTypes[props.row.type] }}</span>
+                    <span v-else>{{ inputTypes[props.row.type] }}</span>
                 </b-table-column>
                 <b-table-column field="is_required" label="Обязательное" width="10%" sortable centered>
                     <b-checkbox v-if="props.row.key === item.key" v-model="item.is_required"
@@ -82,16 +76,22 @@
 
 <script>
     import shortid from 'shortid'
+    import { required, requiredIf, minLength } from 'vuelidate/lib/validators'
     import core from '../js/Core'
-    import { required, minLength } from 'vuelidate/lib/validators'
 
-    const dataTypes = {
+    const inputTypes = {
         string: 'строка',
         number: 'число',
         text: 'текст',
         boolean: 'да/нет',
         select: 'выбор из списка',
         heading: 'заголовок',
+    };
+    const blank = {
+        is_required: false,
+        is_filter: false,
+        units: null,
+        values: null
     };
 
     export default {
@@ -108,8 +108,7 @@
             return {
                 item: {},
                 items: this.propItems,
-                opened: [],
-                dataTypes: dataTypes,
+                inputTypes: inputTypes,
             }
         },
 
@@ -121,37 +120,37 @@
                 },
                 type: {
                     required,
+                },
+                values: {
+                    required: requiredIf(function () {
+                        return this.item.type === 'select';
+                    }),
+                    minLength: minLength(1),
                 }
             }
         },
 
         methods: {
             create() {
-                this.$v.$reset();
-
-                if(this.item.key) {
+                if (this.item.key) {
                     this.cancel();
                 }
+                this.$v.$reset();
 
-                this.items.push({
+                this.item = {
                     key: shortid.generate(),
                     sorting: Math.max(0, ...this.items.map(element => element.sorting)) + 1,
-                    is_required: false,
-                    is_filter: false,
-                    //settings: {}
-                });
-                this.edit(this.items[this.items.length - 1]);
+                    ...blank
+                };
+                this.items.push(this.item);
             },
 
             edit(item) {
-                if(this.opened.length) {
+                if (this.item.key) {
                     this.cancel();
                 }
-                this.item = { ...item };
 
-                if (this.item.type === 'number' || this.item.type === 'select') {
-                    this.opened = [item.key];
-                }
+                this.item = { ...item };
             },
 
             save() {
@@ -160,12 +159,12 @@
                 if (this.$v.$invalid) {
                     return core.error('Заполните обязательные поля');
                 }
-                if(this.items.find(element => element.title === this.item.title && element.key !== this.item.key)) {
-                    return core.error('Такое Название уже есть');
+                if (this.items.find(element => element.title === this.item.title && element.key !== this.item.key)) {
+                    return core.error('Уже есть запись с таким Названием');
                 }
 
                 this.items = this.items.map(element => (element.key === this.item.key) ? this.item : element);
-                this.resetItem();
+                this.item = {};
                 this.$emit('update', this.items);
             },
 
@@ -178,30 +177,14 @@
 
             cancel() {
                 this.items = this.items.filter(element => element.title && element.type);
-                this.resetItem();
-            },
-
-            resetItem() {
                 this.item = {};
-                this.opened = [];
             },
 
-            resetType() {
-                if(this.item.type === 'text' || this.item.type === 'heading') {
-                    this.item.is_required = false;
-                    this.item.is_filter = false;
-                }
-
-                this.opened = (this.item.type === 'number' || this.item.type === 'select') ? [this.item.key] : [];
-                //this.item.settings = {};
-                this.item.accuracy = this.item.multiple = this.item.values = null;
+            reset() {
+                this.item = { ...blank };
             },
 
             drop(payload) {
-                if(this.opened.length) {
-                    this.cancel();
-                }
-
                 payload.event.target.closest('tr').classList.remove('is-selected');
 
                 if (payload.row && this.draggingRow) {
@@ -209,8 +192,10 @@
                     payload.row.sorting = this.draggingRow.sorting;
                     this.draggingRow.sorting = temp;
 
-                    this.$refs.table.initSort();
-                    this.$emit('update', this.items);
+                    if (payload.row.sorting !== this.draggingRow.sorting) {
+                        this.$refs.table.initSort();
+                        this.$emit('update', this.items);
+                    }
                 }
             },
 
@@ -238,6 +223,7 @@
     tr.feature-heading {
         background: #eee;
         font-weight: bold;
+        font-style: italic;
     }
 </style>
 

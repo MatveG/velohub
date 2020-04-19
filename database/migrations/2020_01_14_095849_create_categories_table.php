@@ -30,10 +30,11 @@ class CreateCategoriesTable extends Migration
             $table->string('seo_keywords')->nullable();
 
             $table->text('description')->nullable();
+
             $table->text('images')->default('[]');
             $table->text('features')->default('[]');
             $table->text('parameters')->default('[]');
-            $table->text('settings')->default('[]');
+            $table->text('settings')->default('{}');
 
             $table->timestamps();
         });
