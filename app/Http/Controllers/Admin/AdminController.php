@@ -99,6 +99,11 @@ class AdminController extends Controller
 
             return $element;
         }, $request->features);
+        $category->parameters = array_map(function ($element) {
+            $element['latin'] = ($element['is_filter']) ? $this->stringToLatin($element['title']) : null;
+
+            return $element;
+        }, $request->parameters);
 
         $category->save();
 

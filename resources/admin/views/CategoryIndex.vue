@@ -12,7 +12,7 @@
     import CategoryTable from "../components/CategoryTable";
 
     export default {
-        name: 'Category',
+        name: 'CategoryIndex',
 
         components: {
             CardComponent,

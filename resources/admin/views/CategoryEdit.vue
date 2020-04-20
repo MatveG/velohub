@@ -5,7 +5,7 @@
             <button class="button fas fa-arrow-circle-left"></button>
         </div>
         <div class="columns">
-            <div class="column is-three-quarters">
+            <div class="column is-9">
                 <form @submit.prevent="update" @change="autoSave" @keyup="saved=false">
                     <card-component title="Основное">
                         <b-tabs v-model="tab" type="is-boxed">
@@ -37,17 +37,25 @@
                         </b-tabs>
                     </card-component>
                 </form>
-                <card-component v-if="!item.is_parent" title="Характеристики товаров" class="margin-line">
-                    <category-features v-if="item.id" @update="featuresUpdate" :prop-items="item.features"/>
+
+                <card-component v-if="item.id && !item.is_parent" title="Характеристики и параметры" class="margin-line">
+                    <b-tabs v-model="tab2" type="is-boxed">
+                        <b-tab-item label="Характеристики">
+                            <category-features @update="updateFeatures" :prop-items="item.features" />
+                        </b-tab-item>
+                        <b-tab-item label="Параметры">
+                            <category-parameters @update="updateParameters" :prop-items="item.parameters" />
+                        </b-tab-item>
+                    </b-tabs>
                 </card-component>
             </div>
             <div class="column">
                 <card-component :title="`Id: ${id}`" class="tile is-child">
                     <b-field>
-                        <b-switch v-model="item.is_active" @change.native="update">Активна</b-switch>
+                        <b-switch v-model="item.is_active" @change.native="autoSave">Активна</b-switch>
                     </b-field>
                     <b-field>
-                        <b-switch v-model="item.is_parent" @change.native="update">Подкатегории</b-switch>
+                        <b-switch v-model="item.is_parent" @change.native="autoSave">Подкатегории</b-switch>
                     </b-field>
                     <b-field label="Родительская категория">
                         <b-autocomplete v-if="category"
@@ -66,13 +74,9 @@
                     </div>
                 </card-component>
 
-                <card-component title="Фотография" class="margin-line">
-                    <images-upload v-if="item.id" @update="imagesUpdate" :images-array="item.images" max-amount="1" image-width="100%"
-                                   :web-route="`/admin/product/${item.id}`" />
-                </card-component>
-
-                <card-component v-if="!item.is_parent" title="Параметры товаров" class="margin-line">
-                    [parametrs]
+                <card-component v-if="item.id" title="Фотография" class="margin-line">
+                    <images-upload v-if="item.id" @update="updateImages" :web-route="`/admin/product/${item.id}`"
+                                   :images-array="item.images" max-amount="1" image-width="100%" />
                 </card-component>
 
             </div>
@@ -86,14 +90,16 @@
     import CardComponent from './../components/CardComponent'
     import ImagesUpload from "./../components/ImagesUpload";
     import CategoryFeatures from "../components/CategoryFeatures";
+    import CategoryParameters from "../components/CategoryParameters";
 
     export default {
         name: 'CategoryEdit',
 
         components: {
-            CategoryFeatures,
             CardComponent,
             ImagesUpload,
+            CategoryFeatures,
+            CategoryParameters,
         },
 
         props: { id: null },
@@ -103,6 +109,7 @@
                 item: {},
                 categories: [],
                 tab: 0,
+                tab2: 0,
                 loading: false,
                 saved: true,
             }
@@ -110,38 +117,30 @@
 
         computed: {
             category: function () {
-                return this.categories.find((element) => element.id === this.item.parent_id);
+                return this.categories.find((element) => element.id === this.item.parent_id) || {};
             }
         },
 
         mounted () {
-            if (!this.id) {
-                core.error('Error loading product');
+            if (this.id) {
+                axios.get(`/admin/category/${this.id}/edit/`)
+                    .then((res) => this.item = res.data.item)
+                    .catch((error) => this.error(error.response));
             }
 
-            axios.get(`/admin/category/${this.id}/edit/`)
-                .then((res) => {
-                    this.item = res.data.item;
-                })
-                .catch((error) => this.error(error.response));
-
             axios.post('/admin/category/list/', { where: [['is_parent', true]] })
-                .then((res) => {
-                    this.categories = [{ id: 0, title: '(root)' }].concat(res.data.items);
-                })
+                .then((res) => this.categories = [{ id: 0, title: '(root)' }].concat(res.data.items))
                 .catch((error) => this.error(error.response));
         },
 
         methods: {
-            featuresUpdate(value) {
-                this.item.features = value;
-                this.update();
-            },
-
             changeParent(category) {
                 if(this.item.parent_id !== category.id) {
                     this.item.parent_id = category.id;
-                    this.update();
+
+                    if(this.item.id) {
+                        this.update();
+                    }
                 }
             },
 
@@ -149,6 +148,11 @@
                 console.log('updating item');
 
                 this.statusLoading();
+                // var action?
+                // if no id - create
+                // redirect to edit?
+
+                // else - update
                 axios.post(`/admin/category/${this.item.id}/update`, this.item)
                     .then((res) => {
                         Object.keys(res.data).forEach((key) => this.item[key] = res.data[key]);
@@ -158,12 +162,24 @@
             },
 
             autoSave() {
-                console.log('auto updating item');
+                if(this.item.id) {
+                    this.update();
+                }
+                this.saved = false;
+            },
+
+            updateImages(newImages) {
+                this.item.images = newImages;
                 this.update();
             },
 
-            imagesUpdate(newImages) {
-                this.item.images = newImages;
+            updateFeatures(value) {
+                this.item.features = value;
+                this.update();
+            },
+
+            updateParameters(value) {
+                this.item.parameters = value;
                 this.update();
             },
 

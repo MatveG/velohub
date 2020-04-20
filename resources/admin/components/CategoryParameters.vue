@@ -29,11 +29,6 @@
                                 <option v-for="(title, key) in inputTypes" :value="key">{{ title }}</option>
                             </b-select>
                         </b-field>
-                        <template v-if="item.type === 'number'">
-                            <b-field label="Единицы измерения" label-position="on-border">
-                                <b-input v-model="item.units" placeholder="кг" />
-                            </b-field>
-                        </template>
                         <template v-if="item.type === 'select'">
                             <b-field label="Список значений" label-position="on-border" :type="{ 'is-danger': $v.item.values.$error }">
                                 <b-taginput v-model="item.values" placeholder="Добавить"  />
@@ -41,13 +36,6 @@
                         </template>
                     </template>
                     <span v-else>{{ inputTypes[props.row.type] }}</span>
-                </b-table-column>
-                <b-table-column field="is_required" label="Обязательное" width="10%" sortable centered>
-                    <b-checkbox v-if="props.row.key === item.key" v-model="item.is_required"
-                                :disabled="item.type === 'heading'" />
-                    <span v-else-if="props.row.is_required" class="icon has-text-dark">
-                        <i class="fas fa-check-square"></i>
-                    </span>
                 </b-table-column>
                 <b-table-column field="is_filter" label="Фильтр" width="10%" sortable centered>
                     <b-checkbox v-if="props.row.key === item.key" v-model="item.is_filter"
@@ -83,20 +71,23 @@
     const inputTypes = {
         string: 'строка',
         number: 'число',
-        text: 'текст',
-        boolean: 'да/нет',
         select: 'выбор из списка',
-        heading: 'заголовок',
     };
     const blank = {
-        is_required: false,
         is_filter: false,
-        units: null,
         values: null
     };
 
+    // key
+    // sorting
+    // title +
+    // type +
+    // is_filter
+    // latin (if is_filter)
+
+
     export default {
-        name: "CategoryFeatures",
+        name: "CategoryParameters",
 
         props: {
             propItems: {
@@ -110,7 +101,6 @@
                 item: {},
                 items: this.propItems,
                 inputTypes: inputTypes,
-                fresh: false
             }
         },
 
@@ -232,11 +222,3 @@
         }
     }
 </script>
-
-<style>
-    tr.feature-heading {
-        background: #eee;
-        font-weight: bold;
-    }
-</style>
-

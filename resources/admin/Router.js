@@ -2,33 +2,38 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-Vue.use(Router)
+Vue.use(Router);
 
-import Products from './views/Products.vue';
-import ProductEdit from './views/ProductEdit.vue';
-import Category from "./views/Category";
-import CategoryEdit from "./views/CategoryEdit";
+import ProductIndex from './views/ProductIndex'
+import ProductEdit from './views/ProductEdit'
+import CategoryIndex from "./views/CategoryIndex"
+import CategoryEdit from "./views/CategoryEdit"
 
 export default new Router({
     routes: [
         {
-            path: '/products',
-            name: 'products',
-            component: Products
+            path: '/product',
+            name: 'product.index',
+            component: ProductIndex
         },
         {
-            path: '/product/:id',
+            path: '/product-edit/:id',
             name: 'product.edit',
             component: ProductEdit,
             props: true
         },
         {
             path: '/category',
-            name: 'category',
-            component: Category
+            name: 'category.index',
+            component: CategoryIndex
         },
         {
-            path: '/category/:id',
+            path: '/category-create',
+            name: 'category.create',
+            component: CategoryEdit,
+        },
+        {
+            path: '/category-edit/:id',
             name: 'category.edit',
             component: CategoryEdit,
             props: true
