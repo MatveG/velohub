@@ -85,6 +85,15 @@ class AdminController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $category = new Category();
+        $category->fill($request->all());
+        $category->save();
+
+        return response()->json([$category]);
+    }
+
     public function update(Request $request, $id)
     {
         // validate features ['key', 'title', 'type', 'is_required', 'is_filter'];
