@@ -85,24 +85,21 @@ class AdminController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function storeOrUpdate(Request $request, $id = 0)
     {
-        $category = new Category();
-        $category->fill($request->all());
-        $category->save();
-
-        return response()->json([$category]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        // validate features ['key', 'title', 'type', 'is_required', 'is_filter'];
-        // if parent_id changed -> change sorting
-
-        $category = Category::findOrFail($id);
+        $category = Category::firstOrCreate(['id' => $id]);
         $category->fill($request->all());
 
         $category->latin = $this->stringToLatin($category->title);
+
+        if (Category::where('id', '!=', $id)->where('title', $request->title)->exists()) {
+            $category->latin .= '-' . $category->id;
+        }
+
+        if ($category->sorting === 0 || $category->isDirty('parent_id')) {
+            $category->sorting = Category::where('parent_id', $request['parent_id'])->max('sorting') + 1;
+        }
+
         $category->features = array_map(function ($element) {
             $element['latin'] = ($element['is_filter']) ? $this->stringToLatin($element['title']) : null;
 
@@ -115,15 +112,35 @@ class AdminController extends Controller
         }, $request->parameters);
 
         $category->save();
+        $keys = ['id'] + array_keys($category->getChanges());
 
-        $return = null;
-
-        if(isset($category->getChanges()['latin'])) {
-            $return['latin'] = $category->latin;
-        }
-
-        return response()->json($return);
+        return response()->json($category->only($keys));
     }
+
+//    public function update(Request $request, $id)
+//    {
+//        // validate features ['key', 'title', 'type', 'is_required', 'is_filter'];
+//        // if parent_id changed -> change sorting
+//
+//        $category = Category::findOrFail($id);
+//        $category->fill($request->all());
+//
+//        $category->latin = $this->stringToLatin($category->title);
+//        $category->features = array_map(function ($element) {
+//            $element['latin'] = ($element['is_filter']) ? $this->stringToLatin($element['title']) : null;
+//
+//            return $element;
+//        }, $request->features);
+//        $category->parameters = array_map(function ($element) {
+//            $element['latin'] = ($element['is_filter']) ? $this->stringToLatin($element['title']) : null;
+//
+//            return $element;
+//        }, $request->parameters);
+//
+//        $category->save();
+//
+//        return response()->json($category->getChanges());
+//    }
 
     public function list(Request $request)
     {

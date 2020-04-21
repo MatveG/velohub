@@ -5,6 +5,7 @@
                  default-sort="sorting"
                  custom-row-key="sorting"
                  icon-pack="fa"
+                 striped
                  hoverable
                  draggable
                  @dragstart="dragstart"

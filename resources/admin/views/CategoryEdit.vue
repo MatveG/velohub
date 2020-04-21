@@ -1,3 +1,4 @@
+
 <template>
     <section class="section is-main-section">
         <div class="buttons is-right">
@@ -6,7 +7,7 @@
         </div>
         <div class="columns">
             <div class="column is-9">
-                <form @submit.prevent="save" @change="changed" @keyup="saved=false">
+                <form @submit.prevent="save" @change="change" @keyup="saved=false">
                     <card-component title="Основное">
                         <b-tabs v-model="tab_1" type="is-boxed">
                             <b-tab-item label="Название">
@@ -40,24 +41,24 @@
                     </card-component>
                 </form>
 
-                <card-component v-if="item.id && !item.is_parent" title="Характеристики и параметры" class="margin-line">
+                <card-component v-if="!item.is_parent" title="Характеристики и параметры" class="margin-line">
                     <b-tabs v-model="tab_2" type="is-boxed">
                         <b-tab-item label="Характеристики">
-                            <category-features @update="updateFeatures" :prop-items="item.features" />
+                            <category-features @update="changeFeatures" :prop-items.sync="item.features" />
                         </b-tab-item>
                         <b-tab-item label="Параметры">
-                            <category-parameters @update="updateParameters" :prop-items="item.parameters" />
+                            <category-parameters @update="changeParameters" :prop-items="item.parameters" />
                         </b-tab-item>
                     </b-tabs>
                 </card-component>
             </div>
             <div class="column">
-                <card-component :title="`Id: ${item.id}`" class="tile is-child">
+                <card-component :title="'Id: ' + (item.id || '')" class="tile is-child">
                     <b-field>
-                        <b-switch v-model="item.is_active" @change.native="changed">Активна</b-switch>
+                        <b-switch v-model="item.is_active" @change.native="change">Активна</b-switch>
                     </b-field>
                     <b-field>
-                        <b-switch v-model="item.is_parent" @change.native="changed">Подкатегории</b-switch>
+                        <b-switch v-model="item.is_parent" @change.native="change">Подкатегории</b-switch>
                     </b-field>
                     <b-field label="Родительская категория">
                         <b-autocomplete v-if="category"
@@ -65,7 +66,7 @@
                                         :open-on-focus="true"
                                         :data="categories"
                                         field="title"
-                                        @select="(option) => changeParent(option)">
+                                        @select="(option) => changeParentId(option)">
                         </b-autocomplete>
                     </b-field>
                     <div class="has-text-centered">
@@ -74,7 +75,7 @@
                 </card-component>
 
                 <card-component v-if="item.id" title="Фотография" class="margin-line">
-                    <images-upload v-if="item.id" @update="updateImages" :web-route="`/admin/product/${item.id}`"
+                    <images-upload @update="changeImages" :web-route="`/admin/product/${item.id}`"
                                    :images-array="item.images" max-amount="1" image-width="100%" />
                 </card-component>
             </div>
@@ -102,18 +103,20 @@
         },
 
         props: {
-            id: {
-                type: String,
-                default: null
-            },
+            id: [String, Number],
         },
 
         data () {
             return {
-                item: {},
+                item: {
+                    id: 0,
+                    images: [],
+                    features: [],
+                    parameters: [],
+                },
                 categories: [],
                 loading: false,
-                saved: true,
+                saved: !!this.id,
                 tab_1: 0,
                 tab_2: 0,
             }
@@ -141,84 +144,66 @@
         mounted () {
             axios.post('/admin/category/list/', { where: [['is_parent', true]] })
                 .then((res) => this.categories = [{ id: 0, title: '(root)' }].concat(res.data.items))
-                .catch((error) => this.error(error.response));
+                .catch((error) => core.ajaxError(error.response));
 
             if (this.id) {
                 axios.get(`/admin/category/${this.id}/edit/`)
-                    .then((res) => this.item = res.data.item)
-                    .catch((error) => this.error(error.response));
+                    .then((res) => console.log(this.item = res.data.item))
+                    .catch((error) => core.ajaxError(error.response));
             }
         },
 
         methods: {
-            // add validation
-            // unique title? or generate unique latin for each one
+            change() {
+                this.$v.$touch();
+                this.saved = false;
 
-            changed() {
-                if(this.item.id) {
+                if(this.item.id && !this.$v.$invalid) {
                     this.save();
                 }
-                this.saved = false;
             },
 
             save() {
                 this.$v.$touch();
 
                 if (this.$v.$invalid) {
-                    return core.error('Заполните обязательные поля');
+                    return core.ajaxError('Заполните обязательные поля');
                 }
-                // if (this.items.find(each => each.title === this.item.title && each.key !== this.item.key)) {
-                //     return core.error('Уже есть запись с таким Названием');
-                // }
-
-                if (this.item.id) {
-                    this.update();
-                } else {
-                    this.store();
-                }
-            },
-
-            update() {
-                //let url = (this.item.id) ? '`/admin/category/${this.item.id}/update`' : '/admin/category/store';
                 this.statusLoading();
+
                 axios.post(`/admin/category/${this.item.id}/update`, this.item)
-                    .then((res) => this.item = Object.assign(this.item, res.data))
-                    .catch((error) => this.error(error.response))
+                    .then((res) => {
+                        this.item = Object.assign(this.item, res.data);
+
+                        if (this.$route.name === 'category.create') {
+                            this.$router.replace({ name: 'category.edit', params: { id: this.item.id }});
+                        }
+                    })
+                    .catch((error) => core.ajaxError(error.response))
                     .then(() => this.savedState());
             },
 
-            store() {
-                this.statusLoading();
-                axios.post(`/admin/category/store`, this.item)
-                    .then((res) => this.item = Object.assign(this.item, res.data))
-                    .catch((error) => this.error(error.response))
-                    .then(() => this.savedState());
-            },
 
-
-
-            updateParent(value) {
+            changeParentId(value) {
                 if(this.item.parent_id !== value.id) {
-                    if(this.item.id) {
-                        this.update();
-                    }
                     this.item.parent_id = value.id;
+                    this.change();
                 }
             },
 
-            updateImages(value) {
+            changeImages(value) {
                 this.item.images = value;
-                this.update();
+                this.change();
             },
 
-            updateFeatures(value) {
+            changeFeatures(value) {
                 this.item.features = value;
-                this.update();
+                this.change();
             },
 
-            updateParameters(value) {
+            changeParameters(value) {
                 this.item.parameters = value;
-                this.update();
+                this.change();
             },
 
             statusLoading() {
@@ -230,16 +215,6 @@
                 this.saved = true;
                 this.loading = false;
             },
-
-            error(response) {
-                core.error(`Error ${response.status}: ${response.data.error}`);
-            },
         }
     }
 </script>
-
-<style>
-    .w-50 {
-        width: 50px;
-    }
-</style>

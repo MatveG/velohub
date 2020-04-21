@@ -9,7 +9,6 @@ export default new class Core {
             type: 'is-danger',
             queue: false
         });
-        console.log(message);
 
         return false;
     }

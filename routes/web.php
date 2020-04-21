@@ -47,7 +47,9 @@ Route::namespace('Admin')->group(function () {
     Route::get('/admin/product/', 'ProductContoller@index');
 
     // Categories
-    Route::post('/admin/category/{id}/update', 'AdminController@update');
+    //Route::post('/admin/category/store', 'AdminController@storeOrUpdate');
+    Route::post('/admin/category/{id}/update', 'AdminController@storeOrUpdate');
+
     Route::post('/admin/category/list/', 'AdminController@list');
     Route::get('/admin/category/{id}/edit/', 'AdminController@edit');
     Route::get('/admin/category/', 'AdminController@index');
