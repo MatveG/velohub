@@ -3,7 +3,7 @@
     <section class="section is-main-section">
         <div class="buttons is-right">
             <button @click="save" :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
-            <button class="button fas fa-arrow-circle-left"></button>
+            <button @click="$router.push({ name: 'categories' })" class="button fas fa-arrow-circle-left"></button>
         </div>
         <div class="columns">
             <div class="column is-9">
@@ -44,10 +44,10 @@
                 <card-component v-if="!item.is_parent" title="Характеристики и параметры" class="margin-line">
                     <b-tabs v-model="tab_2" type="is-boxed">
                         <b-tab-item label="Характеристики">
-                            <category-features @update="changeFeatures" :prop-items.sync="item.features" />
+                            <category-features v-if="item.id" @update="changeFeatures" :prop-items="item.features" />
                         </b-tab-item>
                         <b-tab-item label="Параметры">
-                            <category-parameters @update="changeParameters" :prop-items="item.parameters" />
+                            <category-parameters v-if="item.id" @update="changeParameters" :prop-items="item.parameters" />
                         </b-tab-item>
                     </b-tabs>
                 </card-component>
@@ -75,7 +75,7 @@
                 </card-component>
 
                 <card-component v-if="item.id" title="Фотография" class="margin-line">
-                    <images-upload @update="changeImages" :web-route="`/admin/product/${item.id}`"
+                    <images-upload @update="changeImages" :web-route="`/admin/categories/${item.id}`"
                                    :images-array="item.images" max-amount="1" image-width="100%" />
                 </card-component>
             </div>
@@ -84,13 +84,13 @@
 </template>
 
 <script>
-    import core from "../js/Core";
+    import core from "../../js/Core";
     import axios from 'axios'
     import { required, minLength } from 'vuelidate/lib/validators'
-    import CardComponent from './../components/CardComponent'
-    import ImagesUpload from "./../components/ImagesUpload";
-    import CategoryFeatures from "../components/CategoryFeatures";
-    import CategoryParameters from "../components/CategoryParameters";
+    import CardComponent from '../../components/CardComponent'
+    import ImagesUpload from "../../components/ImagesUpload";
+    import CategoryFeatures from "../../components/CategoryFeatures";
+    import CategoryParameters from "../../components/CategoryParameters";
 
     export default {
         name: 'CategoryEdit',
@@ -148,7 +148,7 @@
 
             if (this.id) {
                 axios.get(`/admin/categories/${this.id}/edit/`)
-                    .then((res) => console.log(this.item = res.data.item))
+                    .then((res) => console.log(this.item = res.data))
                     .catch((error) => core.ajaxError(error.response));
             }
         },
@@ -167,22 +167,34 @@
                 this.$v.$touch();
 
                 if (this.$v.$invalid) {
-                    return core.ajaxError('Заполните обязательные поля');
+                    return core.error('Заполните обязательные поля');
                 }
-                this.statusLoading();
 
-                axios.post(`/admin/category/${this.item.id}/update`, this.item)
+                if (this.item.id) {
+                    this.update();
+                } else {
+                    this.store();
+                }
+            },
+
+            store() {
+                this.statusLoading();
+                axios.post(`/admin/categories/store`, this.item)
                     .then((res) => {
                         this.item = Object.assign(this.item, res.data);
-
-                        if (this.$route.name === 'category.create') {
-                            this.$router.replace({ name: 'category.edit', params: { id: this.item.id }});
-                        }
+                        this.$router.replace({ name: 'category.edit', params: { id: this.item.id }});
                     })
                     .catch((error) => core.ajaxError(error.response))
                     .then(() => this.savedState());
             },
 
+            update() {
+                this.statusLoading();
+                axios.post(`/admin/categories/${this.item.id}/update`, this.item)
+                    .then((res) => this.item = Object.assign(this.item, res.data))
+                    .catch((error) => core.ajaxError(error.response))
+                    .then(() => this.savedState());
+            },
 
             changeParentId(value) {
                 if(this.item.parent_id !== value.id) {

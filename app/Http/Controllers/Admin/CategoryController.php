@@ -4,19 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\Admin\ModelImages;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        return response()->json([$this->getCategoriesTree(0)]);
+        return response()->json(Category::getTree());
     }
 
     public function list(Request $request)
     {
-        return response()->json(
-            Category::where(($request->where) ?: [])
+        return response()->json(Category::where($request->input('where', []))
                 ->orderBy('sorting')
                 ->get(['id', 'parent_id', 'title'])
                 ->toArray()
@@ -28,21 +28,23 @@ class CategoryController extends Controller
         return response()->json(Category::find($id)->toArray());
     }
 
-    public function save(Request $request, $id = 0)
+    public function store(Request $request, $id = 0)
     {
-        $category = Category::firstOrCreate(['id' => $id]);
-        $category->fill($request->all());
-        $category->latin = latinize($category->title);
+        $category = Category::create($request->all());
+        $category->sorting = Category::where('parent_id', $request->input('parent_id'))->max('sorting') + 1;
+        $category->save();
 
-        if (Category::where('id', '!=', $id)->where('title', $request->title)->exists()) {
-            $category->latin .= '-' . $category->id;
-        }
-        if ($category->sorting === 0 || $category->isDirty('parent_id')) {
+        return response()->json( $category->only( ['id'] + array_keys($category->getChanges()) ) );
+    }
+
+    public function update(Request $request, $id = 0)
+    {
+        $category = Category::findOrFail($id);
+        $category->fill($request->all());
+
+        if ($category->isDirty('parent_id')) {
             $category->sorting = Category::where('parent_id', $request['parent_id'])->max('sorting') + 1;
         }
-
-        $category->features = array_map($this->mapLatinProperty, $request->features);
-        $category->parameters = array_map($this->mapLatinProperty, $request->parameters);
         $category->save();
 
         return response()->json( $category->only( ['id'] + array_keys($category->getChanges()) ) );
@@ -50,24 +52,42 @@ class CategoryController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        Category::firstOrFail($id)->destroy();
+        Category::destroy($id);
+
+        // resort
+
+        return response()->json();
     }
 
-    private function getCategoriesTree($parentId = 0)
+    public function imagesUpload(Request $request, $id)
     {
-        return Category::where('parent_id', $parentId)
-            ->orderBy('sorting')
-            ->get()
-            ->map(function ($item) {
-                $item->child = $this->getCategoriesTree($item->id);
-                return $item;
-            });
-    }
-
-    private function mapLatinProperty($element)
-    {
-        return array_replace($element, [
-            'latin' => ($element['is_filter']) ? latinize($element['title']) : null
+        // check if already exists
+        request()->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
         ]);
+
+        $category = Category::findOrFail($id);
+        $newImage = ModelImages::upload($category, $request->file('image'));
+
+        if ($newImage) {
+            $category->images = array_merge($category->images, [$newImage]);
+            $category->save();
+        }
+
+        return response()->json($newImage);
     }
+
+    public function imagesUpdate(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+        $category->images = $request->images;
+
+        foreach (array_diff($category->images, $category->getDirty('images')) as $image) {
+            ModelImages::delete($image);
+        }
+        $category->save();
+
+        return response()->json();
+    }
+
 }

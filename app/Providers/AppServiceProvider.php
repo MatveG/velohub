@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Widget class
         App::singleton('widget', function() { return new Widget(); });
+
+        // Define path to Custom Views
+        $this->loadViewsFrom(resource_path() . '/views/widgets', 'Widgets');
+        $this->loadViewsFrom(resource_path() . '/admin/views', 'Admin');
     }
 
     /**
@@ -40,7 +44,5 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo app('widget')->show($name); ?>";
         });
 
-        // Define path to Widget Views
-        $this->loadViewsFrom(resource_path() . '/views/widgets', 'Widgets');
     }
 }

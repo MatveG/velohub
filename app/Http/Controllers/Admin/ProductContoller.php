@@ -7,8 +7,6 @@ use App\Models\Product;
 use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\Facades\Image;
 
 class ProductContoller extends Controller
 {

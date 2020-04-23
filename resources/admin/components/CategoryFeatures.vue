@@ -1,6 +1,7 @@
 <template>
     <div>
-        <b-table ref="table" class="table-valign-center"
+        <b-table class="table-valign-center"
+                 ref="table"
                  :data='items'
                  default-sort="sorting"
                  custom-row-key="sorting"

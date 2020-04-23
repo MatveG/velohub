@@ -152,10 +152,10 @@
 
 <script>
     import axios from 'axios'
-    import CardComponent from './../components/CardComponent'
-    import Variants from "../components/Variants";
-    import ImagesUpload from "./../components/ImagesUpload";
-    import core from "../js/Core";
+    import CardComponent from '../../components/CardComponent'
+    import Variants from "../../components/Variants";
+    import ImagesUpload from "../../components/ImagesUpload";
+    import core from "../../js/Core";
 
     // check products codes too
     // modal scroll?

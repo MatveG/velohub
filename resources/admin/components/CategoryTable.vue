@@ -2,20 +2,16 @@
     <b-table class="table-valign-center" :class="(recursive) ? 'table-hide-header' : ''"
              ref="table"
              :data='items'
-             :per-page="perPage"
-             :paginated="paginated"
-             :loading="loading"
              default-sort="sorting"
-             icon-pack="fa"
-             hoverable
-
-             draggable
              custom-row-key="sorting"
+             icon-pack="fa"
+             striped
+             hoverable
+             draggable
              @dragstart="dragstart"
              @drop="drop"
              @dragover="dragover"
              @dragleave="dragleave"
-
              detailed
              detail-key="id"
              custom-detail-row
@@ -23,23 +19,25 @@
              @sort="openedDetails = []">
 
         <template slot-scope="props">
-            <b-table-column field="child.length" label="Дочерних" width="10%" sortable centered>
-                {{ (props.row.child.length) ? props.row.child.length : '-' }}
-            </b-table-column>
-
-            <b-table-column field="id" label="Изображение" width="20%" numeric centered>
-                []
-            </b-table-column>
-
-            <b-table-column field="id" label="ID" width="10%" searchable sortable centered>
-                {{ props.row.id }}
-            </b-table-column>
-
-            <b-table-column field="sorting" label="Порядок" width="10%" sortable centered>
+            <b-table-column field="sorting" label="" width="10%" sortable centered>
                 {{ props.row.sorting }}
             </b-table-column>
 
-            <b-table-column field="title" label="Название категории" width="25%" searchable>
+            <b-table-column field="child.length" label="Родительская" width="10%" sortable centered>
+                <span v-if="props.row.is_parent" class="icon has-text-dark">
+                        <i class="fas fa-check-square"></i>
+                </span>
+            </b-table-column>
+
+            <b-table-column field="id" label="Изображение" width="20%" centered class="has-text-centered">
+                <div style="margin: auto">
+                <figure class="image is-96x96">
+                    <img v-if="props.row.images.length" :src="props.row.images[0]" alt="" class="rounded category-image">
+                </figure>
+                </div>
+            </b-table-column>
+
+            <b-table-column field="title" label="Название категории" width="30%" searchable>
                 {{ props.row.title }}
             </b-table-column>
 
@@ -47,10 +45,8 @@
                 <b-checkbox v-model="props.row.is_active" @change.native="update(props.row)" :class="(recursive) ? 'is-small' : ''" />
             </b-table-column>
 
-            <b-table-column custom-key="actions" width="15%" class="is-actions-cell">
-                <router-link :to="{ name:'category.edit', params: { id: props.row.id } }">
-                    <button type="button" class="button fas fa-pen" :class="(recursive) ? 'is-small' : ''" />
-                </router-link>
+            <b-table-column custom-key="actions" width="20%" class="is-actions-cell">
+                <button @click="$router.push({ name:'category.edit', params: { id: props.row.id } })" class="button fas fa-pen" />
                 <button @click="destroy(props.row)" type="button" class="button fas fa-trash-alt" :class="(recursive) ? 'is-small' : ''" />
             </b-table-column>
         </template>
@@ -107,16 +103,33 @@
             // }
             update(item) {
                 this.loading = true;
-                axios.post(`/admin/category/${item.id}/update`, item)
+                axios.post(`/admin/categories/${item.id}/update`, item)
                     .catch((error) => core.ajaxError(error.response))
                     .then(() => this.loading = false);
             },
 
+            destroy(item) {
+                core.confirm('Удалить?', () => {
+                    this.items = this.items.filter((each) => each.id !== item.id);
+                    this.items.map((each) => each.sorting = (each.sorting > item.sorting) ? --each.sorting : each.sorting);
 
-            // drag&sort
+                    axios.post(`/admin/categories/${item.id}/destroy`)
+                        .catch((error) => core.ajaxError(error.response))
+                });
+            },
+
+
+            drop(payload) {
+                payload.event.target.closest('tr').classList.remove('is-selected');
+
+                if (payload.row.sorting === this.draggingRow.sorting) {
+                    return;
+                }
+                [payload.row.sorting, this.draggingRow.sorting] = [this.draggingRow.sorting, payload.row.sorting];
+                this.$refs.table.initSort();
+            },
+
             dragstart (payload) {
-                //this.openedDetails = [];
-
                 this.draggingRow = payload.row;
                 this.draggingRowIndex = payload.index;
                 payload.event.dataTransfer.effectAllowed = 'copy';
@@ -132,27 +145,18 @@
                 payload.event.target.closest('tr').classList.remove('is-selected');
                 payload.event.preventDefault();
             },
-
-            drop(payload) {
-                payload.event.target.closest('tr').classList.remove('is-selected');
-
-                if (payload.row && this.draggingRow) {
-                    let temp = payload.row.sorting;
-                    payload.row.sorting = this.draggingRow.sorting;
-                    this.draggingRow.sorting = temp;
-
-                    this.$refs.table.initSort();
-                }
-            }
         }
     }
 </script>
 
-<style>
+<style scoped>
     .table-hide-header .table thead tr:first-child {
         display: none;
     }
     .table-hide-header .table thead input {
         display: none;
+    }
+    .category-image {
+        width: 1%;
     }
 </style>

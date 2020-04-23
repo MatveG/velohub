@@ -4,17 +4,17 @@ import Router from 'vue-router'
 
 Vue.use(Router);
 
-import ProductIndex from './views/ProductIndex'
-import ProductEdit from './views/ProductEdit'
-import CategoryIndex from "./views/CategoryIndex"
-import CategoryEdit from "./views/CategoryEdit"
+import Products from './views/vue/Products'
+import ProductEdit from './views/vue/ProductEdit'
+import Categories from "./views/vue/Categories"
+import CategoryEdit from "./views/vue/CategoryEdit"
 
 export default new Router({
     routes: [
         {
-            path: '/product',
-            name: 'product.index',
-            component: ProductIndex
+            path: '/products',
+            name: 'products',
+            component: Products
         },
         {
             path: '/product-edit/:id',
@@ -23,9 +23,9 @@ export default new Router({
             props: true
         },
         {
-            path: '/category',
-            name: 'category.index',
-            component: CategoryIndex
+            path: '/categories',
+            name: 'categories',
+            component: Categories
         },
         {
             path: '/category-create',

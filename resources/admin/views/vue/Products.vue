@@ -90,7 +90,7 @@
 
 <script>
     import axios from 'axios'
-    import CardComponent from "../components/CardComponent";
+    import CardComponent from "../../components/CardComponent";
 
     export default {
         name: 'itemsTableSample',

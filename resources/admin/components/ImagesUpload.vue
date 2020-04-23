@@ -73,10 +73,10 @@
 
                 axios.post(`${this.webRoute}/images-upload`, data, settings)
                     .then((res) => {
-                        this.images.push(res.data.image);
+                        this.images.push(res.data);
                         this.$emit('update', this.images)
                     })
-                    .catch((error) => core.axiosError(error.response));
+                    .catch((error) => core.ajaxError(error.response));
             },
 
             deleteImage: function (key) {
@@ -87,7 +87,7 @@
             updateImages: function () {
                 axios.post(`${this.webRoute}/images-update`, { images: this.images })
                     .then(() => this.$emit('update', this.images))
-                    .catch((error) => core.axiosError(error.response));
+                    .catch((error) => core.ajaxError(error.response));
             },
 
             validateImage: function (file) {

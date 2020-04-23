@@ -32,7 +32,7 @@ Route::get('/media/pt/{img}')->name('img.product');
 Route::get('/media/ul/{img}')->name('img.upload');
 
 // Admin
-Route::view('/admin/', 'admin');
+Route::view('/admin/', 'Admin::index');
 
 Route::namespace('Admin')->group(function () {
     // Products
@@ -45,7 +45,8 @@ Route::namespace('Admin')->group(function () {
 
     // Categories
     Route::get('/admin/categories/{id}/edit', 'CategoryController@edit');
-    Route::post('/admin/categories/{id}/save', 'CategoryController@save ');
+    Route::post('/admin/categories/store', 'CategoryController@store');
+    Route::post('/admin/categories/{id}/update', 'CategoryController@update');
     Route::post('/admin/categories/{id}/destroy', 'CategoryController@destroy');
     Route::post('/admin/categories/{id}/images-upload', 'CategoryController@imagesUpload');
     Route::post('/admin/categories/{id}/images-update', 'CategoryController@imagesUpdate');

@@ -21,6 +21,11 @@ trait Common
         $query->where($this->getTable() . '.is_active', 'true');
     }
 
+    public function getImagesFolder()
+    {
+        return $this->imagesFolder;
+    }
+
 //    public function getCreatedAtAttribute($date)
 //    {
 //        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('H:i d.m.Y');
