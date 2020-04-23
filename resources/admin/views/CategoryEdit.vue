@@ -142,12 +142,12 @@
         },
 
         mounted () {
-            axios.post('/admin/category/list/', { where: [['is_parent', true]] })
-                .then((res) => this.categories = [{ id: 0, title: '(root)' }].concat(res.data.items))
+            axios.post('/admin/categories/list/', { where: [['is_parent', true]] })
+                .then((res) => this.categories = [{ id: 0, title: '(root)' }].concat(res.data))
                 .catch((error) => core.ajaxError(error.response));
 
             if (this.id) {
-                axios.get(`/admin/category/${this.id}/edit/`)
+                axios.get(`/admin/categories/${this.id}/edit/`)
                     .then((res) => console.log(this.item = res.data.item))
                     .catch((error) => core.ajaxError(error.response));
             }

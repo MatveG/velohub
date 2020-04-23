@@ -32,29 +32,27 @@ Route::get('/media/pt/{img}')->name('img.product');
 Route::get('/media/ul/{img}')->name('img.upload');
 
 // Admin
-Route::get('/admin/', function () {
-    return view('admin');
-});
+Route::view('/admin/', 'admin');
 
 Route::namespace('Admin')->group(function () {
-    Route::get('/admin/product/{id}/edit/', 'ProductContoller@edit');
-    Route::post('/admin/product/{id}/update/', 'ProductContoller@update');
-//    Route::get('/admin/products/suggest/', 'AdminController@suggest');
-//    Route::get('/admin/products/edit/', 'AdminController@edit');
-//    Route::delete('/admin/products/delete/', 'AdminController@delete');
-    Route::post('/admin/product/{id}/images-upload', 'ProductContoller@imagesUpload');
-    Route::post('/admin/product/{id}/images-update', 'ProductContoller@imagesUpdate');
-    Route::get('/admin/product/', 'ProductContoller@index');
+    // Products
+    Route::get('/admin/products/{id}/edit/', 'ProductContoller@edit');
+    Route::post('/admin/products/{id}/save/', 'ProductContoller@save');
+    Route::post('/admin/products/{id}/destroy', 'ProductContoller@destroy');
+    Route::post('/admin/products/{id}/images-upload', 'ProductContoller@imagesUpload');
+    Route::post('/admin/products/{id}/images-update', 'ProductContoller@imagesUpdate');
+    Route::get('/admin/products/', 'ProductContoller@index');
 
     // Categories
-    //Route::post('/admin/category/store', 'AdminController@storeOrUpdate');
-    Route::post('/admin/category/{id}/update', 'AdminController@storeOrUpdate');
+    Route::get('/admin/categories/{id}/edit', 'CategoryController@edit');
+    Route::post('/admin/categories/{id}/save', 'CategoryController@save ');
+    Route::post('/admin/categories/{id}/destroy', 'CategoryController@destroy');
+    Route::post('/admin/categories/{id}/images-upload', 'CategoryController@imagesUpload');
+    Route::post('/admin/categories/{id}/images-update', 'CategoryController@imagesUpdate');
+    Route::post('/admin/categories/list', 'CategoryController@list');
+    Route::get('/admin/categories', 'CategoryController@index');
 
-    Route::post('/admin/category/list/', 'AdminController@list');
-    Route::get('/admin/category/{id}/edit/', 'AdminController@edit');
-    Route::get('/admin/category/', 'AdminController@index');
-
-    // Variant
+    // Variants
     Route::post('/admin/variant/store', 'VariantController@store');
     Route::post('/admin/variant/{id}/update', 'VariantController@update');
     Route::post('/admin/variant/{id}/destroy', 'VariantController@destroy');
