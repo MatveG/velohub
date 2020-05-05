@@ -1,7 +1,9 @@
+
 <template>
-    <b-table class="table-valign-center" :class="(recursive) ? 'table-hide-header' : ''"
+    <b-table class="table-valign-center"
              ref="table"
              :data='items'
+             :loading="loading"
              default-sort="sorting"
              custom-row-key="sorting"
              icon-pack="fa"
@@ -16,38 +18,31 @@
              detail-key="id"
              custom-detail-row
              :opened-detailed="openedDetails"
-             @sort="openedDetails = []">
+             @sort="openedDetails = []"
+             :class="(recursive) ? 'table-hide-header' : ''">
 
         <template slot-scope="props">
             <b-table-column field="sorting" label="" width="10%" sortable centered>
                 {{ props.row.sorting }}
             </b-table-column>
 
-            <b-table-column field="child.length" label="Родительская" width="10%" sortable centered>
+            <b-table-column field="child.length" label="Родительская" width="15%" sortable centered>
                 <span v-if="props.row.is_parent" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                 </span>
             </b-table-column>
 
-            <b-table-column field="id" label="Изображение" width="20%" centered class="has-text-centered">
-                <div style="margin: auto">
-                <figure class="image is-96x96">
-                    <img v-if="props.row.images.length" :src="props.row.images[0]" alt="" class="rounded category-image">
-                </figure>
-                </div>
-            </b-table-column>
-
-            <b-table-column field="title" label="Название категории" width="30%" searchable>
+            <b-table-column field="title" label="Название категории" width="45%" searchable>
                 {{ props.row.title }}
             </b-table-column>
 
-            <b-table-column field="is_active" label="Активна" width="10%" sortable centered>
-                <b-checkbox v-model="props.row.is_active" @change.native="update(props.row)" :class="(recursive) ? 'is-small' : ''" />
+            <b-table-column field="is_active" label="Активна" width="15%" sortable centered>
+                <b-checkbox v-model="props.row.is_active" @change.native="update(props.row)" class="is-small" />
             </b-table-column>
 
-            <b-table-column custom-key="actions" width="20%" class="is-actions-cell">
-                <button @click="$router.push({ name:'category.edit', params: { id: props.row.id } })" class="button fas fa-pen" />
-                <button @click="destroy(props.row)" type="button" class="button fas fa-trash-alt" :class="(recursive) ? 'is-small' : ''" />
+            <b-table-column custom-key="actions" width="15%" centered>
+                <button @click="$router.push({ name:'category.edit', params: { id: props.row.id } })" class="button fas fa-pen is-small" />
+                <button @click="destroy(props.row)" type="button" class="button fas fa-trash-alt is-small" />
             </b-table-column>
         </template>
 
@@ -78,12 +73,10 @@
         data () {
             return {
                 items: [],
-                checked: [],
-                openedDetails: [],
                 paginated: false,
                 perPage: 15,
-                paginate: true,
                 loading: false,
+                openedDetails: [],
             }
         },
 
@@ -93,17 +86,13 @@
         },
 
         methods: {
-            // toggle(row) {
-            //     this.openedDetails = [];
-            //     this.qwe = row.child;
-            //     this.openedDetails = [row.id];
-            // },
-            // edit(item) {
-            //     this.$router.push({ name:'product.edit', params: { id: item.id } });
-            // }
             update(item) {
                 this.loading = true;
-                axios.post(`/admin/categories/${item.id}/update`, item)
+                axios.post(`/admin/categories/${item.id}/update`, {
+                        id: item.id,
+                        is_active: item.is_active,
+                        sorting: item.sorting
+                    })
                     .catch((error) => core.ajaxError(error.response))
                     .then(() => this.loading = false);
             },
@@ -113,11 +102,12 @@
                     this.items = this.items.filter((each) => each.id !== item.id);
                     this.items.map((each) => each.sorting = (each.sorting > item.sorting) ? --each.sorting : each.sorting);
 
+                    this.loading = true;
                     axios.post(`/admin/categories/${item.id}/destroy`)
                         .catch((error) => core.ajaxError(error.response))
+                        .then(() => this.loading = false);
                 });
             },
-
 
             drop(payload) {
                 payload.event.target.closest('tr').classList.remove('is-selected');
@@ -127,6 +117,9 @@
                 }
                 [payload.row.sorting, this.draggingRow.sorting] = [this.draggingRow.sorting, payload.row.sorting];
                 this.$refs.table.initSort();
+
+                this.update(payload.row);
+                this.update(this.draggingRow);
             },
 
             dragstart (payload) {
@@ -149,14 +142,11 @@
     }
 </script>
 
-<style scoped>
+<style>
     .table-hide-header .table thead tr:first-child {
         display: none;
     }
     .table-hide-header .table thead input {
         display: none;
-    }
-    .category-image {
-        width: 1%;
     }
 </style>

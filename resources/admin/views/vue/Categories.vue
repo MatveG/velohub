@@ -4,7 +4,7 @@
             <button @click="$router.push({ name: 'category.create' })" class="button is-primary fas fa-plus"></button>
         </div>
         <card-component class="has-table has-mobile-sort-spaced" title="Товары">
-            <category-table v-if="items.length" :prop-items="items" />
+            <category-table v-if="items.length" :prop-items="items" :recursive="false" />
         </card-component>
     </section>
 </template>
