@@ -1,6 +1,6 @@
 /.idea
 /node_modules
-/public
+/public/media
 /storage/*.key
 /storage
 /vendor
