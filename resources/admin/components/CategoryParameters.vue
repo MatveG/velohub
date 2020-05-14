@@ -66,7 +66,6 @@
 <script>
     import { required, requiredIf, minLength } from 'vuelidate/lib/validators'
     import { customAlphabet } from 'nanoid'
-    import core from '../js/Core'
 
     const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 9);
     const inputTypes = {

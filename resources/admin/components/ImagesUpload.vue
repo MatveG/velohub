@@ -24,7 +24,6 @@
 <script>
     import axios from "axios";
     import draggable from 'vuedraggable'
-    import core from "../js/Core";
 
     export default {
         name: "ImagesUpload",

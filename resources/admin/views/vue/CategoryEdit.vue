@@ -84,7 +84,6 @@
 </template>
 
 <script>
-    import core from "../../js/Core";
     import axios from 'axios'
     import { required, minLength } from 'vuelidate/lib/validators'
     import CardComponent from '../../components/CardComponent'

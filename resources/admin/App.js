@@ -6,15 +6,17 @@ import Buefy from 'buefy'
 import Vuelidate from 'vuelidate'
 import router from './Router'
 
+// global mixins
+import toast from './mixins/toast.global'
+import confirm from './mixins/confirm.global'
+
+
 Vue.use(Buefy);
 Vue.use(Vuelidate);
 
 const app = new Vue({
     router
 }).$mount('#app');
-
-
-
 
 
 

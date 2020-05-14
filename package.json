@@ -6,7 +6,7 @@
     },
     "scripts": {
         "build": "webpack",
-        "watch": "webpack --watch"
+        "watch": "webpack --watch --quiet"
     },
     "devDependencies": {
         "@babel/core": "^7.8.4",

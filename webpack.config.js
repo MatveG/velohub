@@ -2,23 +2,22 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-// import "./../sass/app.scss"; - put to app.vue and change path
-
 module.exports = {
-    mode: 'development', // change on deploy
+    mode: 'development',
     entry: {
-        'public/assets/app.min': './resources/js/app.js', // output file (without extension) : input file
-        'public/assets/admin/app.min': './resources/admin/app.js', // output file (without extension) : input file
+        'public/assets/app.min': './resources/js/app.js',
+        'public/assets/admin/app.min': './resources/admin/app.js',
     },
     output: {
         path: path.resolve(__dirname, './'),
         filename: '[name].js',
     },
     resolve: {
-        extensions: ['*', '.js', '.vue', '.json'],
         alias: {
+            '@': path.resolve(__dirname, 'resources/admin/'),
             'vue$': 'vue/dist/vue.esm.js'
-        }
+        },
+        extensions: ['.js', '.vue', '.json']
     },
     module: {
         rules: [

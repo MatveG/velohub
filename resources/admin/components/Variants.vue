@@ -113,7 +113,6 @@
 
 <script>
     import axios from 'axios';
-    import core from "./../js/Core";
     import ImagesUpload from "./ImagesUpload";
     import CardComponent from "./CardComponent";
 

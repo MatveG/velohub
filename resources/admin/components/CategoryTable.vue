@@ -59,7 +59,6 @@
 <script>
     import axios from 'axios';
     import draggable from 'vuedraggable';
-    import core from "./../js/Core";
     import CardComponent from "../components/CardComponent";
     import CategoryTable from "../components/CategoryTable";
 
