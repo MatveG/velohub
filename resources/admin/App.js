@@ -4,12 +4,12 @@ import "./sass/app.scss"
 import Vue from 'vue'
 import Buefy from 'buefy'
 import Vuelidate from 'vuelidate'
+import store from './store'
 import router from './Router'
 
 // global mixins
-import toast from './mixins/toast.global'
-import confirm from './mixins/confirm.global'
-
+import toast from './mixins/global/toast'
+import confirm from './mixins/global/confirm'
 
 Vue.use(Buefy);
 Vue.use(Vuelidate);
