@@ -1036,8 +1036,8 @@ RUN if [ ${INSTALL_SYMFONY} = true ]; then \
   && echo 'alias dev="php bin/console -e=dev"' >> ~/.bashrc \
   && echo 'alias prod="php bin/console -e=prod"' >> ~/.bashrc \
   #  Symfony 2 alias
-  #  && echo 'alias dev="php app/console -e=dev"' >> ~/.bashrc \
-  #  && echo 'alias prod="php app/console -e=prod"' >> ~/.bashrc \
+  #  && echo 'alias dev="php main/console -e=dev"' >> ~/.bashrc \
+  #  && echo 'alias prod="php main/console -e=prod"' >> ~/.bashrc \
 ;fi
 
 ###########################################################################

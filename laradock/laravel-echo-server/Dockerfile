@@ -1,11 +1,11 @@
 FROM node:alpine
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Create main directory
+RUN mkdir -p /usr/src/main
+WORKDIR /usr/src/main
 
-# Install app dependencies
-COPY package.json /usr/src/app/
+# Install main dependencies
+COPY package.json /usr/src/main/
 
 RUN apk add --update \
     python \
@@ -15,8 +15,8 @@ RUN apk add --update \
 
 RUN npm install
 
-# Bundle app source
-COPY laravel-echo-server.json /usr/src/app/laravel-echo-server.json
+# Bundle main source
+COPY laravel-echo-server.json /usr/src/main/laravel-echo-server.json
 
 EXPOSE 3000
 CMD [ "npm", "start", "--force" ]

@@ -26,7 +26,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Run the given array of bootstrap classes.
+         * Run the given array of bootstrap services.
          *
          * @param array $bootstrappers
          * @return void

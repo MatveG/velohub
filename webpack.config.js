@@ -6,7 +6,7 @@ module.exports = {
     mode: 'development',
     entry: {
         'public/assets/app.min': './resources/js/app.js',
-        'public/assets/admin/app.min': './resources/admin/app.js',
+        'public/assets/admin/app.min': './resources/admin/index.js',
     },
     output: {
         path: path.resolve(__dirname, './'),

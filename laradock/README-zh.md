@@ -371,7 +371,7 @@ docker logs {container-name}
 例如 使用 Composer
 
 ```bash
-composer create-project laravel/laravel my-cool-app "5.2.*"
+composer create-project laravel/laravel my-cool-main "5.2.*"
 ```
 
 > 我们建议使用 `composer create-project` 替换 Laravel 安装器去安装 Laravel.
@@ -382,19 +382,19 @@ composer create-project laravel/laravel my-cool-app "5.2.*"
 3 - 编辑 `docker-compose.yml` 映射新的应用目录:
 系统默认 Laradock 假定 Laravel 应用在 laradock 的父级目录中
 
-更新 Laravel 应用在 `my-cool-app` 目录中, 我们需要用 `../my-cool-app/:/var/www`替换 `../:/var/www` , 如下:
+更新 Laravel 应用在 `my-cool-main` 目录中, 我们需要用 `../my-cool-main/:/var/www`替换 `../:/var/www` , 如下:
 
 ```yaml
     application:
         build: ./application
         volumes:
-            - ../my-cool-app/:/var/www
+            - ../my-cool-main/:/var/www
 ```
 
 4 - 进入目录下继续工作..
 
 ```bash
-cd my-cool-app
+cd my-cool-main
 ```
 
 5 - 回到 Laradock 安装步骤,看看如何编辑 `.env` 的文件。
