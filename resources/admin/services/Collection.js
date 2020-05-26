@@ -2,8 +2,6 @@
 export default class Collection {
     constructor(options) {
         this._items = [];
-        this._return = [];
-        this._options = options;
 
         return new Proxy(this, {
             get: (target, prop) => {
@@ -61,19 +59,19 @@ export default class Collection {
     }
 
     sum(key) {
-        if (this._items[0][key]) {
+        if (this.count()) {
             return this._items.reduce((acc, el) => acc + el[key], this._items[0][key]);
         }
     }
 
     min(key) {
-        if (this._items[0][key]) {
+        if (this.count()) {
             return this._items.reduce((acc, el) => (el[key] < acc) ? el[key] : acc, this._items[0][key]);
         }
     }
 
     max(key) {
-        if (this._items[0][key]) {
+        if (this.count()) {
             return this._items.reduce((acc, el) => (el[key] > acc) ? el[key] : acc, this._items[0][key]);
         }
     }
@@ -134,11 +132,8 @@ export default class Collection {
 
     push(item)  {
         if (item) {
-            if (this._options.autoOrder) {
-                let lastVal = this.max(this._options.autoOrder);
-                item[this._options.autoOrder] = (lastVal) ? lastVal +1 : 1;
-            }
-
+            let lastVal = this.max('sort');
+            item.sort = (lastVal) ? lastVal +1 : 1;
             this._items.push(item);
         }
 
@@ -147,11 +142,8 @@ export default class Collection {
 
     unshift(item) {
         if (item) {
-            if (this._options.autoOrder) {
-                item[this._options.autoOrder] = 1;
-                this._items.map(el => el[this._options.autoOrder]++);
-            }
-
+            item.sort = 1;
+            this._items.map(el => el.sort++);
             this._items.unshift(item);
         }
 
@@ -168,9 +160,7 @@ export default class Collection {
 
     remove(key) {
         if (this._items[key]) {
-            if (this._options.autoOrder) {
-                this._items.forEach((el) => el.ord = (el.ord > this._items[key].ord) ? --el.ord : el.ord);
-            }
+            this._items.forEach((el) => el.sort = (el.sort > this._items[key].sort) ? --el.sort : el.sort);
             this._items.splice(key, 1);
         }
 

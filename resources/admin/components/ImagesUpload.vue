@@ -34,7 +34,7 @@
 
         props: [
             'webRoute',
-            'imagesArray',
+            'propItems',
             'imageWidth',
             'maxAmount'
         ],
@@ -58,7 +58,7 @@
 
         mounted() {
             let element = this.$refs.upload;
-            this.images = this.imagesArray;
+            this.images = this.propItems;
             this.imageHeight = (this.images.length) ? element.offsetWidth*0.98 : element.offsetWidth*0.3;
         },
 

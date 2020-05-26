@@ -1,6 +1,13 @@
 
 export const draggable = {
     methods: {
+        dragswap(payload) {
+            if (payload.row.sorting && this.draggingRow.sorting) {
+                [payload.row.sorting, this.draggingRow.sorting] = [this.draggingRow.sorting, payload.row.sorting];
+                this.$refs.table.initSort();
+            }
+        },
+
         dragdrop(payload) {
             payload.event.target.closest('tr').classList.remove('is-selected');
         },

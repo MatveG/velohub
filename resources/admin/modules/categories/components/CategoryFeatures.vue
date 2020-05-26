@@ -2,7 +2,8 @@
     <div>
         <b-table class="table-valign-center"
                  ref="table"
-                 :data="(method === 'add') ? [...items, currItem] : items"
+                 :data="(method === 'add') ? [...items, item] : items"
+                 default-sorting="sorting"
                  custom-row-key="index"
                  icon-pack="fa"
                  striped
@@ -15,32 +16,32 @@
                  :row-class="(row) => row.type === 'header' && 'feature-header'">
 
             <template v-slot="props">
-                <b-table-column field="ord" width="5%" sortable centered>
-                    {{ props.row.ord }}
+                <b-table-column field="sorting" width="5%" sortable centered>
+                    {{ props.row.sorting }}
                 </b-table-column>
 
                 <b-table-column field="title" label="Название" width="25%" sortable>
-                    <b-field v-if="props.row.index === currItem.index || props.row === currItem" :type="{ 'is-danger': $v.currItem.title.$error }">
-                        <b-input v-model="currItem.title"></b-input>
+                    <b-field v-if="props.row.index === item.index || props.row === item" :type="{ 'is-danger': $v.item.title.$error }">
+                        <b-input v-model="item.title"></b-input>
                     </b-field>
                     <span v-else>{{ props.row.title }}</span>
                 </b-table-column>
 
                 <b-table-column field="type" label="Тип данных" width="25%" sortable centered>
-                    <template v-if="props.row.index === currItem.index || props.row === currItem">
-                        <b-field :type="{ 'is-danger': $v.currItem.type.$error }">
-                            <b-select v-model="currItem.type" @change.native="reset" expanded>
+                    <template v-if="props.row.index === item.index || props.row === item">
+                        <b-field :type="{ 'is-danger': $v.item.type.$error }">
+                            <b-select v-model="item.type" @change.native="reset" expanded>
                                 <option v-for="(title, key) in inputTypes" :value="key">{{ title }}</option>
                             </b-select>
                         </b-field>
-                        <template v-if="currItem.type === 'number'">
+                        <template v-if="item.type === 'number'">
                             <b-field label="Единицы измерения" label-position="on-border">
-                                <b-input v-model="currItem.units" placeholder="кг" />
+                                <b-input v-model="item.units" placeholder="кг" />
                             </b-field>
                         </template>
-                        <template v-if="currItem.type === 'select'">
-                            <b-field label="Список значений" label-position="on-border" :type="{ 'is-danger': $v.currItem.values.$error }">
-                                <b-taginput v-model="currItem.values" placeholder="Добавить"  />
+                        <template v-if="item.type === 'select'">
+                            <b-field label="Список значений" label-position="on-border" :type="{ 'is-danger': $v.item.values.$error }">
+                                <b-taginput v-model="item.values" placeholder="Добавить"  />
                             </b-field>
                         </template>
                     </template>
@@ -48,23 +49,23 @@
                 </b-table-column>
 
                 <b-table-column field="is_required" label="Обязательное" width="10%" sortable centered>
-                    <b-checkbox v-if="props.row.index === currItem.index || props.row === currItem" v-model="currItem.is_required"
-                                :disabled="currItem.type === 'header'" />
+                    <b-checkbox v-if="props.row.index === item.index || props.row === item" v-model="item.is_required"
+                                :disabled="item.type === 'header'" />
                     <span v-else-if="props.row.is_required" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
                 </b-table-column>
 
                 <b-table-column field="is_filter" label="Фильтр" width="10%" sortable centered>
-                    <b-checkbox v-if="props.row.index === currItem.index || props.row === currItem" v-model="currItem.is_filter"
-                                :disabled="currItem.type === 'text' || currItem.type === 'header'" />
+                    <b-checkbox v-if="props.row.index === item.index || props.row === item" v-model="item.is_filter"
+                                :disabled="item.type === 'text' || item.type === 'header'" />
                     <span v-else-if="props.row.is_filter" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
                 </b-table-column>
 
                 <b-table-column label="*" width="20%" centered>
-                    <template v-if="props.row.index === currItem.index || props.row === currItem">
+                    <template v-if="props.row.index === item.index || props.row === item">
                         <button @click="save" type="button" class="button fas fa-check is-success is-small" />
                         <button @click="cancel" type="button" class="button fas fa-times is-warning is-small" />
                     </template>
@@ -97,8 +98,8 @@
         string: 'строка',
         number: 'число',
         text: 'текст',
-        boolean: 'да/нет',
-        select: 'выбор из списка',
+        boolean: 'есть/нет',
+        select: 'выбор',
         header: 'заголовок',
     };
 
@@ -112,31 +113,30 @@
                 type: Array,
                 default: () => []
             },
+            features: [Array]
         },
 
         data () {
             return {
+                item: {},
                 method: null,
-                currItem: {},
                 inputTypes: inputTypes,
-                collection: new Collection({ autoOrder: 'ord' }),
+                collection: new Collection(),
             }
         },
 
         computed: {
             items: function() {
-                return this.collection.all(true);
+                return this.collection.all();
             },
         },
 
         mounted() {
             this.collection.collect(this.propItems);
-
-            console.log( this.collection.find(el => el.title === 'efwef') );
         },
 
         validations: {
-            currItem: {
+            item: {
                 title: {
                     required,
                     minLength: minLength(2)
@@ -146,7 +146,7 @@
                 },
                 values: {
                     required: requiredIf(function () {
-                        return this.currItem.type === 'select';
+                        return this.item.type === 'select';
                     }),
                     minLength: minLength(1),
                 }
@@ -157,23 +157,21 @@
             add() {
                 this.cancel();
                 this.method = 'add';
-                this.currItem = { key: this.createKey(), ...blank };
+                this.item = {
+                    key: this.createKey(),
+                    ...blank
+                };
             },
 
             edit(index) {
                 this.cancel();
                 this.method = 'edit';
-                this.currItem = this.collection.get(index);
+                this.item = this.collection.get(index);
             },
 
             save() {
                 if (this.validate()) {
-                    if (this.method === 'add') {
-                        this.collection.push(this.currItem);
-                    } else {
-                        this.collection.put(this.currItem.index, this.currItem);
-                    }
-
+                    (this.method === 'add') ? this.collection.push(this.item) : this.collection.put(this.item.index, this.item);
                     this.$emit('update', this.items);
                     this.cancel();
                 }
@@ -188,9 +186,9 @@
                     return false;
                 }
 
-                let duplicate = this.collection.findIndex(el => el.title === this.currItem.title);
+                let duplicate = this.collection.findIndex(el => el.title === this.item.title);
 
-                if (duplicate !== -1 && duplicate !== this.currItem.index) {
+                if (duplicate !== -1 && duplicate !== this.item.index) {
                     this.toast('Уже есть запись с таким Названием');
 
                     return false;
@@ -210,23 +208,18 @@
             cancel() {
                 this.$v.$reset();
                 this.method = null;
-                this.currItem = {};
+                this.item = {};
             },
 
             reset() {
-                this.currItem = Object.assign(this.currItem, blank);
+                this.item = Object.assign(this.item, blank);
             },
 
             drop(payload) {
                 this.dragdrop(payload);
 
-                if(Object.keys(this.currItem).length) {
-                    return false;
-                }
-
-                if (payload.row.ord && this.draggingRow.ord && payload.row.ord !== this.draggingRow.ord) {
-                    [payload.row.ord, this.draggingRow.ord] = [this.draggingRow.ord, payload.row.ord];
-                    this.$refs.table.initSort();
+                if (!Object.keys(this.item).length && payload.row.sorting !== this.draggingRow.sorting) {
+                    this.dragswap(payload);
                     this.$emit('update', this.items);
                 }
             },

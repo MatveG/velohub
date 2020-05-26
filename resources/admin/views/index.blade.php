@@ -16,7 +16,8 @@
     <div id="app">
         <nav style="width: 12rem; height: 100%; position: fixed; left: 0;padding:1rem;background-color: #333;">
             <router-link to="/products">Товары</router-link><br><br>
-            <router-link to="/categories">Категории</router-link><br><br>
+            <router-link to="/category">Категории</router-link><br><br>
+            <router-link to="/category-edit/10">Велосипеды</router-link><br><br>
         </nav>
         <router-view style="margin-left: 12rem;"></router-view>
     </div>

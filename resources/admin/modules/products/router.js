@@ -1,6 +1,6 @@
 
-import Index from '../views/Index'
-import Edit from '../views/Edit'
+import Index from './views/Index'
+import Edit from './views/Edit'
 
 export default [
     {
