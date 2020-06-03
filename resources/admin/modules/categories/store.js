@@ -2,48 +2,6 @@
 import axios from 'axios';
 
 export default {
-    actions: {
-        fetchCategories(context) {
-            axios
-                .get(`/admin/categories/`)
-                .then((res) => context.commit('assignAll', res.data))
-                .catch((error) => console.log(error));
-        },
-
-        fetchCategory(context, id) {
-            axios
-                .get(`/admin/categories/${id}/edit/`)
-                .then((res) => context.commit('assignOne', res.data))
-                .catch((error) => console.log(error));
-        },
-
-        storeCategory() {
-            axios
-                .post(`/admin/categories/store`, context.state.category)
-                .then((res) => context.commit('updateOne', res.data))
-                .catch((error) => console.log(error));
-        },
-
-        saveCategory(context, payload) {
-            context.commit('updateOne', payload);
-            axios.post(`/admin/categories/${payload.id}/update`, payload).catch((error) => console.log(error));
-        }
-    },
-
-    mutations: {
-        assignOne(state, value) {
-            state.category = value;
-        },
-
-        updateOne(state, value) {
-            state.category = Object.assign(state.category, value);
-        },
-
-        assignAll(state, value) {
-            state.categories = value;
-        }
-    },
-
     state: {
         category: {
             images: [],
@@ -55,10 +13,63 @@ export default {
     },
 
     getters: {
-        getCategory: state => state.category,
+        category: state => state.category,
 
-        getCategories: state => state.categories,
+        categories: state => state.categories,
+    },
 
-        getWhere: state => (prop, val) => state.categories.find(el => el[prop] === val),
+    mutations: {
+        assignCategories(state, payload) {
+            state.categories = payload;
+        },
+
+        assignCategory(state, payload) {
+            state.category = payload;
+        },
+
+        updateCategory(state, payload) {
+            state.category = Object.assign(state.category, payload);
+        },
+
+        deleteCategory(state, payload) {
+            state.categories = state.categories.filter(el => el !== payload);
+        }
+    },
+
+    actions: {
+        fetchCategories(context) {
+            axios
+                .get(`/admin/categories/`)
+                .then((res) => context.commit('assignCategories', res.data))
+                .catch((error) => console.log(error));
+        },
+
+        fetchCategory(context, id) {
+            axios
+                .get(`/admin/categories/${id}`)
+                .then((res) => context.commit('assignCategory', res.data))
+                .catch((error) => console.log(error));
+        },
+
+        storeCategory(context, payload) {
+            axios
+                .post(`/admin/categories/store`, payload)
+                .then((res) => context.commit('updateCategory', res.data))
+                .catch((error) => console.log(error));
+        },
+
+        patchCategory(context, payload) {
+            axios
+                .patch(`/admin/categories/${payload.id}`, payload)
+                .then((res) => context.commit('updateCategory', res.data))
+                .catch((error) => console.log(error));
+        },
+
+        destroyCategory(context, payload) {
+            axios
+                .delete(`/admin/categories/${payload.id}`)
+                .then(() => context.commit('deleteCategory', payload))
+                .catch((error) => console.log(error));
+        }
     },
 };

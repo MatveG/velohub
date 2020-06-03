@@ -3,7 +3,7 @@
     <section class="section is-main-section">
         <div class="buttons is-right">
             <button @click="save" :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
-            <button @click="$router.push({ name: 'categories' })" class="button fas fa-arrow-circle-left"></button>
+            <button @click="$router.push({ name: 'category' })" class="button fas fa-arrow-circle-left"></button>
         </div>
 
         <div class="columns">
@@ -45,7 +45,7 @@
                 <card-component v-if="!category.is_parent" title="Характеристики и параметры" class="margin-line">
                     <b-tabs v-model="tabs2" type="is-boxed">
                         <b-tab-item label="Характеристики">
-                            <category-features v-if="category.id" :prop-items="category.features" @update="assign('features', $event)" />
+                            <category-features v-if="category.id" :prop-items="category.features" @update="assign('features', $event)"></category-features>
                         </b-tab-item>
                         <b-tab-item label="Параметры">
                             <category-parameters v-if="category.id" :prop-items="category.parameters" @update="assign('parameters', $event)" />
@@ -64,9 +64,9 @@
                     </b-field>
                     <b-field label="Родительская категория">
                         <b-autocomplete v-if="category"
-                                        :value="parent.title"
+                                        :value="parentCategory.title"
                                         :open-on-focus="true"
-                                        :data="categories"
+                                        :data="parentsList"
                                         field="title"
                                         @select="(option) => assign('parent_id', option.id)">
                         </b-autocomplete>
@@ -78,7 +78,7 @@
 
                 <card-component v-if="category.id" title="Фотография" class="margin-line">
                     <images-upload :prop-items="category.images" @update="assign('images', $event)"
-                                   :web-route="`/admin/categories/${category.id}`" max-amount="1" image-width="100%" />
+                                   :web-route="`/admin/parents/${category.id}`" max-amount="1" image-width="100%" />
                 </card-component>
             </div>
         </div>
@@ -86,12 +86,14 @@
 </template>
 
 <script>
+    import {required, minLength} from 'vuelidate/lib/validators'
+    import {mapActions, mapGetters, mapMutations} from 'vuex';
+    import {states} from '@/mixins/states';
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from '@/components/ImagesUpload';
-    import CategoryFeatures from '../components/CategoryFeatures';
+    import CategoryTable from "../components/CategoryTable";
     import CategoryParameters from '../components/CategoryParameters';
-    import {states} from '@/mixins/states';
-    import {required, minLength} from 'vuelidate/lib/validators'
+    import CategoryFeatures from "../components/CategoryFeatures";
 
     export default {
         name: 'CategoryEdit',
@@ -99,15 +101,23 @@
         components: {
             CardComponent,
             ImagesUpload,
+            CategoryTable,
             CategoryFeatures,
-            CategoryParameters,
+            CategoryParameters
         },
 
         mixins: [states],
 
         props: {
-            propId: [String, Number],
-            default: () => null
+            propId: {
+                type: [String, Number],
+                default: null
+            },
+
+            propParent: {
+                type: [String, Number],
+                default: null
+            }
         },
 
         data() {
@@ -118,16 +128,14 @@
         },
 
         computed: {
-            category() {
-                return this.$store.getters.getOne;
+            ...mapGetters(['category', 'categories']),
+
+            parentsList: function() {
+                return this.categories.filter(el => el.is_parent === true);
             },
 
-            categories() {
-                return this.$store.getters.getAll;
-            },
-
-            parent: function () {
-                return this.categories.find((element) => element.id === this.category.parent_id) || {};
+            parentCategory: function() {
+                return this.parentsList.find((element) => element.id === this.category.parent_id) || {};
             }
         },
 
@@ -148,9 +156,10 @@
             if (this.propId) {
                 this.$store.dispatch('fetchOne', this.propId);
             } else {
+                this.$store.commit('updateCategory', (this.propParent) ? {parent_id: this.propParent} : {parent_id: null});
                 this.saved = false;
             }
-            this.$store.dispatch('fetchAllParent');
+            this.$store.dispatch('fetchCategories');
         },
 
         methods: {
@@ -177,28 +186,16 @@
                 this.stateLoading();
 
                 this.$store
-                    .dispatch((this.propId) ? 'postOne' : 'storeOne')
+                    .dispatch((this.propId) ? 'patchCategory' : 'storeCategory', this.category)
                     .then(() => {
                         if (!this.propId) {
                             this.$router.replace({
-                                name: 'category.edit',
-                                params: { id: this.category.id }
+                                name: 'category-edit',
+                                params: { propId: this.category.id }
                             });
                         }
                     })
                     .finally(() => this.stateSaved());
-            },
-
-            validate() {
-                this.$v.$touch();
-
-                if (this.$v.$invalid) {
-                    this.toast('Заполните обязательные поля');
-
-                    return false;
-                }
-
-                return true;
             },
         }
     }

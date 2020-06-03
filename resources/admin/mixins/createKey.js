@@ -6,7 +6,7 @@ const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm
 export const createKey = {
     methods: {
         createKey(length = 9) {
-            return nanoid(length);
+                return nanoid(length);
         }
     }
 };

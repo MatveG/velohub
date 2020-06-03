@@ -83,7 +83,7 @@ export default class Collection {
     }
 
     where(key, value) {
-        return (new Collection(this._options)).collect(this._items.filter(el => el[key] === value));
+        return (new Collection()).collect(this._items.filter(el => el[key] === value));
     }
 
     find(key, value) {
@@ -92,10 +92,6 @@ export default class Collection {
 
     contains(key, value) {
         return !!this._items.find(el => el[key] === value);
-    }
-
-    every(callback) {
-        return this._items.filter((el, i) => callback(el, i)).length === this.count();
     }
 
     orderBy(key) {
@@ -107,7 +103,7 @@ export default class Collection {
     }
 
     orderByDesc(key) {
-        this._items.sort((first, second) => {
+        this._items.sorting((first, second) => {
             return ((first[key] < second[key]) ? 1 : ((first[key] > second[key]) ? -1 : 0));
         });
 
@@ -130,38 +126,52 @@ export default class Collection {
         return this;
     }
 
-    push(item)  {
-        if (item) {
-            let lastVal = this.max('sort');
-            item.sort = (lastVal) ? lastVal +1 : 1;
-            this._items.push(item);
+    push(obj)  {
+        if (Object.keys(obj).keys()) {
+            let lastVal = this.max('sorting');
+            obj.sorting = (lastVal) ? lastVal +1 : 1;
+            this._items.push(obj);
         }
 
         return this;
     }
 
-    unshift(item) {
-        if (item) {
-            item.sort = 1;
-            this._items.map(el => el.sort++);
-            this._items.unshift(item);
+    put(index, obj) {
+        if (index >= 0 && Object.keys(obj).length) {
+            this._items = this._items.map((el, i) => (i === index) ? obj : el);
         }
 
         return this;
     }
 
-    put(key, item) {
-        if (key >= 0 && item) {
-            this._items = this._items.map((el, index) => (key === index) ? item : el);
+    update(index, obj) {
+        if (index >= 0 && Object.keys(obj).length) {
+            this._items = this._items.map((el, i) => (i === index) ? {...el, ...obj} : el);
         }
 
         return this;
     }
 
-    remove(key) {
-        if (this._items[key]) {
-            this._items.forEach((el) => el.sort = (el.sort > this._items[key].sort) ? --el.sort : el.sort);
-            this._items.splice(key, 1);
+    remove(index) {
+        if (this._items[index]) {
+            this._items.forEach((el) => el.sorting = (el.sorting > this._items[index].sorting) ? --el.sorting : el.sorting);
+            this._items.splice(index, 1);
+        }
+
+        return this;
+    }
+
+    shift() {
+        this.removeIndex(0);
+
+        return this;
+    }
+
+    unshift(obj) {
+        if (obj) {
+            obj.sorting = 1;
+            this._items.map(el => el.sorting++);
+            this._items.unshift(obj);
         }
 
         return this;

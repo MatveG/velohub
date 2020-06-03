@@ -10,12 +10,18 @@ export default [
     },
     {
         path: '/category-create',
-        name: 'category.create',
+        name: 'category-create',
         component: CategoryEdit
     },
     {
+        path: '/category-create-sub/:propParent',
+        name: 'category-create-sub',
+        component: CategoryEdit,
+        props: true
+    },
+    {
         path: '/category-edit/:propId',
-        name: 'category.edit',
+        name: 'category-edit',
         component: CategoryEdit,
         props: true
     },

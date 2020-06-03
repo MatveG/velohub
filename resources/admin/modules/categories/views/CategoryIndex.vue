@@ -1,7 +1,7 @@
 <template>
     <section class="section is-main-section">
         <div class="buttons is-right">
-            <button @click="$router.push({ name: 'category.create' })" class="button is-primary fas fa-plus"></button>
+            <button @click="$router.push({ name: 'category-create' })" class="button is-primary fas fa-plus"></button>
         </div>
         <card-component class="has-table has-mobile-sort-spaced" title="Товары">
             <category-table v-if="categories.length" :prop-items="categories" :recursive="false" />
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
     import CardComponent from "@/components/CardComponent";
     import CategoryTable from "../components/CategoryTable";
 
@@ -21,11 +22,7 @@
             CategoryTable
         },
 
-        computed: {
-            categories() {
-                return this.$store.getters.getCategories;
-            },
-        },
+        computed: mapGetters(['categories']),
 
         mounted() {
             this.$store.dispatch('fetchCategories');

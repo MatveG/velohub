@@ -1,5 +1,14 @@
 <?php
 
+//Verb          Path                        Action  Route Name
+//GET           /users                      index   users.index
+//GET           /users/create               create  users.create
+//POST          /users                      store   users.store
+//GET           /users/{user}               show    users.show
+//GET           /users/{user}/edit          edit    users.edit
+//PUT|PATCH     /users/{user}               update  users.update
+//DELETE        /users/{user}               destroy users.destroy
+
 // Category
 Route::get('/shop/{latin}/{id}/compare/', 'CategoryController@compare')->name('category.compare');
 Route::get('/shop/{latin}/{id}/{path?}/', 'CategoryController@show')->where('path', '.*')->name('category.show');
@@ -35,6 +44,15 @@ Route::get('/media/ul/{img}')->name('img.upload');
 Route::view('/admin/', 'Admin::index');
 
 Route::namespace('Admin')->group(function () {
+    // Categories
+    Route::post('/admin/categories/store', 'CategoryController@store');
+    Route::get('/admin/categories/{id}', 'CategoryController@edit');
+    Route::patch('/admin/categories/{id}', 'CategoryController@update');
+    Route::delete('/admin/categories/{id}/destroy', 'CategoryController@destroy');
+    Route::post('/admin/categories/{id}/images-upload', 'CategoryController@imagesUpload');
+    Route::post('/admin/categories/{id}/images-update', 'CategoryController@imagesUpdate');
+    Route::get('/admin/categories', 'CategoryController@index');
+
     // Products
     Route::get('/admin/products/{id}/edit/', 'ProductContoller@edit');
     Route::post('/admin/products/{id}/save/', 'ProductContoller@save');
@@ -42,16 +60,6 @@ Route::namespace('Admin')->group(function () {
     Route::post('/admin/products/{id}/images-upload', 'ProductContoller@imagesUpload');
     Route::post('/admin/products/{id}/images-update', 'ProductContoller@imagesUpdate');
     Route::get('/admin/products/', 'ProductContoller@index');
-
-    // Categories
-    Route::get('/admin/categories/{id}/edit', 'CategoryController@edit');
-    Route::post('/admin/categories/store', 'CategoryController@store');
-    Route::post('/admin/categories/{id}/update', 'CategoryController@update');
-    Route::post('/admin/categories/{id}/destroy', 'CategoryController@destroy');
-    Route::post('/admin/categories/{id}/images-upload', 'CategoryController@imagesUpload');
-    Route::post('/admin/categories/{id}/images-update', 'CategoryController@imagesUpdate');
-    Route::post('/admin/categories/list', 'CategoryController@list');
-    Route::get('/admin/categories', 'CategoryController@index');
 
     // Variants
     Route::post('/admin/variant/store', 'VariantController@store');
