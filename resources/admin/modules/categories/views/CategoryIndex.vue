@@ -3,7 +3,7 @@
         <div class="buttons is-right">
             <button @click="$router.push({ name: 'category-create' })" class="button is-primary fas fa-plus"></button>
         </div>
-        <card-component class="has-table has-mobile-sort-spaced" title="Товары">
+        <card-component class="has-table has-mobile-sort-spaced" title="Категории">
             <category-table v-if="categories.length" :prop-items="categories" :recursive="false" />
         </card-component>
     </section>

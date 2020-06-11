@@ -14,49 +14,63 @@ class CategoryController extends Controller
         return response()->json(Category::getTree());
     }
 
-    public function list(Request $request)
+    public function edit($id)
     {
-        return response()->json(Category::where($request->input('where', []))
-                ->orderBy('sorting')
-                ->get(['id', 'parent_id', 'title'])
-                ->toArray()
-        );
+        return response()->json(Category::find($id));
     }
 
-    public function edit(Request $request, $id)
+    public function store(Request $request)
     {
-        return response()->json(Category::find($id)->toArray());
-    }
+        $this->validate($request, [
+            'parent_id' => 'required|integer',
+            'title' => 'required|min:3|max:255',
+            'title_short' => 'required|min:3|max:255',
+        ]);
 
-    public function store(Request $request, $id = 0)
-    {
         $category = Category::create($request->all());
-        $category->sorting = Category::where('parent_id', $request->input('parent_id'))->max('sorting') + 1;
+        $category->title = $request->title;
+        $category->sorting = $this->calculateSorting($category->parent_id);
         $category->save();
 
-        return response()->json( $category->only( ['id'] + array_keys($category->getChanges()) ) );
+        return response()->json(['id' => $category->id] + $category->getChanges());
     }
 
     public function update(Request $request, $id = 0)
     {
+        $this->validate($request, [
+            'parent_id' => 'required|integer',
+            'title' => 'required|min:3|max:255',
+            'title_short' => 'required|min:3|max:255',
+        ]);
+
         $category = Category::findOrFail($id);
         $category->fill($request->all());
+        $category->title = $request->title;
 
         if ($category->isDirty('parent_id')) {
-            $category->sorting = Category::where('parent_id', $request['parent_id'])->max('sorting') + 1;
+            $this->decreaseSorting($category->parent_id, $category->sorting);
+            $category->sorting = $this->calculateSorting($category->parent_id);
         }
         $category->save();
 
-        return response()->json( $category->only( ['id'] + array_keys($category->getChanges()) ) );
+        return response()->json(['id' => $category->id] + $category->getChanges());
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        Category::destroy($id);
-
-        // resort
+        $category = Category::findOrFail($id);
+        $category->delete();
+        $this->decreaseSorting($category->parent_id, $category->sorting);
 
         return response()->json();
+    }
+
+    private function calculateSorting($parentId) {
+        return Category::where('parent_id', $parentId)->max('sorting') + 1;
+    }
+
+    private function decreaseSorting($parentId, $initialValue) {
+        return Category::where('parent_id', $parentId)->where('sorting', '>', $initialValue)->decrement('sorting');
     }
 
     public function imagesUpload(Request $request, $id)

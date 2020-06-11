@@ -45,13 +45,13 @@ Route::view('/admin/', 'Admin::index');
 
 Route::namespace('Admin')->group(function () {
     // Categories
-    Route::post('/admin/categories/store', 'CategoryController@store');
+    Route::get('/admin/categories', 'CategoryController@index');
+    Route::post('/admin/categories', 'CategoryController@store');
     Route::get('/admin/categories/{id}', 'CategoryController@edit');
     Route::patch('/admin/categories/{id}', 'CategoryController@update');
-    Route::delete('/admin/categories/{id}/destroy', 'CategoryController@destroy');
+    Route::delete('/admin/categories/{id}', 'CategoryController@destroy');
     Route::post('/admin/categories/{id}/images-upload', 'CategoryController@imagesUpload');
     Route::post('/admin/categories/{id}/images-update', 'CategoryController@imagesUpdate');
-    Route::get('/admin/categories', 'CategoryController@index');
 
     // Products
     Route::get('/admin/products/{id}/edit/', 'ProductContoller@edit');

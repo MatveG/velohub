@@ -18,7 +18,7 @@
                  class="valign-center">
 
             <template v-slot="props">
-                <b-table-column field="sorting" width="5%" sortable centered>
+                <b-table-column field="sorting" label="↓" width="5%" sortable centered>
                     {{ props.row.sorting }}
                 </b-table-column>
 

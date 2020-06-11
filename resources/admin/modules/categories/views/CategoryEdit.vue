@@ -66,7 +66,7 @@
                         <b-autocomplete v-if="category"
                                         :value="parentCategory.title"
                                         :open-on-focus="true"
-                                        :data="parentsList"
+                                        :data="parentCategories"
                                         field="title"
                                         @select="(option) => assign('parent_id', option.id)">
                         </b-autocomplete>
@@ -86,8 +86,8 @@
 </template>
 
 <script>
-    import {required, minLength} from 'vuelidate/lib/validators'
-    import {mapActions, mapGetters, mapMutations} from 'vuex';
+    import {required, minLength, maxLength} from 'vuelidate/lib/validators'
+    import {mapGetters} from 'vuex';
     import {states} from '@/mixins/states';
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from '@/components/ImagesUpload';
@@ -128,14 +128,10 @@
         },
 
         computed: {
-            ...mapGetters(['category', 'categories']),
-
-            parentsList: function() {
-                return this.categories.filter(el => el.is_parent === true);
-            },
+            ...mapGetters(['category', 'categories', 'parentCategories']),
 
             parentCategory: function() {
-                return this.parentsList.find((element) => element.id === this.category.parent_id) || {};
+                return this.parentCategories.find((element) => element.id === this.category.parent_id) || {};
             }
         },
 
@@ -143,21 +139,24 @@
             category: {
                 title: {
                     required,
-                    minLength: minLength(3)
+                    minLength: minLength(3),
+                    maxLength: maxLength(255)
                 },
                 title_short: {
                     required,
-                    minLength: minLength(3)
+                    minLength: minLength(3),
+                    maxLength: maxLength(255)
                 },
             }
         },
 
         mounted() {
             if (this.propId) {
-                this.$store.dispatch('fetchOne', this.propId);
-            } else {
-                this.$store.commit('updateCategory', (this.propParent) ? {parent_id: this.propParent} : {parent_id: null});
+                this.$store.dispatch('fetchCategory', this.propId);
+            } else if (this.propParent) {
                 this.saved = false;
+                this.$store.commit('resetCategory');
+                this.category.parent_id = this.propParent;
             }
             this.$store.dispatch('fetchCategories');
         },
@@ -184,7 +183,6 @@
                 }
 
                 this.stateLoading();
-
                 this.$store
                     .dispatch((this.propId) ? 'patchCategory' : 'storeCategory', this.category)
                     .then(() => {

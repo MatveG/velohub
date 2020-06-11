@@ -2,9 +2,9 @@
 <template>
     <div class="table-draggable-nested">
         <b-table ref="table"
-                 :data='propItems'
                  :loading="loading"
-                 default-sorting="sorting"
+                 :data="propItems"
+                 default-sort="sorting"
                  custom-row-key="id"
                  icon-pack="fa"
                  hoverable
@@ -20,17 +20,15 @@
                  class="valign-center">
 
             <template slot-scope="props">
-                <b-table-column field="sorting" label="" width="10%" sortable centered>
+                <b-table-column field="sorting" label="" width="10%" sortable centered class="has-text-grey">
                     {{ props.row.sorting }}
                 </b-table-column>
 
-                <b-table-column field="child.length" label="Родительская" width="15%" sortable centered>
-                    <span v-if="props.row.is_parent" class="icon has-text-dark">
-                        <i class="fas fa-check-square"></i>
-                    </span>
+                <b-table-column field="id" label="ID" width="10%" sortable centered :searchable="!propNested">
+                    {{ props.row.id }}
                 </b-table-column>
 
-                <b-table-column field="title" label="Название категории" width="55%" :searchable="!propNested">
+                <b-table-column field="title" label="Название категории" width="50%" sortable :searchable="!propNested">
                     {{ props.row.title }}
                 </b-table-column>
 
@@ -42,7 +40,7 @@
                     <b-dropdown hoverable :expanded="false" aria-role="list" class="dropdown-buttons">
                         <button @click="edit(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
 
-                        <b-dropdown-item v-if="props.row.is_parent" @click="addSub(props.row)" aria-role="listitem">
+                        <b-dropdown-item v-if="props.row.is_parent" @click="createChild(props.row)" aria-role="listitem">
                             <b-icon pack="fas" icon="plus" />
                         </b-dropdown-item>
 
@@ -86,28 +84,18 @@
 
         data () {
             return {
-                opened: [],
                 perPage: 15,
                 paginated: !this.propNested && this.perPage < this.propItems.length,
             }
         },
 
-        mounted() {
-            this.opened = this.getOpened();
+        computed: {
+            opened() {
+                return this.propItems.filter(el => el.is_parent).map(el => el.id);
+            },
         },
 
         methods: {
-            getOpened() {
-                return this.propItems.filter(el => el.is_parent === true).map(el => el.id);
-            },
-
-            addSub(row) {
-                this.$router.push({
-                    name:'category-create-sub',
-                    params: { propParent: row.id }
-                });
-            },
-
             edit(row) {
                 this.$router.push({
                     name:'category-edit',
@@ -117,60 +105,40 @@
 
             update(row) {
                 this.stateLoading();
-                this.$store
-                    .dispatch('patchCategory', row)
+                this.$store.dispatch('patchCategory', row)
                     .then(() => this.stateSaved());
+            },
+
+            createChild(row) {
+                this.$router.push({
+                    name:'category-create-child',
+                    params: { propParent: row.id }
+                });
             },
 
             destroy(row) {
                 this.confirm('Удалить?', () => {
                     this.stateLoading();
-                    this.$store
-                        .dispatch('destroyCategory', row)
-                        .then(() => {
-                            this.reduceSorting(this.propItems, row.sorting);
-                            this.stateSaved();
+                    this.$store.dispatch('destroyCategory', row).then(() => {
+                        this.$store.commit(
+                            'assignCategories',
+                            this.propItems.map(el => (el.sorting > row.sorting) ? {...el, sorting: el.sorting-1} : el)
+                        );
+                        this.stateSaved();
                     });
                 });
             },
 
-            reduceSorting(objsArray, afterValue) {
-                return objsArray.forEach((el) => {
-                    if (el.sorting > afterValue) {
-                        --el.sorting;
-                        this.$store.commit('updateCategory', el);
-                    }
-                });
-            },
-
             drop(payload) {
-                this.dragdrop(payload);
-
                 if (payload.row && this.draggingRow && payload.row.sorting !== this.draggingRow.sorting) {
-                    this.$store.dispatch('patchCategory', {...payload.row, sorting: this.draggingRow.sorting});
-                    this.$store.dispatch('patchCategory', {...this.draggingRow, sorting: payload.row.sorting});
-
+                    [payload.row.sorting, this.draggingRow.sorting] = [this.draggingRow.sorting, payload.row.sorting];
                     this.$refs.table.initSort();
+
+                    this.$store.dispatch('patchCategory', payload.row);
+                    this.$store.dispatch('patchCategory', this.draggingRow);
                 }
+                this.dragdrop(payload);
             },
         }
     }
 </script>
-
-<!--<style>-->
-<!--    .table-hide-header .table {-->
-<!--        background: #eee;-->
-<!--    }-->
-<!--    /*.table-hide-header .table thead tr:first-child {*/-->
-<!--    /*    display: none;*/-->
-<!--    /*}*/-->
-<!--    /*.table-hide-header .table thead input {*/-->
-<!--    /*    display: none;*/-->
-<!--    /*}*/-->
-<!--    .category-table .chevron-cell a {-->
-<!--        display: none;-->
-<!--    }-->
-<!--    .category-table tr.parent .chevron-cell a {-->
-<!--        display: block;-->
-<!--    }-->
-<!--</style>-->

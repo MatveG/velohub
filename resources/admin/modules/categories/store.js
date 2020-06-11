@@ -1,14 +1,29 @@
 
 import axios from 'axios';
 
+const BLANK = {
+    parent_id: 0,
+    images: [],
+    features: [],
+    parameters: [],
+};
+
+const parentsList = (items) => {
+    return items.reduce((acc, el) => {
+        if(el.is_parent) {
+            acc.push(el);
+        }
+        if(el.child.length) {
+            acc = [...acc, ...parentsList(el.child)];
+        }
+
+        return acc;
+    }, []);
+};
+
 export default {
     state: {
-        category: {
-            images: [],
-            features: [],
-            parameters: [],
-        },
-
+        category: BLANK,
         categories: [],
     },
 
@@ -16,11 +31,13 @@ export default {
         category: state => state.category,
 
         categories: state => state.categories,
+
+        parentCategories: state => parentsList(state.categories),
     },
 
     mutations: {
-        assignCategories(state, payload) {
-            state.categories = payload;
+        resetCategory(state) {
+            state.category = BLANK;
         },
 
         assignCategory(state, payload) {
@@ -28,18 +45,22 @@ export default {
         },
 
         updateCategory(state, payload) {
-            state.category = Object.assign(state.category, payload);
+            Object.assign(state.category, payload);
         },
 
-        deleteCategory(state, payload) {
+        assignCategories(state, payload) {
+            state.categories = payload;
+        },
+
+        removeFromCategories(state, payload) {
             state.categories = state.categories.filter(el => el !== payload);
-        }
+        },
     },
 
     actions: {
         fetchCategories(context) {
             axios
-                .get(`/admin/categories/`)
+                .get(`/admin/categories`)
                 .then((res) => context.commit('assignCategories', res.data))
                 .catch((error) => console.log(error));
         },
@@ -53,7 +74,7 @@ export default {
 
         storeCategory(context, payload) {
             axios
-                .post(`/admin/categories/store`, payload)
+                .post(`/admin/categories`, payload)
                 .then((res) => context.commit('updateCategory', res.data))
                 .catch((error) => console.log(error));
         },
@@ -68,8 +89,8 @@ export default {
         destroyCategory(context, payload) {
             axios
                 .delete(`/admin/categories/${payload.id}`)
-                .then(() => context.commit('deleteCategory', payload))
+                .then(() => context.commit('removeFromCategories', payload))
                 .catch((error) => console.log(error));
-        }
+        },
     },
 };

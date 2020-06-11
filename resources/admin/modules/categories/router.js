@@ -14,8 +14,8 @@ export default [
         component: CategoryEdit
     },
     {
-        path: '/category-create-sub/:propParent',
-        name: 'category-create-sub',
+        path: '/category-create-child/:propParent',
+        name: 'category-create-child',
         component: CategoryEdit,
         props: true
     },
