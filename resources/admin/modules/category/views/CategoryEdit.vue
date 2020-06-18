@@ -60,13 +60,13 @@
                         <b-switch v-model="category.is_active" @change.native="changed">Активна</b-switch>
                     </b-field>
                     <b-field>
-                        <b-switch v-model="category.is_parent" @change.native="changed">Подкатегории</b-switch>
+                        <b-switch v-model="category.is_parent" @change.native="changed" :disabled="hasChildren">Подкатегории</b-switch>
                     </b-field>
                     <b-field label="Родительская категория">
                         <b-autocomplete v-if="category"
                                         :value="parentCategory.title"
+                                        :data="categoriesParent"
                                         :open-on-focus="true"
-                                        :data="parentCategories"
                                         field="title"
                                         @select="(option) => assign('parent_id', option.id)">
                         </b-autocomplete>
@@ -78,7 +78,7 @@
 
                 <card-component v-if="category.id" title="Фотография" class="margin-line">
                     <images-upload :prop-items="category.images" @update="assign('images', $event)"
-                                   :web-route="`/admin/parents/${category.id}`" max-amount="1" image-width="100%" />
+                                   :web-route="`/admin/categories/${category.id}`" max-amount="1" image-width="100%" />
                 </card-component>
             </div>
         </div>
@@ -91,7 +91,6 @@
     import {states} from '@/mixins/states';
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from '@/components/ImagesUpload';
-    import CategoryTable from "../components/CategoryTable";
     import CategoryParameters from '../components/CategoryParameters';
     import CategoryFeatures from "../components/CategoryFeatures";
 
@@ -101,7 +100,6 @@
         components: {
             CardComponent,
             ImagesUpload,
-            CategoryTable,
             CategoryFeatures,
             CategoryParameters
         },
@@ -128,10 +126,14 @@
         },
 
         computed: {
-            ...mapGetters(['category', 'categories', 'parentCategories']),
+            ...mapGetters(['category', 'categories', 'categoriesParent']),
 
             parentCategory: function() {
-                return this.parentCategories.find((element) => element.id === this.category.parent_id) || {};
+                return this.categoriesParent.find((el) => el.id === this.category.parent_id) || {};
+            },
+
+            hasChildren: function() {
+                return !!this.categories.find(el => el.parent_id === this.category.id);
             }
         },
 
@@ -151,14 +153,15 @@
         },
 
         mounted() {
+            this.$store.commit('resetCategory');
+            this.$store.dispatch('fetchCategories');
+
             if (this.propId) {
                 this.$store.dispatch('fetchCategory', this.propId);
             } else if (this.propParent) {
                 this.saved = false;
-                this.$store.commit('resetCategory');
                 this.category.parent_id = this.propParent;
             }
-            this.$store.dispatch('fetchCategories');
         },
 
         methods: {
@@ -179,22 +182,24 @@
 
             save() {
                 if (!this.validate()) {
-                    return false;
+                    return;
+                }
+                this.stateLoading();
+
+                if (this.propId) {
+                    this.$store.dispatch('patchCategory', this.category);
+                    this.stateSaved();
+                    return;
                 }
 
-                this.stateLoading();
-                this.$store
-                    .dispatch((this.propId) ? 'patchCategory' : 'storeCategory', this.category)
-                    .then(() => {
-                        if (!this.propId) {
-                            this.$router.replace({
-                                name: 'category-edit',
-                                params: { propId: this.category.id }
-                            });
-                        }
-                    })
-                    .finally(() => this.stateSaved());
-            },
+                this.$store.dispatch('storeCategory', this.category).then(() => {
+                    this.$router.replace({
+                        name: 'category-edit',
+                        params: { propId: this.category.id }
+                    });
+                    this.stateSaved();
+                });
+            }
         }
     }
 </script>

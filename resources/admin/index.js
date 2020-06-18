@@ -11,11 +11,14 @@ import './mixins/'
 Vue.use(Buefy);
 Vue.use(Vuelidate);
 
+window.settings = {
+    perPage: 15
+};
+
 const app = new Vue({
     router,
     store
 }).$mount('#app');
-
 
 
 

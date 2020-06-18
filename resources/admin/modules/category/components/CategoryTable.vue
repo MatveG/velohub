@@ -2,21 +2,23 @@
 <template>
     <div class="table-draggable-nested">
         <b-table ref="table"
+                 :data="items"
+                 :per-page="perPage"
+                 :paginated="paginated"
                  :loading="loading"
-                 :data="propItems"
-                 default-sort="sorting"
                  custom-row-key="id"
-                 icon-pack="fa"
-                 hoverable
-                 draggable
+                 default-sort="sorting"
                  @drop="drop"
                  @dragstart="dragstart"
                  @dragover="dragover"
                  @dragleave="dragleave"
+                 hoverable
+                 draggable
                  detailed
                  detail-key="id"
                  :show-detail-icon="false"
                  :opened-detailed="opened"
+                 icon-pack="fa"
                  class="valign-center">
 
             <template slot-scope="props">
@@ -44,7 +46,7 @@
                             <b-icon pack="fas" icon="plus" />
                         </b-dropdown-item>
 
-                        <b-dropdown-item @click="destroy(props.row)" aria-role="listitem">
+                        <b-dropdown-item @click="confirmDestroy(props.row)" aria-role="listitem">
                             <b-icon pack="fas" icon="trash" />
                         </b-dropdown-item>
                     </b-dropdown>
@@ -52,13 +54,14 @@
             </template>
 
             <template slot="detail" slot-scope="props">
-                <category-table v-if="props.row.is_parent" :prop-items="props.row.child" :propNested="true" />
+                <category-table v-if="props.row.is_parent" :prop-parent="props.row.id" :propNested="true" />
             </template>
         </b-table>
     </div>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
     import {draggable} from "@/mixins/draggable";
     import {states} from "@/mixins/states";
     import CategoryTable from "./CategoryTable"
@@ -71,9 +74,9 @@
         components: {CategoryTable},
 
         props: {
-            propItems: {
-                type: Array,
-                default: () => []
+            propParent: {
+                type: Number,
+                default: 0
             },
 
             propNested: {
@@ -84,14 +87,23 @@
 
         data () {
             return {
-                perPage: 15,
-                paginated: !this.propNested && this.perPage < this.propItems.length,
+                perPage: settings.perPage
             }
         },
 
         computed: {
+            ...mapGetters(['categories']),
+
+            items() {
+                return this.categories.filter(el => el.parent_id === this.propParent);
+            },
+
             opened() {
-                return this.propItems.filter(el => el.is_parent).map(el => el.id);
+                return this.items.filter(el => el.is_parent).map(el => el.id);
+            },
+
+            paginated() {
+                return !this.propNested && this.perPage < this.items.length;
             },
         },
 
@@ -105,8 +117,7 @@
 
             update(row) {
                 this.stateLoading();
-                this.$store.dispatch('patchCategory', row)
-                    .then(() => this.stateSaved());
+                this.$store.dispatch('patchCategory', row).then(() => this.stateSaved());
             },
 
             createChild(row) {
@@ -116,26 +127,23 @@
                 });
             },
 
+            confirmDestroy(row) {
+                this.confirm('Удалить?', this.destroy.bind(null, row));
+            },
+
             destroy(row) {
-                this.confirm('Удалить?', () => {
-                    this.stateLoading();
-                    this.$store.dispatch('destroyCategory', row).then(() => {
-                        this.$store.commit(
-                            'assignCategories',
-                            this.propItems.map(el => (el.sorting > row.sorting) ? {...el, sorting: el.sorting-1} : el)
-                        );
-                        this.stateSaved();
-                    });
-                });
+                this.stateLoading();
+                this.$store.dispatch('destroyCategory', row).then(() => this.stateSaved());
             },
 
             drop(payload) {
-                if (payload.row && this.draggingRow && payload.row.sorting !== this.draggingRow.sorting) {
-                    [payload.row.sorting, this.draggingRow.sorting] = [this.draggingRow.sorting, payload.row.sorting];
-                    this.$refs.table.initSort();
+                let [rowOne, rowTwo] = [payload.row, this.draggingRow];
 
-                    this.$store.dispatch('patchCategory', payload.row);
-                    this.$store.dispatch('patchCategory', this.draggingRow);
+                if (rowOne && rowTwo && rowOne.sorting !== rowTwo.sorting) {
+                    [rowOne.sorting, rowTwo.sorting] = [rowTwo.sorting, rowOne.sorting];
+                    this.$store.dispatch('patchCategory', rowOne);
+                    this.$store.dispatch('patchCategory', rowTwo);
+                    this.$refs.table.initSort();
                 }
                 this.dragdrop(payload);
             },

@@ -25,11 +25,19 @@ class ModelImages
         return $paths['lg'] . $imageName;
     }
 
-    public static function delete($filePath)
+    public static function delete(array $imagesArray)
     {
-        if(File::exists(public_path($filePath))) {
-            File::delete(public_path($filePath));
+        if (!count($imagesArray)) {
+            return false;
         }
+
+        foreach ($imagesArray as $image) {
+            if(File::exists(public_path($image))) {
+                File::delete(public_path($image));
+            }
+        }
+
+        return true;
     }
 
     protected static function generatePaths($model, $file)

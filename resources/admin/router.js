@@ -1,15 +1,15 @@
 
 import Vue from 'vue'
 import Router from 'vue-router'
-import categories from "./modules/categories/router";
-import products from "./modules/products/router";
+import category from "./modules/category/router";
+import product from "./modules/product/router";
 
 Vue.use(Router);
 
 export default new Router({
     routes: [
-        ...categories,
-        ...products,
+        ...category,
+        ...product,
     ],
 })
 

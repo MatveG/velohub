@@ -13,7 +13,10 @@ class Product extends Model
     use Traits\Relations\HasMany\Comments;
 
     protected $name = 'product';
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = [
+        'created_at',
+        'updated_at'
+    ];
     protected $fillable = [
         'category_id',
         'is_active',
@@ -32,13 +35,16 @@ class Product extends Model
         'seo_title',
         'seo_description',
         'seo_keywords',
-        'brief',
+        'summary',
         'description',
         'images',
         'videos',
         'files',
         'features',
     ];
+//    protected $appends = [
+//        'link'
+//    ];
     protected $casts = [
         'features' => 'object',
         'prices' => 'object',

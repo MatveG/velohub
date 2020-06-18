@@ -4,7 +4,7 @@
             <button @click="$router.push({ name: 'category-create' })" class="button is-primary fas fa-plus"></button>
         </div>
         <card-component class="has-table has-mobile-sort-spaced" title="Категории">
-            <category-table v-if="categories.length" :prop-items="categories" :recursive="false" />
+            <category-table />
         </card-component>
     </section>
 </template>
@@ -21,8 +21,6 @@
             CardComponent,
             CategoryTable
         },
-
-        computed: mapGetters(['categories']),
 
         mounted() {
             this.$store.dispatch('fetchCategories');

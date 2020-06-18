@@ -39,23 +39,19 @@ class Category extends Model
         return route('category.show', ['latin' => $this->latin, 'id' => $this->id]);
     }
 
-    public static function getTree($parentId = 0)
-    {
-        return self::where('parent_id', $parentId)
-            ->orderBy('sorting')
-            ->get()
-            ->map(function ($item) {
-                $item->child = self::getTree($item->id);
-                return $item;
-            });
-    }
+//    public static function getTree($parentId = 0)
+//    {
+//        return self::where('parent_id', $parentId)
+//            ->orderBy('sorting')
+//            ->get()
+//            ->map(function ($item) {
+//                $item->child = self::getTree($item->id);
+//                return $item;
+//            });
+//    }
 
-    public function setTitleAttribute($value)
+    public function setLatinAttribute($value)
     {
-//        if ($this->category->where('id', '!=', $id)->where('title', $request->title)->exists()) {
-//            $category->latin .= '-' . $category->id;
-//        }
-        $this->attributes['title'] = $value;
         $this->attributes['latin'] = latinize($value);
     }
 

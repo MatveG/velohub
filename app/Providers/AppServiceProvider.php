@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App;
-use App\Models\Setting;
+use App\Models\Category;
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use App\Widgets\Widget;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +41,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Product::observe(App\Observers\ProductObserver::class);
+        Category::observe(App\Observers\CategoryObserver::class);
+
         // Register Blade directive for Widget
         Blade::directive('widget', function ($name) {
             return "<?php echo app('widget')->show($name); ?>";

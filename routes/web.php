@@ -44,22 +44,23 @@ Route::get('/media/ul/{img}')->name('img.upload');
 Route::view('/admin/', 'Admin::index');
 
 Route::namespace('Admin')->group(function () {
-    // Categories
+    // categories
     Route::get('/admin/categories', 'CategoryController@index');
-    Route::post('/admin/categories', 'CategoryController@store');
     Route::get('/admin/categories/{id}', 'CategoryController@edit');
+    Route::post('/admin/categories', 'CategoryController@store');
     Route::patch('/admin/categories/{id}', 'CategoryController@update');
     Route::delete('/admin/categories/{id}', 'CategoryController@destroy');
-    Route::post('/admin/categories/{id}/images-upload', 'CategoryController@imagesUpload');
-    Route::post('/admin/categories/{id}/images-update', 'CategoryController@imagesUpdate');
+    Route::post('/admin/categories/{id}/images-upload', 'CategoryController@uploadImages');
+    Route::post('/admin/categories/{id}/images-update', 'CategoryController@updateImages');
 
-    // Products
-    Route::get('/admin/products/{id}/edit/', 'ProductContoller@edit');
-    Route::post('/admin/products/{id}/save/', 'ProductContoller@save');
-    Route::post('/admin/products/{id}/destroy', 'ProductContoller@destroy');
-    Route::post('/admin/products/{id}/images-upload', 'ProductContoller@imagesUpload');
-    Route::post('/admin/products/{id}/images-update', 'ProductContoller@imagesUpdate');
-    Route::get('/admin/products/', 'ProductContoller@index');
+    // products
+    Route::get('/admin/products/', 'ProductController@index');
+    Route::get('/admin/products/{id}', 'ProductController@edit');
+    Route::post('/admin/products', 'ProductController@store');
+    Route::patch('/admin/products/{id}', 'ProductController@update');
+    Route::delete('/admin/products/{id}', 'ProductController@destroy');
+    Route::post('/admin/products/{id}/images-upload', 'ProductController@uploadImages');
+    Route::post('/admin/products/{id}/images-update', 'ProductController@updateImages');
 
     // Variants
     Route::post('/admin/variant/store', 'VariantController@store');
