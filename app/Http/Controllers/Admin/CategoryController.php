@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Services\Admin\ModelImages;
+use App\Services\Admin\ImageUploadHandler;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -59,7 +59,7 @@ class CategoryController extends Controller
         ]);
 
         $category = Category::find($id);
-        $image = ModelImages::upload($category, $request->file('image'));
+        $image = ImageUploadHandler::upload($category, $request->file('image'));
         $category->update(array_merge($category->images, [$image]));
 
         return response()->json($image);
@@ -69,7 +69,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-        if(ModelImages::delete(array_diff($request->images, $category->images))) {
+        if(ImageUploadHandler::delete(array_diff($request->images, $category->images))) {
             $category->update($request->images);
         }
 

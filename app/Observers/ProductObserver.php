@@ -26,7 +26,7 @@ class ProductObserver
                 unset($features->{$key});
             }
         }
-        $product->update(['features' => $features]);
+        $product->features = $features;
     }
 
     private function syncProductVariants(Product $product, $update = [])

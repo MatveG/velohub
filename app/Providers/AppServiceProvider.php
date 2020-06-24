@@ -5,6 +5,7 @@ namespace App\Providers;
 use App;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Variant;
 use App\Observers\ProductObserver;
 use App\Widgets\Widget;
 use Illuminate\Support\Facades\Blade;
@@ -43,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Product::observe(App\Observers\ProductObserver::class);
         Category::observe(App\Observers\CategoryObserver::class);
+        Variant::observe(App\Observers\VariantObserver::class);
 
         // Register Blade directive for Widget
         Blade::directive('widget', function ($name) {

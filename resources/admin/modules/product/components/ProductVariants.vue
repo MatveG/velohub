@@ -1,7 +1,8 @@
 
 <template>
     <div>
-        <b-table :data="items"
+        <b-table :data="product.variants"
+                 :loading="loading"
                  :hoverable="true"
                  default-sort="code"
                  icon-pack="fas"
@@ -19,9 +20,11 @@
 
                 <b-table-column field="parameters" label="Параметры" width="30%" centered>
                     <div class="buttons is-centered">
-                        <button v-for="(parameter, key) in parameters" v-if="props.row.parameters[key]" class="button is-rounded is-small is-static">
-                            {{ props.row.parameters[key] }}
-                        </button>
+                        <template v-for="parameter in product.category.parameters">
+                            <button v-if="props.row.parameters[parameter.key]" class="button is-rounded is-small is-static">
+                                {{ props.row.parameters[parameter.key] }}
+                            </button>
+                        </template>
                     </div>
                 </b-table-column>
 
@@ -37,7 +40,7 @@
                     <b-field>
                         <div class="control has-icons-right">
                             <b-input v-model.number="props.row.price" disabled />
-                            <span class="icon is-small is-right">{{ currency.sign }}</span>
+                            <span class="icon is-small is-right">*sign*</span>
                         </div>
                         <b-input v-model.number="props.row.surcharge" @input.native="updatePrice(props.row)"
                                  @change.native="update(props.row)" type="number" step="any" />
@@ -46,7 +49,7 @@
 
                 <b-table-column field="is_sale" label="Скидка" width="10%" sortable centered>
                     <b-checkbox v-model="props.row.is_sale" :disabled="!product.is_sale"
-                                @change.native="updatePrice(props.row); update(props.row);" />
+                                @change.native="calcPriceAndUpdate(props.row)" />
                 </b-table-column>
 
                 <b-table-column field="id" label="Действия" width="10%" centered>
@@ -60,222 +63,102 @@
         </div>
 
         <b-modal :active.sync="modal" aria-modal class="modal-edit-variant">
-            <div class="box">
-                <form @submit.prevent="save" @change="autoSave" @keyup="saved=false">
-                    <card-component title="Параметры варианта">
-                        <div class="columns">
-                            <div class="column">
-                                <b-field label="Артикул" label-position="on-border">
-                                    <b-input v-model="item.code" placeholder="Уникальный идентификатор" />
-                                </b-field>
-                            </div>
-                            <div class="column">
-                                <b-field label="Штрих-код" label-position="on-border">
-                                    <b-input v-model="item.barcode" placeholder="Штрих-код товара" />
-                                </b-field>
-                            </div>
-                        </div>
-
-                        <div class="columns">
-                            <div v-for="(parameter, key) in parameters" class="column">
-                                <b-field :label="parameter.title" label-position="on-border">
-                                    <b-input v-if="item.parameters" v-model="item.parameters[key]" :placeholder="'Параметр [' + parameter.title + ']'" required />
-                                </b-field>
-                            </div>
-                        </div>
-
-                        <div class="columns">
-                            <div class="column" />
-                            <div class="column">
-                                <b-field label="Вес" label-position="on-border">
-                                    <b-input v-model="item.weight" placeholder="Вес доставки" />
-                                    <div class="control"><div class="button is-static">кг</div></div>
-                                </b-field>
-                            </div>
-                            <div class="column" />
-                        </div>
-                    </card-component>
-
-                    <card-component v-if="item.id" title="Собственные фото" class="card-images margin-line">
-                        <images-upload @update="updateImages" :web-route="`/admin/variant/${item.id}`" :images-array="item.images" image-width="20%" />
-                    </card-component>
-
-                    <div class="buttons margin-line is-centered">
-                        <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
-                                type="button" class="button is-primary">Сохранить</button>
-                        <button @click="modal=false" type="button"s class="button">Закрыть</button>
-                    </div>
-                </form>
-            </div>
+            <variant-edit @close="modal=false" />
         </b-modal>
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
-    import ImagesUpload from "@/components/ImagesUpload";
+    import {mapGetters} from "vuex";
+    import {states} from '@/mixins/states';
+    import Variant from "../classes/Variant";
     import CardComponent from "@/components/CardComponent";
+    import VariantEdit from "@/modules/product/components/VariantEdit";
 
     export default {
-        name: 'Variants',
+        name: 'ProductVariants',
 
         components: {
-            ImagesUpload,
-            CardComponent
+            VariantEdit,
+            CardComponent,
         },
 
-        props: ['product', 'currency', 'discount'],
+        mixins: [states],
+
+        props: {
+            discount: {
+                type: [Number],
+                default: 0
+            },
+        },
 
         data() {
             return {
-                item: {},
-                items: [],
-                parameters: [],
                 modal: false,
-                loading: false,
-                saved: true,
+                timer: {},
             }
         },
 
+        computed: mapGetters(['product']),
+
         watch: {
             'discount': function () {
-                this.items.forEach((item) => this.updatePrice(item));
+                this.product.variants.forEach((el) => this.updatePrice(el));
             },
 
             'product.price': function () {
-                this.items.forEach((item) => this.updatePrice(item));
+                this.product.variants.forEach((el) => this.updatePrice(el));
             },
 
             'product.is_sale': function () {
-                this.items.forEach((item) => item.is_sale = this.product.is_sale);
+                this.product.variants.forEach((el) => el.is_sale = this.product.is_sale);
             },
-        },
-
-        mounted() {
-            axios.get(`/admin/variant/${this.product.id}`)
-                .then((res) => {
-                    this.items = res.data.items;
-                    this.parameters = res.data.parameters;
-                })
-                .catch(error => core.ajaxError(error.response))
-                .then(() => this.statusSaved());
         },
 
         methods: {
             create() {
-                this.item = {
-                    //id: null,
-                    product_id: this.product.id,
-                    category_id: this.product.category_id,
-                    is_active: this.product.is_active,
-                    is_sale: this.product.is_sale,
-                    price: (this.product.is_sale) ? this.product.surcharge : this.product.price,
-                    parameters: {},
-                    //images: [],
-                };
-
+                this.$store.commit('assignVariant', Variant.fromProduct(this.product));
                 this.modal = true;
             },
 
-            edit(item) {
-                this.item = item;
-                this.item.savedCode = this.item.code;
+            edit(row) {
+                this.$store.commit('assignVariant', Variant.fromObj(row));
                 this.modal = true;
             },
 
-            autoSave() {
-                this.save(false);
+            update(row) {
+                clearTimeout(this.timer[row.id]);
+
+                this.timer[row.id] = setTimeout(() => {
+                    this.stateLoading();
+                    this.$store.dispatch('patchVariant', row).then(() => this.stateSaved());
+                }, 3000);
             },
 
-            save(submit = true) {
-                for(let parameter in this.parameters) {
-                    if(!this.item.parameters[parameter]) {
-                        if(submit) {
-                            core.error('Заполните параметры товара');
-                        }
-                        return;
-                    }
-                }
-                this[(this.item.id) ? 'update' : 'store'](this.item);
-            },
-
-            store(item) {
-                this.statusLoading();
-                axios.post(`/admin/variant/store`, item)
-                    .then((res) => {
-                        this.item = res.data.variant;
-                        this.items.push(item);
-                        this.item.savedCode = this.item.code;
-                        this.$emit('update', this.items.length);
-                    })
-                    .catch((error) => core.ajaxError(error.response))
-                    .then(() => this.statusSaved());
-            },
-
-            update(item) {
-                this.statusLoading();
-                axios.post(`/admin/variant/${item.id}/update`, item)
-                    .then(() => this.$emit('update', this.items.length))
-                    .catch((error) => {
-                        core.ajaxError(error.response);
-                        this.item.code = this.item.savedCode;
-                    })
-                    .then(() => this.statusSaved());
-            },
-
-            destroy(item) {
-                core.confirm('Удалить?', () => {
-                    this.items = this.items.filter((each) => each !== item);
-                    this.$emit('update', this.items.length);
-
-                    axios.post(`/admin/variant/${item.id}/destroy`)
-                        .catch((error) => core.ajaxError(error.response))
-                        .then(() => this.statusSaved());
+            destroy(row) {
+                this.confirm('Удалить?', () => {
+                    this.stateLoading();
+                    this.$store
+                        .dispatch('destroyVariant', row)
+                        .then(() => this.stateSaved());
                 });
             },
 
-            updatePrice(item) {
-                if(Number.isFinite(+this.product.price) && Number.isFinite(+item.surcharge)) {
-                    item.price = +this.product.price + +item.surcharge;
-                    item.price -= (this.product.is_sale && item.is_sale) ? this.discount : 0;
+            calcPriceAndUpdate(row) {
+                this.calcPrice(row);
+                this.update(row);
+            },
+
+            calcPrice(row) {
+                if(Number.isFinite(+this.product.price) && Number.isFinite(+row.surcharge)) {
+                    row.price = +this.product.price + +row.surcharge;
+                    row.price -= (this.product.is_sale && row.is_sale) ? this.discount : 0;
                 }
             },
 
-            updateImages(value) {
-                this.item.images = value;
-            },
-
-            statusLoading() {
-                this.saved = false;
-                this.loading = true;
-            },
-
-            statusSaved() {
-                this.saved = true;
-                this.loading = false;
-            },
-
             banDecimal(event) {
-                core.banDecimal(event);
+                this.banDecimal(event);
             },
         }
     }
 </script>
-
-<style scoped>
-    .field {
-        margin-bottom: .2rem !important;
-    }
-</style>
-
-<style>
-    .modal-edit-variant .modal-content {
-        width: 650px;
-    }
-    .modal-edit-variant .box {
-        width: 100%;
-    }
-    .modal-edit-variant .card-images .card-content {
-        padding: .5rem;
-    }
-</style>

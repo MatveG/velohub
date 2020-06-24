@@ -13,6 +13,7 @@ class Product extends Model
     use Traits\Relations\HasMany\Comments;
 
     protected $name = 'product';
+    protected $imagesFolder = '/media/pt';
     protected $dates = [
         'created_at',
         'updated_at'
@@ -60,5 +61,4 @@ class Product extends Model
     {
         return route('product.show', ['latin' => $this->latin, 'id' => $this->id]);
     }
-
 }

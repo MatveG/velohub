@@ -12,6 +12,7 @@ class Variant extends Model
     use Traits\Relations\BelongsTo\Category;
 
     protected $name = 'variant';
+    protected $imagesFolder = '/media/vt';
     public $timestamps = false;
     protected $fillable = [
         'product_id',

@@ -1,5 +1,6 @@
 <template>
     <section class="section is-main-section">
+
         <div class="buttons is-right">
             <button @click="save" :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
             <button @click="$router.push({ name: 'product' })" class="button fas fa-arrow-circle-left"></button>
@@ -31,12 +32,14 @@
                             </b-tab-item>
 
                             <b-tab-item label="Характеристики">
-<!--                                <b-field v-if="product.category.features" v-for="(feature, key) in product.category.features" :label="feature.title" horizontal>-->
-<!--                                    <div class="control has-icons-right">-->
-<!--                                        <b-input v-model="product.features[key]" />-->
-<!--                                        <span class="icon is-small is-right">{{ feature.units }}</span>-->
-<!--                                    </div>-->
-<!--                                </b-field>-->
+                                <template v-if="product.category">
+                                    <b-field v-for="feature in product.category.features" :label="feature.title" horizontal>
+                                        <div class="control has-icons-right">
+                                            <b-input v-model="product.features[feature.key]" />
+                                            <span class="icon is-small is-right">{{ feature.units }}</span>
+                                        </div>
+                                    </b-field>
+                                </template>
                             </b-tab-item>
 
                             <b-tab-item label="SEO">
@@ -57,8 +60,8 @@
                     </card-component>
 
                     <card-component title="Фотографии" class="margin-line">
-                        <images-upload :prop-items="product.images" @update="assign('images', $event)"
-                                       :web-route="`/admin/categories/${product.id}`" max-amount="1" image-width="100%" />
+                        <images-upload @update="assign('images', $event)" :prop-images="product.images"
+                                       :prop-max="10" prop-width="20%" :prop-api="`/admin/products/${product.id}`" />
                     </card-component>
                 </div>
 
@@ -91,14 +94,14 @@
                         </b-field>
 
                         <b-field class="has-text-centered">
-                            <b-switch v-model="product.is_sale" @change.stop="toggleDiscount">Скидка</b-switch>
+                            <b-switch v-model="product.is_sale" @change.native="toggleDiscount">Скидка</b-switch>
                         </b-field>
 
                         <div v-if="product.is_sale">
                             <div class="columns">
                                 <div class="column">
-                                    <b-field label="Размер скидки" label-position="on-border">
-                                        <b-input v-model="discount.percent" @change.native="computeDiscount" type="number" step="any" placeholder="0" />
+                                    <b-field label="Скидка" label-position="on-border">
+                                        <b-input v-model="discount.percent" @change.native="calcPriceSale" type="number" step="any" placeholder="0" />
                                         <div class="control">
                                             <button class="button is-primary">%</button>
                                         </div>
@@ -119,7 +122,7 @@
                         </div>
                     </card-component>
 
-                    <card-component v-if="!variantsCount" title="Наличие" class="margin-line">
+                    <card-component v-if="!product.variants" title="Наличие" class="margin-line">
                         <b-field label="Артикул" label-position="on-border">
                             <b-input v-model="product.code" />
                         </b-field>
@@ -148,7 +151,7 @@
             </div>
         </form>
         <card-component title="Варианты товара" class="margin-line">
-<!--            <variants v-if="product.id" @update="variantsUpdate" :product="product" :currency="currency" :discount="discount.amount" />-->
+            <variants v-if="product.id" @update="product.variants=$event" :discount="discount.amount" />
         </card-component>
     </section>
 </template>
@@ -185,15 +188,12 @@
                     amount: 0,
                     percent: null,
                 },
-                variantsCount: 0,
-                currency: '',
+                currency: {}, // !!!
                 activeTab: 0,
             }
         },
 
-        computed: {
-            ...mapGetters(['product', 'categories']),
-        },
+        computed: mapGetters(['product', 'categories']),
 
         validations: {
             product: {
@@ -209,14 +209,14 @@
             this.$store.commit('resetProduct');
 
             if (this.propId) {
-                this.$store.dispatch('fetchProduct', this.propId);
+                this.$store.dispatch('fetchProduct', {id: this.propId});
             } else if (this.propParent) {
                 this.saved = false;
             }
 
             this.$store.dispatch('fetchCategories');
 
-            // this.$watch('product.is_stock', () => this.product.stock = +this.product.is_stock);
+            this.$watch('product.is_stock', () => this.product.stock = +this.product.is_stock);
         },
 
         watch: {
@@ -248,56 +248,41 @@
                 this.stateLoading();
 
                 if (this.propId) {
-                    this.$store.dispatch('patchProduct', this.product);
-                    this.stateSaved();
-                    return;
-                }
-
-                // this.product.category = res.data.category;
-
-                this.$store.dispatch('storeProduct', this.product).then(() => {
-                    this.$router.replace({
-                        name: 'product-edit',
-                        params: { propId: this.product.id }
+                    this.$store.dispatch('patchProduct', this.product).then(() => this.stateSaved());
+                } else {
+                    this.$store.dispatch('storeProduct', this.product).then(() => {
+                        this.$router.replace({
+                            name: 'product-edit',
+                            params: { propId: this.product.id }
+                        });
+                        this.stateSaved();
                     });
-                    this.stateSaved();
-                });
+                }
             },
-
-
-
 
             toggleDiscount() {
-                console.log('toggle');
-
-                // this.discount.amount = 0;
-                // this.product.sale_text = (this.product.is_sale) ? this.product.sale_text : '';
-                // this.product.price_sale = (this.product.is_sale) ? this.product.price : 0;
+                this.discount.amount = 0;
+                this.product.sale_text = null;
+                this.product.price_sale = (this.product.is_sale) ? this.product.price : 0;
             },
 
-            computeDiscount() {
+            calcPriceSale() {
                 this.discount.amount = Math.round(this.product.price * this.discount.percent / 100);
                 this.product.price_sale = this.product.price - this.discount.amount;
                 this.discount.percent = null;
             },
 
-            variantsUpdate(variantsCount) {
-                if(variantsCount > 0) {
-                    this.product.code = '';
-                    this.product.barcode = '';
-                    this.product.stock = '';
-                    this.product.weight = '';
-                    this.product .is_stock = false;
-                }
-                this.variantsCount = variantsCount;
-            },
-
+            // updateVariants(value) {
+            //     this.product.variants = value;
+            //
+            //     // if(this.product.variants.length > 0) {
+            //     //     this.product.code = null;
+            //     //     this.product.barcode = null;
+            //     //     this.product.stock = null;
+            //     //     this.product.weight = null;
+            //     // }
+            // },
         }
     }
 </script>
 
-<style>
-    .w-50 {
-        width: 50px;
-    }
-</style>

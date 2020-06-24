@@ -50,8 +50,7 @@ Route::namespace('Admin')->group(function () {
     Route::post('/admin/categories', 'CategoryController@store');
     Route::patch('/admin/categories/{id}', 'CategoryController@update');
     Route::delete('/admin/categories/{id}', 'CategoryController@destroy');
-    Route::post('/admin/categories/{id}/images-upload', 'CategoryController@uploadImages');
-    Route::post('/admin/categories/{id}/images-update', 'CategoryController@updateImages');
+    Route::post('/admin/categories/{id}/upload-images', 'CategoryController@uploadImages');
 
     // products
     Route::get('/admin/products/', 'ProductController@index');
@@ -59,15 +58,13 @@ Route::namespace('Admin')->group(function () {
     Route::post('/admin/products', 'ProductController@store');
     Route::patch('/admin/products/{id}', 'ProductController@update');
     Route::delete('/admin/products/{id}', 'ProductController@destroy');
-    Route::post('/admin/products/{id}/images-upload', 'ProductController@uploadImages');
-    Route::post('/admin/products/{id}/images-update', 'ProductController@updateImages');
+    Route::post('/admin/products/{id}/upload-images', 'ProductController@uploadImages');
 
     // Variants
-    Route::post('/admin/variant/store', 'VariantController@store');
-    Route::post('/admin/variant/{id}/update', 'VariantController@update');
-    Route::post('/admin/variant/{id}/destroy', 'VariantController@destroy');
-    Route::post('/admin/variant/{id}/images-upload', 'VariantController@imagesUpload');
-    Route::post('/admin/variant/{id}/images-update', 'VariantController@imagesUpdate');
-    Route::get('/admin/variant/{product_id}', 'VariantController@index');
+    Route::get('/admin/variants/{product_id}', 'VariantController@index');
+    Route::post('/admin/variants', 'VariantController@store');
+    Route::patch('/admin/variants/{id}', 'VariantController@update');
+    Route::delete('/admin/variants/{id}', 'VariantController@destroy');
+    Route::post('/admin/variants/{id}/upload-images', 'VariantController@uploadImages');
 
 });

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\Admin\ModelImages;
-use Illuminate\Http\Request;
+use App\Services\Admin\ImageUploadHandler;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $response = Product::with('category:id,title')->get([
+        $product = Product::with('category:id,title')->get([
             'category_id',
             'title',
             'id',
@@ -21,35 +21,47 @@ class ProductController extends Controller
             'is_active',
         ]);
 
-        return response()->json($response);
+        return response()->json($product);
     }
 
     public function edit($id)
     {
-        return response()->json(Product::with('category')->find($id));
+        $product = Product::with(['category', 'variants'])->find($id);
+
+        return response()->json($product);
     }
 
     public function store(Request $request)
     {
-        //$this->validate($request, []);
+        $this->validate($request, [
+            'code' => 'required|unique:variants|max:255'
+        ]);
 
         $product = Product::create($request->all());
 
-        return response()->json($product->getChanges());
+        return response()->json($product);
     }
 
     public function update(Request $request, $id)
     {
-        //$this->validate($request, []);
+        $this->validate($request, [
+            'code' => 'required|max:255|unique:products,code,' . $id
+        ]);
 
         $product = tap(Product::findOrFail($id))->update($request->all());
+        $changes = array_keys($product->getChanges());
 
-        return response()->json($product->getChanges());
+        if ($product->wasChanged('category_id')) {
+            $product->load('category');
+            $changes[] = 'category';
+        }
+
+        return response()->json($product->only($changes));
     }
 
     public function destroy($id)
     {
-        Product::findOrFail($id)->destroy();
+        Product::findOrFail($id)->delete();
 
         return response()->json();
     }
@@ -57,25 +69,18 @@ class ProductController extends Controller
     public function uploadImages(Request $request, $id)
     {
         request()->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
+            'images.*' => 'image|mimes:jpg,jpeg,gif,png|max:1048',
+            'images.0' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
         ]);
 
         $product = Product::find($id);
-        $image = ModelImages::upload($product, $request->file('image'));
-        $product->update(array_merge($product->images, [$image]));
+        $uploadedImages = ImageUploadHandler::uploadArray($request->images, (object)[
+            'folder' => $product->getImagesFolder(),
+            'uid' => $product->id,
+            'filename' => $product->latin
+        ]);
 
-        return response()->json($image);
-    }
-
-    public function updateImages(Request $request, $id)
-    {
-        $product = Product::find($id);
-
-        if(ModelImages::delete(array_diff($request->images, $product->images))) {
-            $product->update($request->images);
-        }
-
-        return response()->json();
+        return response()->json($uploadedImages);
     }
 
 }
