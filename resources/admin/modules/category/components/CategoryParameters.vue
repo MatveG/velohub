@@ -81,7 +81,7 @@
 <script>
     import {required, requiredIf, minLength} from 'vuelidate/lib/validators'
     import {draggable} from "@/mixins/draggable";
-    import {categoryItems} from "../mixins/categoryItems";
+    import {items} from "../mixins/items";
 
     const BLANK = {
         is_filter: false,
@@ -96,7 +96,7 @@
     export default {
         name: "CategoryParameters",
 
-        mixins: [draggable, categoryItems],
+        mixins: [draggable, items],
 
         data() {
             return {

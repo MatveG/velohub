@@ -12,7 +12,11 @@ class ImageUploadHandler
         $resultArray = [];
 
         foreach ($imagesArray as $image) {
-            $resultArray[] = self::uploadImage($image, $settings);
+            $result = self::uploadImage($image, $settings);
+
+            if ($result) {
+                $resultArray[] = $result;
+            }
         }
 
         return $resultArray;
@@ -21,18 +25,23 @@ class ImageUploadHandler
     public static function uploadImage($file, $settings)
     {
         $imageName = $settings->filename . '.' . $file->getClientOriginalExtension();
-        $paths = self::createPath($file, $settings);
+        $pathArray = self::createPath($file, $settings);
+        $folderContent = File::files(public_path($pathArray['lg']));
 
-        self::createDirectory($paths['lg']);
-        self::createDirectory($paths['md']);
-        self::createDirectory($paths['sm']);
+        if (count($folderContent)) {
+            return false;
+        }
+
+        self::createDirectory($pathArray['lg']);
+        self::createDirectory($pathArray['md']);
+        self::createDirectory($pathArray['sm']);
 
         $image = Image::make($file);
-        $image->fit(1000)->save(public_path($paths['lg'] . $imageName), 70);
-        $image->fit(500)->save(public_path($paths['md'] . $imageName), 70);
-        $image->fit(200)->save(public_path($paths['sm'] . $imageName), 70);
+        $image->fit(1000)->save(public_path($pathArray['lg'] . $imageName), 70);
+        $image->fit(500)->save(public_path($pathArray['md'] . $imageName), 70);
+        $image->fit(200)->save(public_path($pathArray['sm'] . $imageName), 70);
 
-        return $paths['lg'] . $imageName;
+        return $pathArray['lg'] . $imageName;
     }
 
     public static function deleteImages(array $imagesArray)

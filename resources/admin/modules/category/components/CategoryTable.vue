@@ -7,7 +7,7 @@
                  :paginated="paginated"
                  :loading="loading"
                  custom-row-key="id"
-                 default-sort="sorting"
+                 default-sort="ord"
                  @drop="drop"
                  @dragstart="dragstart"
                  @dragover="dragover"
@@ -22,8 +22,8 @@
                  class="valign-center">
 
             <template slot-scope="props">
-                <b-table-column field="sorting" label="" width="10%" sortable centered class="has-text-grey">
-                    {{ props.row.sorting }}
+                <b-table-column field="ord" label="" width="10%" sortable centered class="has-text-grey">
+                    {{ props.row.ord }}
                 </b-table-column>
 
                 <b-table-column field="id" label="ID" width="10%" sortable centered :searchable="!propNested">
@@ -139,8 +139,8 @@
             drop(payload) {
                 let [rowOne, rowTwo] = [payload.row, this.draggingRow];
 
-                if (rowOne && rowTwo && rowOne.sorting !== rowTwo.sorting) {
-                    [rowOne.sorting, rowTwo.sorting] = [rowTwo.sorting, rowOne.sorting];
+                if (rowOne && rowTwo && rowOne.ord !== rowTwo.ord) {
+                    [rowOne.ord, rowTwo.ord] = [rowTwo.ord, rowOne.ord];
                     this.$store.dispatch('patchCategory', rowOne);
                     this.$store.dispatch('patchCategory', rowTwo);
                     this.$refs.table.initSort();

@@ -34,7 +34,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'code' => 'required|unique:variants|max:255'
+            'category_id' => 'required|integer',
+            'code' => 'max:255|nullable|unique:variants'
         ]);
 
         $product = Product::create($request->all());
@@ -45,7 +46,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'code' => 'required|max:255|unique:products,code,' . $id
+            'code' => 'max:255|nullable|unique:products,code,' . $id
         ]);
 
         $product = tap(Product::findOrFail($id))->update($request->all());

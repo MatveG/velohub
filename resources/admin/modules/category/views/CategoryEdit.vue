@@ -122,6 +122,7 @@
             return {
                 tabs1: 0,
                 tabs2: 0,
+                timer: null,
             }
         },
 
@@ -166,17 +167,17 @@
 
         methods: {
             assign(property, value) {
-                if (this.category[property] !== value) {
-                    this.category[property] = value;
-                    this.changed();
-                }
+                this.category[property] = value;
+                this.stateDraft();
+                this.save();
             },
 
             changed() {
                 this.stateDraft();
 
                 if(this.propId) {
-                    this.save();
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => this.save(), 2000);
                 }
             },
 
@@ -184,6 +185,8 @@
                 if (!this.validate()) {
                     return;
                 }
+
+                clearTimeout(this.timer);
                 this.stateLoading();
 
                 if (this.propId) {

@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class VariantObserver
 {
+    public function retrieved(Variant $variant) {
+        // clear unused parameters
+    }
+
     public function updating(Variant $variant)
     {
         if ($variant->isDirty('images')) {
             ImageUploadHandler::deleteImages(array_diff(
-                json_decode($variant->getOriginal('images')),
+                json_decode($variant->getOriginal('images'), true),
                 $variant->images
             ));
         }

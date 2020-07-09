@@ -1,64 +1,70 @@
 
-import Collection from "@/services/Collection";
+import SortedCollection from "@/services/SortedCollection";
 
-export const categoryItems = {
+export const items = {
     props: {
         propItems: {
             type: Array,
             default: () => []
         },
+
+        propSub: {
+            type: Boolean,
+            default: false
+        }
     },
 
     data() {
         return {
             method: null,
             item: {},
-            collection: new Collection(),
+            coll: new SortedCollection(this.propItems),
         }
     },
 
     computed: {
         items: function() {
-            return this.collection.all();
+            return this.coll.all();
         },
-    },
-
-    mounted() {
-        this.collection.collect(this.propItems);
     },
 
     methods: {
         add() {
             this.cancel();
             this.method = 'add';
-            this.item = {...this.blank};
+            // this.item = {...this.blank};
         },
 
-        edit(row) {
+        edit() {
             this.cancel();
             this.method = 'edit';
-            this.item = row;
+            // this.item = row;
         },
 
         save() {
             if (this.validate()) {
-                (this.method === 'add') ? this.collection.push(this.item) : this.collection.put(this.item.index, this.item);
+                if (this.method === 'add') {
+                    this.coll.push(this.item);
+                } else {
+                    this.coll.put(this.item.id, this.item);
+                }
+
                 this.$emit('update', this.items);
                 this.cancel();
             }
         },
 
+        assign(row, property, value) {
+            this.coll.update(row.id, {[property]: value});
+            this.$emit('update', this.items);
+        },
+
         remove(row) {
             this.confirm('Удалить?', () => {
-                this.collection.remove(row.index);
+                this.coll.remove(row.id);
                 this.$emit('update', this.items);
                 this.cancel();
             });
-        },
-
-        assign(row, property, value) {
-            this.collection.update(row.index, {[property]: value});
-            this.$emit('update', this.items);
         },
 
         cancel() {
@@ -68,7 +74,7 @@ export const categoryItems = {
         },
 
         reset() {
-            Object.assign(this.item, this.blank)
+            this.item.reset();
         },
 
         drop(payload) {
@@ -78,10 +84,10 @@ export const categoryItems = {
                 return false;
             }
 
-            if (payload.row && this.draggingRow && payload.row.sorting !== this.draggingRow.sorting) {
-                this.collection
-                    .update(payload.row.index, {sorting: this.draggingRow.sorting})
-                    .update(this.draggingRow.index, {sorting: payload.row.sorting});
+            if (payload.row && this.draggingRow && payload.row.ord !== this.draggingRow.ord) {
+                this.coll
+                    .update(payload.row.id, {ord: this.draggingRow.ord})
+                    .update(this.draggingRow.id, {ord: payload.row.ord});
 
                 this.$refs.table.initSort();
                 this.$emit('update', this.items);
@@ -89,3 +95,4 @@ export const categoryItems = {
         },
     }
 };
+

@@ -58,7 +58,7 @@ class Category extends Model
     public function setFeaturesAttribute($value)
     {
         $value = array_map(function ($element) {
-            $element['latin'] = ($element['is_filter']) ? latinize($element['title']) : null;
+            $element['latin'] = ($element['filter']) ? latinize($element['title']) : null;
 
             return $element;
         }, $value);

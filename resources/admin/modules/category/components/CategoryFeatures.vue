@@ -2,8 +2,8 @@
     <div class="table-draggable-nested">
         <b-table ref="table"
                  :data="(method === 'add') ? [...items, item] : items"
-                 default-sort="sorting"
-                 custom-row-key="index"
+                 default-sort="ord"
+                 custom-row-key="id"
                  icon-pack="fa"
                  hoverable
                  draggable
@@ -12,25 +12,25 @@
                  @dragover="dragover"
                  @dragleave="dragleave"
                  detailed
-                 detail-key="index"
+                 detail-key="id"
                  :show-detail-icon="false"
-                 :opened-detailed="opened"
+                 :openedRows-detailed="openedRows"
                  class="valign-center">
 
             <template v-slot="props">
-                <b-table-column field="sorting" label="↓" width="5%" sortable centered>
-                    {{ props.row.sorting }}
+                <b-table-column field="ord" label="↓" width="5%" sortable centered>
+                    {{ props.row.ord }}
                 </b-table-column>
 
                 <b-table-column field="title" label="Название" width="30%" sortable>
-                    <b-field v-if="props.row.index === item.index || props.row === item" :type="{ 'is-danger': $v.item.title.$error }">
+                    <b-field v-if="props.row.id === item.id || props.row === item" :type="{ 'is-danger': $v.item.title.$error }">
                         <b-input v-model="item.title"></b-input>
                     </b-field>
                     <template v-else>{{ props.row.title }}</template>
                 </b-table-column>
 
                 <b-table-column field="type" label="Тип" width="20%" sortable centered>
-                    <template v-if="props.row.index === item.index || props.row === item">
+                    <template v-if="props.row.id === item.id || props.row === item">
                         <b-field :type="{ 'is-danger': $v.item.type.$error }">
                             <b-select v-model="item.type" @change.native="reset" expanded>
                                 <option v-for="(title, key) in inputTypes" :value="key">
@@ -52,32 +52,32 @@
                     <template v-else>{{ inputTypes[props.row.type] }}</template>
                 </b-table-column>
 
-                <b-table-column field="is_required" label="Обязательное" width="10%" sortable centered>
-                    <b-checkbox v-if="props.row.index === item.index || props.row === item" v-model="item.is_required"
-                                :disabled="item.type === 'group'" />
-                    <span v-else-if="props.row.is_required" class="icon has-text-dark">
+                <b-table-column field="required" label="Обязательное" width="10%" sortable centered>
+                    <b-checkbox v-if="props.row.id === item.id || props.row === item" v-model="item.required"
+                                :disabled="item.type === 0" />
+                    <span v-else-if="props.row.required" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
                 </b-table-column>
 
-                <b-table-column field="is_filter" label="Фильтр" width="10%" sortable centered>
-                    <b-checkbox v-if="props.row.index === item.index || props.row === item" v-model="item.is_filter"
-                                :disabled="item.type === 'text' || item.type === 'group'" />
-                    <span v-else-if="props.row.is_filter" class="icon has-text-dark">
+                <b-table-column field="filter" label="Фильтр" width="10%" sortable centered>
+                    <b-checkbox v-if="props.row.id === item.id || props.row === item" v-model="item.filter"
+                                :disabled="item.type === 'text' || item.type === 0" />
+                    <span v-else-if="props.row.filter" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
                 </b-table-column>
 
                 <b-table-column label="*" width="20%" centered>
-                    <template v-if="props.row.index === item.index || props.row === item">
+                    <template v-if="props.row.id === item.id || props.row === item">
                         <button @click="save" type="button" class="button fas fa-check is-success" />
                         <button @click="cancel" type="button" class="button fas fa-times is-warning" />
                     </template>
                     <template v-else>
                         <b-dropdown hoverable :expanded="false" aria-role="list" class="dropdown-buttons">
-                            <button @click="edit(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
+                            <button @click="editFeature(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
 
-                            <b-dropdown-item v-if="props.row.type==='group'" @click="addSub(props.row)" aria-role="listitem">
+                            <b-dropdown-item v-if="props.row.type === 0" @click="addSub(props.row)" aria-role="listitem">
                                 <b-icon pack="fas" icon="plus" />
                             </b-dropdown-item>
 
@@ -90,101 +90,76 @@
             </template>
 
             <template slot="detail" slot-scope="props">
-                <category-features :prop-items="props.row.sub" :prop-nested="true" :ref="'subTable' + props.row.index"
+                <category-features :prop-items="props.row.sub" :prop-sub="true" :ref="`subTable{$props.row.id}`"
                            @update="assign(props.row, 'sub', $event)" />
             </template>
         </b-table>
 
-        <div v-if="!propNested" class="buttons is-centered margin-line">
-            <button class="button is-primary" type="button" @click="add">Добавить</button>
+        <div v-if="!propSub" class="buttons is-centered margin-line">
+            <button class="button is-primary" type="button" @click="addFeature">Добавить</button>
         </div>
     </div>
 </template>
 
 <script>
-    import {required, requiredIf, minLength} from "vuelidate/lib/validators";
     import {draggable} from "@/mixins/draggable";
-    import {categoryItems} from "../mixins/categoryItems";
+    import {items} from "../mixins/items";
+    import Feature from "../classes/Feature";
     import CategoryFeatures from "./CategoryFeatures";
-
-    const BLANK = {
-        is_required: false,
-        is_filter: false,
-        units: null,
-        values: null,
-        sub: []
-    };
-    const GROUP_TYPE = {
-        group: 'группа'
-    };
-    const INPUT_TYPES = {
-        string: 'строка',
-        number: 'число',
-        text: 'текст',
-        boolean: 'есть/нет',
-        select: 'выбор',
-    };
 
     export default {
         name: "CategoryFeatures",
 
         components: {CategoryFeatures},
 
-        mixins: [draggable, categoryItems],
-
-        props: {
-            propNested: {
-                type: Boolean,
-                default: false
-            }
-        },
+        mixins: [draggable, items],
 
         data() {
             return {
-                opened: [],
-                blank: BLANK,
-                inputTypes: (this.propNested) ? INPUT_TYPES : {...GROUP_TYPE, ...INPUT_TYPES}
+                openedRows: [],
+                inputTypes: Feature.getTypes(!this.propSub)
             }
         },
 
         mounted() {
-            this.opened = this.getOpened();
+            this.openedRows = this.getOpenedRows();
         },
 
         validations: {
-            item: {
-                title: {
-                    required,
-                    minLength: minLength(2)
-                },
-                type: {
-                    required,
-                },
-                values: {
-                    required: requiredIf(function () {
-                        return this.item.type === 'select';
-                    }),
-                    minLength: minLength(1),
-                }
-            }
+            item: Feature.validations(),
         },
 
         methods: {
-            getOpened() {
-                this.collection.orderBy('sorting');
+            addFeature() {
+                this.add();
+                this.item = new Feature();
+            },
 
-                return this.items.filter(el => el.type === 'group').map(el => el.index);
+            editFeature(row) {
+                this.edit();
+                this.item = Feature.fromObj(row);
+
+                this.item = row;
+            },
+
+            getOpenedRows() {
+                this.coll.orderBy('ord');
+
+                console.log(this.items.filter(el => el.type === 0).map(el => el.id));
+
+                return this.items.filter(el => el.type === 0).map(el => el.id);
             },
 
             addSub(row) {
-                this.$refs['subTable' + row.index].add();
+                console.log(this.$refs[`subTable{$row.id}`]);
+                this.$refs[`subTable{$row.id}`].addFeature();
             },
 
-            featuresDrop() {
-                this.drop();
+            featuresDrop(payload) {
+                this.drop(payload);
 
-                setTimeout(() => this.opened = [], 0);
-                setTimeout(() => this.opened = this.getOpened(), 0);
+                setTimeout(() => this.openedRows = [], 0);
+                setTimeout(() => this.openedRows = this.getOpenedRows(), 0);
             }
         }
     }

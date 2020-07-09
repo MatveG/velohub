@@ -32,14 +32,7 @@
                             </b-tab-item>
 
                             <b-tab-item label="Характеристики">
-                                <template v-if="product.category">
-                                    <b-field v-for="feature in product.category.features" :label="feature.title" horizontal>
-                                        <div class="control has-icons-right">
-                                            <b-input v-model="product.features[feature.key]" />
-                                            <span class="icon is-small is-right">{{ feature.units }}</span>
-                                        </div>
-                                    </b-field>
-                                </template>
+                                <product-features v-if="product.category" :prop-features="product.category.features" />
                             </b-tab-item>
 
                             <b-tab-item label="SEO">
@@ -59,7 +52,7 @@
                         </b-tabs>
                     </card-component>
 
-                    <card-component title="Фотографии" class="margin-line">
+                    <card-component v-if="product.id" title="Фотографии" class="margin-line">
                         <images-upload @update="assign('images', $event)" :prop-images="product.images"
                                        :prop-max="10" prop-width="20%" :prop-api="`/admin/products/${product.id}`" />
                     </card-component>
@@ -89,7 +82,7 @@
                         <b-field label="Цена" label-position="on-border">
                             <b-input v-model.number="product.price" type="number" step="any" placeholder="0.0" expanded />
                             <div class="control">
-                                <div class="button is-static">{{ currency.sign }}</div>
+                                <div class="button is-static">*sign*</div>
                             </div>
                         </b-field>
 
@@ -111,7 +104,7 @@
                                     <b-field label="Цена со скидкой" label-position="on-border">
                                         <b-input v-model.number="product.price_sale" :disabled="!product.is_sale" type="number" step="any" placeholder="0.0" expanded />
                                         <div class="control">
-                                            <div class="button is-static">{{ currency.sign }}</div>
+                                            <div class="button is-static">*sign*</div>
                                         </div>
                                     </b-field>
                                 </div>
@@ -122,7 +115,7 @@
                         </div>
                     </card-component>
 
-                    <card-component v-if="!product.variants" title="Наличие" class="margin-line">
+                    <card-component v-if="!product.variants.length" title="Наличие" class="margin-line">
                         <b-field label="Артикул" label-position="on-border">
                             <b-input v-model="product.code" />
                         </b-field>
@@ -163,11 +156,13 @@
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from "@/components/ImagesUpload";
     import Variants from "../components/ProductVariants";
+    import ProductFeatures from "../components/ProductFeatures";
 
     export default {
         name: 'ProductEdit',
 
         components: {
+            ProductFeatures,
             CardComponent,
             ImagesUpload,
             Variants
@@ -188,8 +183,8 @@
                     amount: 0,
                     percent: null,
                 },
-                currency: {}, // !!!
-                activeTab: 0,
+                timer: null,
+                activeTab: 2,
             }
         },
 
@@ -205,7 +200,7 @@
             }
         },
 
-        mounted () {
+        created() {
             this.$store.commit('resetProduct');
 
             if (this.propId) {
@@ -213,9 +208,10 @@
             } else if (this.propParent) {
                 this.saved = false;
             }
-
             this.$store.dispatch('fetchCategories');
+        },
 
+        mounted () {
             this.$watch('product.is_stock', () => this.product.stock = +this.product.is_stock);
         },
 
@@ -227,17 +223,17 @@
 
         methods: {
             assign(property, value) {
-                if (this.product[property] !== value) {
-                    this.product[property] = value;
-                    this.changed();
-                }
+                this.product[property] = value;
+                this.stateDraft();
+                this.save();
             },
 
             changed() {
                 this.stateDraft();
 
                 if(this.propId) {
-                    this.save();
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => this.save(), 2000);
                 }
             },
 
@@ -245,19 +241,23 @@
                 if (!this.validate()) {
                     return;
                 }
+
+                clearTimeout(this.timer);
                 this.stateLoading();
 
                 if (this.propId) {
                     this.$store.dispatch('patchProduct', this.product).then(() => this.stateSaved());
-                } else {
-                    this.$store.dispatch('storeProduct', this.product).then(() => {
-                        this.$router.replace({
-                            name: 'product-edit',
-                            params: { propId: this.product.id }
-                        });
-                        this.stateSaved();
-                    });
+
+                    return;
                 }
+
+                this.$store.dispatch('storeProduct', this.product).then(() => {
+                    this.$router.replace({
+                        name: 'product-edit',
+                        params: { propId: this.product.id }
+                    });
+                    this.stateSaved();
+                });
             },
 
             toggleDiscount() {
@@ -271,17 +271,6 @@
                 this.product.price_sale = this.product.price - this.discount.amount;
                 this.discount.percent = null;
             },
-
-            // updateVariants(value) {
-            //     this.product.variants = value;
-            //
-            //     // if(this.product.variants.length > 0) {
-            //     //     this.product.code = null;
-            //     //     this.product.barcode = null;
-            //     //     this.product.stock = null;
-            //     //     this.product.weight = null;
-            //     // }
-            // },
         }
     }
 </script>

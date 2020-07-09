@@ -87,10 +87,9 @@
 
         methods: {
             assign(property, value) {
-                if (this.variant[property] !== value) {
-                    this.variant[property] = value;
-                    this.changed();
-                }
+                this.variant[property] = value;
+                this.stateDraft();
+                this.save();
             },
 
             changed() {
@@ -98,7 +97,7 @@
 
                 if(this.variant.id) {
                     clearTimeout(this.timer);
-                    this.timer = setTimeout(() => this.save(), 3000);
+                    this.timer = setTimeout(() => this.save(), 2000);
                 }
             },
 

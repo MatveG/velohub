@@ -42,7 +42,7 @@
                             <b-input v-model.number="props.row.price" disabled />
                             <span class="icon is-small is-right">*sign*</span>
                         </div>
-                        <b-input v-model.number="props.row.surcharge" @input.native="updatePrice(props.row)"
+                        <b-input v-model.number="props.row.surcharge" @input.native="calcPrice(props.row)"
                                  @change.native="update(props.row)" type="number" step="any" />
                     </b-field>
                 </b-table-column>
@@ -103,11 +103,11 @@
 
         watch: {
             'discount': function () {
-                this.product.variants.forEach((el) => this.updatePrice(el));
+                this.product.variants.forEach((el) => this.calcPrice(el));
             },
 
             'product.price': function () {
-                this.product.variants.forEach((el) => this.updatePrice(el));
+                this.product.variants.forEach((el) => this.calcPrice(el));
             },
 
             'product.is_sale': function () {
