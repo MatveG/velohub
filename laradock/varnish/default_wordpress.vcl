@@ -122,7 +122,7 @@ sub vcl_recv {
         }
     }
 
-    # Check the cookies for wordpress-specific items
+    # Check the cookies for wordpress-specific common
     if (req.http.Cookie ~ "wordpress_" || req.http.Cookie ~ "comment_") {
         return (pass);
     }

@@ -14,7 +14,7 @@ class CartWidget
     }
 
     public function execute($data) {
-        return view('Widgets::cart', ['items' => $this->res]);
+        return view('Widgets::cart', ['common' => $this->res]);
     }
 
 }

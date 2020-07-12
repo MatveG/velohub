@@ -1,10 +1,11 @@
 
+import {required, requiredIf, minLength} from "vuelidate/lib/validators";
 import SortedCollection from "@/services/SortedCollection";
 
-export const items = {
+export const common = {
     props: {
         propItems: {
-            type: Array,
+            type: [Array, String],
             default: () => []
         },
 
@@ -18,13 +19,33 @@ export const items = {
         return {
             method: null,
             item: {},
-            coll: new SortedCollection(this.propItems),
+            collection: new SortedCollection(this.propItems),
         }
     },
 
     computed: {
         items: function() {
-            return this.coll.all();
+            return this.collection.all();
+        },
+    },
+
+    validations: {
+        item: {
+            title: {
+                required,
+                minLength: minLength(2)
+            },
+
+            type: {
+                required,
+            },
+
+            values: {
+                required: requiredIf(function () {
+                    return this.item.type === 'select';
+                }),
+                minLength: minLength(1),
+            }
         },
     },
 
@@ -32,21 +53,19 @@ export const items = {
         add() {
             this.cancel();
             this.method = 'add';
-            // this.item = {...this.blank};
         },
 
         edit() {
             this.cancel();
             this.method = 'edit';
-            // this.item = row;
         },
 
         save() {
-            if (this.validate()) {
+            if (this.validate() && this.unique()) {
                 if (this.method === 'add') {
-                    this.coll.push(this.item);
+                    this.collection.push(this.item);
                 } else {
-                    this.coll.put(this.item.id, this.item);
+                    this.collection.put(this.item.id, this.item);
                 }
 
                 this.$emit('update', this.items);
@@ -54,14 +73,24 @@ export const items = {
             }
         },
 
+        unique() {
+            if (this.collection.find(el => el.title === this.item.title && el.id !== this.item.id)) {
+                this.toast('Уже есть запись с таким Названием');
+
+                return false;
+            }
+
+            return true;
+        },
+
         assign(row, property, value) {
-            this.coll.update(row.id, {[property]: value});
+            this.collection.update(row.id, {[property]: value});
             this.$emit('update', this.items);
         },
 
         remove(row) {
             this.confirm('Удалить?', () => {
-                this.coll.remove(row.id);
+                this.collection.remove(row.id);
                 this.$emit('update', this.items);
                 this.cancel();
             });
@@ -85,7 +114,7 @@ export const items = {
             }
 
             if (payload.row && this.draggingRow && payload.row.ord !== this.draggingRow.ord) {
-                this.coll
+                this.collection
                     .update(payload.row.id, {ord: this.draggingRow.ord})
                     .update(this.draggingRow.id, {ord: payload.row.ord});
 

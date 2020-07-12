@@ -1,8 +1,8 @@
+
 <template>
     <section class="section is-main-section">
-
         <div class="buttons is-right">
-            <button @click="save" :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
+                <button @click="save" :disabled="saved" :class="{ 'is-loading': loading }" class="button is-primary fas fa-save"></button>
             <button @click="$router.push({ name: 'product' })" class="button fas fa-arrow-circle-left"></button>
         </div>
 
@@ -10,7 +10,7 @@
             <div class="columns">
                 <div class="column is-two-thirds">
                     <card-component title="Основная информация">
-                        <b-tabs v-model="activeTab" type="is-boxed">
+                        <b-tabs v-model="tab1" type="is-boxed">
                             <b-tab-item label="Название">
                                 <b-field label="Название" message="Пример: Конфеты" horizontal>
                                     <b-input v-model="product.title" required />
@@ -183,8 +183,8 @@
                     amount: 0,
                     percent: null,
                 },
+                tab1: 2,
                 timer: null,
-                activeTab: 2,
             }
         },
 

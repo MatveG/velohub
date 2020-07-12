@@ -19,7 +19,7 @@ class Order extends Model
         'comment',
     ];
     protected $casts = [
-        'items' => 'array'
+        'common' => 'array'
     ];
 
 }

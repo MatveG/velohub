@@ -77,8 +77,8 @@
                 </card-component>
 
                 <card-component v-if="category.id" title="Фотография" class="margin-line">
-                    <images-upload :prop-items="category.images" @update="assign('images', $event)"
-                                   :web-route="`/admin/categories/${category.id}`" max-amount="1" image-width="100%" />
+                    <images-upload :prop-images="category.images" @update="assign('images', $event)"
+                                   :prop-api="`/admin/categories/${category.id}`" :prop-max="1" prop-width="100%" />
                 </card-component>
             </div>
         </div>
@@ -91,8 +91,8 @@
     import {states} from '@/mixins/states';
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from '@/components/ImagesUpload';
-    import CategoryParameters from '../components/CategoryParameters';
     import CategoryFeatures from "../components/CategoryFeatures";
+    import CategoryParameters from '../components/CategoryParameters';
 
     export default {
         name: 'CategoryEdit',
@@ -182,19 +182,23 @@
             },
 
             save() {
-                if (!this.validate()) {
-                    return;
+                if (this.validate()) {
+                    clearTimeout(this.timer);
+                    this.stateLoading();
+
+                    if (this.propId) {
+                        this.patch();
+                    } else {
+                        this.store();
+                    }
                 }
+            },
 
-                clearTimeout(this.timer);
-                this.stateLoading();
+            patch() {
+                this.$store.dispatch('patchCategory', this.category).then(() => this.stateSaved());
+            },
 
-                if (this.propId) {
-                    this.$store.dispatch('patchCategory', this.category);
-                    this.stateSaved();
-                    return;
-                }
-
+            store() {
                 this.$store.dispatch('storeCategory', this.category).then(() => {
                     this.$router.replace({
                         name: 'category-edit',

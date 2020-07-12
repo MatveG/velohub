@@ -14,7 +14,7 @@
                  detailed
                  detail-key="id"
                  :show-detail-icon="false"
-                 :openedRows-detailed="openedRows"
+                 :opened-detailed="openedRows"
                  class="valign-center">
 
             <template v-slot="props">
@@ -54,7 +54,7 @@
 
                 <b-table-column field="required" label="Обязательное" width="10%" sortable centered>
                     <b-checkbox v-if="props.row.id === item.id || props.row === item" v-model="item.required"
-                                :disabled="item.type === 0" />
+                                :disabled="item.type === 'group'" />
                     <span v-else-if="props.row.required" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
@@ -62,7 +62,7 @@
 
                 <b-table-column field="filter" label="Фильтр" width="10%" sortable centered>
                     <b-checkbox v-if="props.row.id === item.id || props.row === item" v-model="item.filter"
-                                :disabled="item.type === 'text' || item.type === 0" />
+                                :disabled="item.type === 'text' || item.type === 'group'" />
                     <span v-else-if="props.row.filter" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
@@ -70,14 +70,14 @@
 
                 <b-table-column label="*" width="20%" centered>
                     <template v-if="props.row.id === item.id || props.row === item">
-                        <button @click="save" type="button" class="button fas fa-check is-success" />
+                        <button @click="saveFeature" type="button" class="button fas fa-check is-success" />
                         <button @click="cancel" type="button" class="button fas fa-times is-warning" />
                     </template>
                     <template v-else>
                         <b-dropdown hoverable :expanded="false" aria-role="list" class="dropdown-buttons">
                             <button @click="editFeature(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
 
-                            <b-dropdown-item v-if="props.row.type === 0" @click="addSub(props.row)" aria-role="listitem">
+                            <b-dropdown-item v-if="props.row.type === 'group'" @click="addSub(props.row)" aria-role="listitem">
                                 <b-icon pack="fas" icon="plus" />
                             </b-dropdown-item>
 
@@ -90,7 +90,7 @@
             </template>
 
             <template slot="detail" slot-scope="props">
-                <category-features :prop-items="props.row.sub" :prop-sub="true" :ref="`subTable{$props.row.id}`"
+                <category-features :prop-items="props.row.sub" :prop-sub="true" :ref="`subTable-${props.row.id}`"
                            @update="assign(props.row, 'sub', $event)" />
             </template>
         </b-table>
@@ -103,7 +103,7 @@
 
 <script>
     import {draggable} from "@/mixins/draggable";
-    import {items} from "../mixins/items";
+    import {common} from "../mixins/common";
     import Feature from "../classes/Feature";
     import CategoryFeatures from "./CategoryFeatures";
 
@@ -112,7 +112,7 @@
 
         components: {CategoryFeatures},
 
-        mixins: [draggable, items],
+        mixins: [draggable, common],
 
         data() {
             return {
@@ -122,44 +122,40 @@
         },
 
         mounted() {
-            this.openedRows = this.getOpenedRows();
-        },
-
-        validations: {
-            item: Feature.validations(),
+            this.openSub();
         },
 
         methods: {
             addFeature() {
                 this.add();
                 this.item = new Feature();
+
             },
 
             editFeature(row) {
                 this.edit();
                 this.item = Feature.fromObj(row);
-
-                this.item = row;
             },
 
-            getOpenedRows() {
-                this.coll.orderBy('ord');
+            saveFeature() {
+                this.save();
+                this.openSub();
+            },
 
-                console.log(this.items.filter(el => el.type === 0).map(el => el.id));
-
-                return this.items.filter(el => el.type === 0).map(el => el.id);
+            openSub() {
+                this.collection.orderBy('ord');
+                this.openedRows = this.items.filter(el => el.type === 'group').map(el => el.id);
             },
 
             addSub(row) {
-                console.log(this.$refs[`subTable{$row.id}`]);
-                this.$refs[`subTable{$row.id}`].addFeature();
+                this.$refs[`subTable-${row.id}`].addFeature();
             },
 
             featuresDrop(payload) {
                 this.drop(payload);
 
                 setTimeout(() => this.openedRows = [], 0);
-                setTimeout(() => this.openedRows = this.getOpenedRows(), 0);
+                setTimeout(() => this.openSub(), 0);
             }
         }
     }

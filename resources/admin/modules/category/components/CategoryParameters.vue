@@ -2,8 +2,8 @@
     <div>
         <b-table ref="table"
                  :data="(method === 'add') ? [...items, item] : items"
-                 default-sort="sorting"
-                 custom-row-key="index"
+                 default-sort="ord"
+                 custom-row-key="id"
                  icon-pack="fa"
                  hoverable
                  draggable
@@ -14,19 +14,19 @@
                  class="valign-center">
 
             <template v-slot="props">
-                <b-table-column field="sorting" width="5%" sortable centered>
-                    {{ props.row.sorting }}
+                <b-table-column field="ord" width="5%" sortable centered>
+                    {{ props.row.ord }}
                 </b-table-column>
 
                 <b-table-column field="title" label="Название" width="30%" sortable>
-                    <b-field v-if="props.row.index === item.index || props.row === item" :type="{ 'is-danger': $v.item.title.$error }">
+                    <b-field v-if="props.row.id === item.id || props.row === item" :type="{ 'is-danger': $v.item.title.$error }">
                         <b-input v-model="item.title"></b-input>
                     </b-field>
                     <span v-else>{{ props.row.title }}</span>
                 </b-table-column>
 
                 <b-table-column field="type" label="Тип данных" width="20%" sortable centered>
-                    <template v-if="props.row.index === item.index || props.row === item">
+                    <template v-if="props.row.id === item.id || props.row === item">
                         <b-field :type="{ 'is-danger': $v.item.type.$error }">
                             <b-select v-model="item.type" @change.native="reset" expanded>
                                 <option v-for="(title, key) in inputTypes" :value="key">{{ title }}</option>
@@ -46,22 +46,22 @@
                     <span v-else>{{ inputTypes[props.row.type] }}</span>
                 </b-table-column>
 
-                <b-table-column field="is_filter" label="Фильтр" width="15%" sortable centered>
-                    <b-checkbox v-if="props.row.index === item.index || props.row === item" v-model="item.is_filter"
+                <b-table-column field="filter" label="Фильтр" width="15%" sortable centered>
+                    <b-checkbox v-if="props.row.id === item.id || props.row === item" v-model="item.filter"
                                 :disabled="item.type === 'text' || item.type === 'header'" />
-                    <span v-else-if="props.row.is_filter" class="icon has-text-dark">
+                    <span v-else-if="props.row.filter" class="icon has-text-dark">
                         <i class="fas fa-check-square"></i>
                     </span>
                 </b-table-column>
 
                 <b-table-column label="*" width="20%" centered>
-                    <template v-if="props.row.index === item.index || props.row === item">
-                        <button @click="saveParameter" type="button" class="button fas fa-check is-success" />
+                    <template v-if="props.row.id === item.id || props.row === item">
+                        <button @click="save" type="button" class="button fas fa-check is-success" />
                         <button @click="cancel" type="button" class="button fas fa-times is-warning" />
                     </template>
                     <template v-else>
                         <b-dropdown hoverable :expanded="false" aria-role="list" class="dropdown-buttons">
-                            <button @click="edit(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
+                            <button @click="editParameter(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
 
                             <b-dropdown-item @click="remove(props.row)" aria-role="listitem">
                                 <b-icon pack="fas" icon="trash" />
@@ -73,66 +73,36 @@
         </b-table>
 
         <div class="buttons is-centered margin-line">
-            <button class="button is-primary" type="button" @click="add">Добавить</button>
+            <button class="button is-primary" type="button" @click="addParameter">Добавить</button>
         </div>
     </div>
 </template>
 
 <script>
-    import {required, requiredIf, minLength} from 'vuelidate/lib/validators'
     import {draggable} from "@/mixins/draggable";
-    import {items} from "../mixins/items";
-
-    const BLANK = {
-        is_filter: false,
-        values: null
-    };
-    const INPUT_TYPES = {
-        string: 'строка',
-        number: 'число',
-        select: 'выбор',
-    };
+    import {common} from "../mixins/common";
+    import Parameter from "../classes/Parameter";
 
     export default {
         name: "CategoryParameters",
 
-        mixins: [draggable, items],
+        mixins: [draggable, common],
 
         data() {
             return {
-                opened: [],
-                blank: BLANK,
-                inputTypes: INPUT_TYPES
-            }
-        },
-
-        validations: {
-            item: {
-                title: {
-                    required,
-                    minLength: minLength(2)
-                },
-                type: {
-                    required,
-                },
-                values: {
-                    required: requiredIf(function () {
-                        return this.item.type === 'select';
-                    }),
-                    minLength: minLength(1),
-                }
+                inputTypes: Parameter.getTypes()
             }
         },
 
         methods: {
-            saveParameter() {
-                if (this.collection.some((el, i) => el.title === this.item.title && i !== this.item.index)) {
-                    this.toast('Уже есть запись с таким Названием');
+            addParameter() {
+                this.add();
+                this.item = new Parameter();
+            },
 
-                    return false;
-                }
-
-                this.save();
+            editParameter(row) {
+                this.edit();
+                this.item = Parameter.fromObj(row);
             },
         }
     }

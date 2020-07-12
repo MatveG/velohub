@@ -2511,7 +2511,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Retrieve multiple items from the cache by key.
+         * Retrieve multiple common from the cache by key.
          *
          * Items not found in the cache will have a null value.
          *
@@ -2525,7 +2525,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Obtains multiple cache items by their unique keys.
+         * Obtains multiple cache common by their unique keys.
          *
          * @param \Psr\SimpleCache\iterable $keys A list of keys that can obtained in a single operation.
          * @param mixed $default Default value to return for keys that do not exist.
@@ -2586,7 +2586,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Store multiple items in the cache for a given number of minutes.
+         * Store multiple common in the cache for a given number of minutes.
          *
          * @param array $values
          * @param \DateTimeInterface|\DateInterval|float|int $minutes
@@ -2736,10 +2736,10 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Deletes multiple cache items in a single operation.
+         * Deletes multiple cache common in a single operation.
          *
          * @param \Psr\SimpleCache\iterable $keys A list of string-based keys to be deleted.
-         * @return bool True if the items were successfully removed. False if there was an error.
+         * @return bool True if the common were successfully removed. False if there was an error.
          * @throws \Psr\SimpleCache\InvalidArgumentException
          *   MUST be thrown if $keys is neither an array nor a Traversable,
          *   or if any of the $keys are not a legal value.
@@ -2921,7 +2921,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Remove all items from the cache.
+         * Remove all common from the cache.
          *
          * @return bool
          * @static
@@ -3045,7 +3045,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Get all of the configuration items for the application.
+         * Get all of the configuration common for the application.
          *
          * @return array
          * @static
@@ -8448,7 +8448,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Get all of the input except for a specified array of items.
+         * Get all of the input except for a specified array of common.
          *
          * @param array|mixed $keys
          * @return array
@@ -10154,7 +10154,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Remove one or many items from the session.
+         * Remove one or many common from the session.
          *
          * @param string|array $keys
          * @return void
@@ -10166,7 +10166,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Remove all of the items from the session.
+         * Remove all of the common from the session.
          *
          * @return void
          * @static

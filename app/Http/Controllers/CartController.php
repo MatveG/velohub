@@ -65,6 +65,6 @@ class CartController extends Controller
 
         $seo = (object) ['title' => '','description' => '','keywords' => ''];
 
-        return view('cart-send', compact(['items', 'seo']));
+        return view('cart-send', compact(['common', 'seo']));
     }
 }
