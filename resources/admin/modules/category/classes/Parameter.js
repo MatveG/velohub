@@ -1,7 +1,7 @@
 
 const types = {
-    string: 'строка',
     number: 'число',
+    string: 'строка',
     select: 'выбор',
 };
 

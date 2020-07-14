@@ -75,7 +75,7 @@ export const common = {
 
         unique() {
             if (this.collection.find(el => el.title === this.item.title && el.id !== this.item.id)) {
-                this.toast('Уже есть запись с таким Названием');
+                this.toast('Уже есть запись с таким Именем');
 
                 return false;
             }

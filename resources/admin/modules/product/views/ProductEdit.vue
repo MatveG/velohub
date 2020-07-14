@@ -144,7 +144,7 @@
             </div>
         </form>
         <card-component title="Варианты товара" class="margin-line">
-            <variants v-if="product.id" @update="product.variants=$event" :discount="discount.amount" />
+            <product-variants v-if="product.id" @update="product.variants=$event" :discount="discount.amount" />
         </card-component>
     </section>
 </template>
@@ -155,17 +155,18 @@
     import {states} from '@/mixins/states';
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from "@/components/ImagesUpload";
-    import Variants from "../components/ProductVariants";
     import ProductFeatures from "../components/ProductFeatures";
+    import ProductVariants from "../components/ProductVariants";
+    import between from "vuelidate/lib/validators/between";
 
     export default {
         name: 'ProductEdit',
 
         components: {
-            ProductFeatures,
             CardComponent,
             ImagesUpload,
-            Variants
+            ProductFeatures,
+            ProductVariants
         },
 
         mixins: [states],
@@ -275,3 +276,4 @@
     }
 </script>
 
+ТЬ,ю

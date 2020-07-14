@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class ProductObserver
 {
-    public function retrieved(Product $product) {
-        //$this->clearUnusedFeatures($product);
-    }
-
     public function saving(Product $product)
     {
         $product->latin = latinize($product->brand . ' ' . $product->model);
+
+        //$this->clearUnusedFeatures($product);
 
         if ($product->variants()->count()) {
             $this->clearStockPropeties($product);
@@ -30,14 +28,15 @@ class ProductObserver
             return;
         }
 
-        $features = $product->features;
+        $productFeatures = $product->features;
+        $categoryFeatures = $product->category->features;
 
-        foreach ($features as $key => $feature) {
-            if(empty($product->category->features->{$key})) {
-                unset($features->{$key});
+        foreach ($productFeatures as $key => $feature) {
+            if(empty($categoryFeatures->{$key})) {
+                unset($productFeatures->{$key});
             }
         }
-        $product->features = $features;
+        $product->features = $productFeatures;
         $product->save();
     }
 

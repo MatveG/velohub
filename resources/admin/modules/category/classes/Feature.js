@@ -1,11 +1,12 @@
 
 const types = {
     group: 'группа',
-    string: 'строка',
     number: 'число',
+    string: 'строка',
     text: 'текст',
-    select: 'выбор',
     bool: 'есть/нет',
+    select: 'выбор',
+    multiple: 'мульти выбор',
 };
 
 export default class Feature {

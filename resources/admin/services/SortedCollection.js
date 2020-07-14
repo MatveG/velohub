@@ -104,7 +104,7 @@ export default class SortedCollection {
 
     push(obj)  {
         if (!obj.id) {
-            obj.id = nanoid(9);
+            obj.id = nanoid(6);
         }
         let lastVal = this.max('ord');
         obj.ord = (lastVal) ? lastVal + 1 : 1;

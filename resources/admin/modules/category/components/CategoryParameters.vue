@@ -18,7 +18,7 @@
                     {{ props.row.ord }}
                 </b-table-column>
 
-                <b-table-column field="title" label="Название" width="30%" sortable>
+                <b-table-column field="title" label="Имя" width="30%" sortable>
                     <b-field v-if="props.row.id === item.id || props.row === item" :type="{ 'is-danger': $v.item.title.$error }">
                         <b-input v-model="item.title"></b-input>
                     </b-field>
@@ -33,7 +33,7 @@
                             </b-select>
                         </b-field>
                         <template v-if="item.type === 'number'">
-                            <b-field label="Единицы измерения" label-position="on-border">
+                            <b-field label="Ед. измерения" label-position="on-border">
                                 <b-input v-model="item.units" placeholder="кг" />
                             </b-field>
                         </template>

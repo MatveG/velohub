@@ -21,8 +21,8 @@
                 <b-table-column field="parameters" label="Параметры" width="30%" centered>
                     <div class="buttons is-centered">
                         <template v-for="parameter in product.category.parameters">
-                            <button v-if="props.row.parameters[parameter.key]" class="button is-rounded is-small is-static">
-                                {{ props.row.parameters[parameter.key] }}
+                            <button v-if="props.row.parameters[parameter.id]" class="button is-rounded is-small is-static">
+                                {{ props.row.parameters[parameter.id] }}
                             </button>
                         </template>
                     </div>

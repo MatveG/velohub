@@ -18,7 +18,7 @@
                 <div class="columns">
                     <div v-if="variant.parameters" v-for="parameter in product.category.parameters" class="column">
                         <b-field :label="parameter.title" label-position="on-border">
-                            <b-input v-model="variant.parameters[parameter.key]" :placeholder="'Параметр [' + parameter.title + ']'" required />
+                            <b-input v-model="variant.parameters[parameter.id]" :placeholder="'Параметр [' + parameter.title + ']'" required />
                         </b-field>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                 }
 
                 for(let parameter of this.product.category.parameters) {
-                    if(!this.variant.parameters[parameter.key]) {
+                    if(!this.variant.parameters[parameter.id]) {
                         return this.toast('Заполните параметры товара');
                     }
                 }
