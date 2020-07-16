@@ -141,6 +141,7 @@
 
                 if (rowOne && rowTwo && rowOne.ord !== rowTwo.ord) {
                     [rowOne.ord, rowTwo.ord] = [rowTwo.ord, rowOne.ord];
+
                     this.$store.dispatch('patchCategory', rowOne);
                     this.$store.dispatch('patchCategory', rowTwo);
                     this.$refs.table.initSort();

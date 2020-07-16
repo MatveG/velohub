@@ -1,4 +1,8 @@
 
+import {customAlphabet} from "nanoid";
+
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_', 6);
+
 const types = {
     group: 'группа',
     number: 'число',
@@ -11,7 +15,7 @@ const types = {
 
 export default class Feature {
     constructor(product) {
-        this.id = null;
+        this.id = nanoid();
         this.ord = null;
         this.title = null;
         this.latin = null;

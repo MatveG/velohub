@@ -6,31 +6,53 @@ use App\Models\Category;
 
 class CategoryObserver
 {
+    public function creating(Category $category)
+    {
+        $category->ord = self::computeOrd($category->parent_id);
+    }
+
+    public function updating(Category $category)
+    {
+        if ($category->isDirty('parent_id')) {
+            self::decrementOrd($category->getOriginal('parent_id'), $category->ord);
+            $category->ord = self::computeOrd($category->parent_id);
+        }
+    }
+
     public function saving(Category $category)
     {
         if ($category->isDirty('title')) {
             $category->latin = latinize($category->title);
         }
 
-        if (empty($category->sorting) || $category->isDirty('parent_id')) {
-            $category->sorting = $this->calculateSorting($category->parent_id);
+        if ($category->isDirty('features')) {
+            $category->features = self::mapLatinProperty($category->features);
         }
 
-        if ($category->isDirty('parent_id')) {
-            self::redoSorting($category->getOriginal('parent_id'), $category->sorting);
+        if ($category->isDirty('parameters')) {
+            $category->parameters = self::mapLatinProperty($category->parameters);
         }
     }
 
     public function deleting(Category $category)
     {
-        self::redoSorting($category->parent_id, $category->sorting);
+        self::decrementOrd($category->parent_id, $category->ord);
     }
 
-    private static function calculateSorting($parentId) {
-        return Category::where('parent_id', $parentId)->max('sorting') + 1;
+    private static function mapLatinProperty($array)
+    {
+        return array_map(static function ($element) {
+            $element['latin'] = ($element['filter']) ? latinize($element['title']) : null;
+
+            return $element;
+        }, $array);
     }
 
-    private static function redoSorting($parentId, $initialValue) {
-        return Category::where('parent_id', $parentId)->where('sorting', '>', $initialValue)->decrement('sorting');
+    private static function computeOrd($parentId) {
+        return Category::where('parent_id', $parentId)->max('ord') + 1;
+    }
+
+    private static function decrementOrd($parentId, $initialValue) {
+        return Category::where('parent_id', $parentId)->where('ord', '>', $initialValue)->decrement('ord');
     }
 }

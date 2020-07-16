@@ -20,7 +20,7 @@ class CreateCategoriesTable extends Migration
             $table->boolean('is_active')->default(false)->index();
             $table->boolean('is_parent')->default(false)->index();
 
-            $table->integer('sorting')->default(0);
+            $table->integer('ord')->default(0);
 
             $table->string('title')->nullable();
             $table->string('title_short')->nullable();

@@ -6,14 +6,14 @@ use Carbon\Carbon;
 
 trait Common
 {
+    protected function asJson($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
     public function getName()
     {
         return $this->name;
-    }
-
-    public function getSearcheble()
-    {
-        return $this->searchable;
     }
 
     public function scopeActive($query)

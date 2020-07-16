@@ -18,7 +18,7 @@ class CategoriesTableSeeder extends Seeder
             'parent_id' => '0',
             'is_active' => true,
             'is_parent' => true,
-            'sorting' => '1',
+            'ord' => '1',
             'latin' => $faker->word(),
             'title' => $faker->word(),
             'title_short' => $faker->word(),
@@ -28,7 +28,7 @@ class CategoriesTableSeeder extends Seeder
 
         DB::table('categories')->insert([
             'parent_id' => '1',
-            'sorting' => '2',
+            'ord' => '2',
             'is_active' => true,
             'latin' => $faker->word(),
             'title' => $faker->word(),
@@ -39,7 +39,7 @@ class CategoriesTableSeeder extends Seeder
 
         DB::table('categories')->insert([
             'parent_id' => '1',
-            'sorting' => '3',
+            'ord' => '3',
             'is_active' => true,
             'latin' => $faker->word(),
             'title' => $faker->word(),
@@ -50,7 +50,7 @@ class CategoriesTableSeeder extends Seeder
 
         DB::table('categories')->insert([
             'parent_id' => '0',
-            'sorting' => '2',
+            'ord' => '2',
             'is_active' => true,
             'is_parent' => true,
             'latin' => $faker->word(),
@@ -62,7 +62,7 @@ class CategoriesTableSeeder extends Seeder
 
         DB::table('categories')->insert([
             'parent_id' => '0',
-            'sorting' => '3',
+            'ord' => '3',
             'is_active' => true,
             'latin' => $faker->word(),
             'title' => $faker->word(),

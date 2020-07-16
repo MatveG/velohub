@@ -1,9 +1,9 @@
 <template>
     <div class="table-draggable-nested">
         <b-table ref="table"
-                 :data="(method === 'add') ? [...items, item] : items"
-                 default-sort="ord"
+                 :data="(hasOpen() && index === null) ? [...items, item] : items"
                  custom-row-key="id"
+                 default-sort="index"
                  icon-pack="fa"
                  hoverable
                  draggable
@@ -14,12 +14,12 @@
                  detailed
                  detail-key="id"
                  :show-detail-icon="false"
-                 :opened-detailed="openedRows"
+                 :opened-detailed="opened"
                  class="valign-center">
 
             <template v-slot="props">
-                <b-table-column field="ord" label="↓" width="5%" sortable centered>
-                    {{ props.row.ord }}
+                <b-table-column field="index" label="↓" width="5%" sortable centered>
+                    {{ props.index + 1 }}
                 </b-table-column>
 
                 <b-table-column field="title" label="Имя" width="30%" sortable>
@@ -32,8 +32,8 @@
                 <b-table-column field="type" label="Тип" width="20%" sortable centered>
                     <template v-if="props.row.id === item.id || props.row === item">
                         <b-field :type="{ 'is-danger': $v.item.type.$error }">
-                            <b-select v-model="item.type" @change.native="reset" expanded>
-                                <option v-for="(title, key) in inputTypes" :value="key">
+                            <b-select v-model="item.type" @change.native="item.reset" expanded>
+                                <option v-for="(title, key) in dataTypes" :value="key">
                                     {{ title }}
                                 </option>
                             </b-select>
@@ -49,7 +49,7 @@
                             </b-field>
                         </template>
                     </template>
-                    <template v-else>{{ inputTypes[props.row.type] }}</template>
+                    <template v-else>{{ dataTypes[props.row.type] }}</template>
                 </b-table-column>
 
                 <b-table-column field="required" label="Обязательное" width="10%" sortable centered>
@@ -75,13 +75,13 @@
                     </template>
                     <template v-else>
                         <b-dropdown hoverable :expanded="false" aria-role="list" class="dropdown-buttons">
-                            <button @click="editFeature(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
+                            <button @click="edit(props.index, props.row)" slot="trigger" class="button is-primary fas fa-pen" />
 
                             <b-dropdown-item v-if="props.row.type === 'group'" @click="addSub(props.row)" aria-role="listitem">
                                 <b-icon pack="fas" icon="plus" />
                             </b-dropdown-item>
 
-                            <b-dropdown-item @click="remove(props.row)" aria-role="listitem">
+                            <b-dropdown-item @click="remove(props.index)" aria-role="listitem">
                                 <b-icon pack="fas" icon="trash" />
                             </b-dropdown-item>
                         </b-dropdown>
@@ -91,12 +91,12 @@
 
             <template slot="detail" slot-scope="props">
                 <category-features :prop-items="props.row.sub" :prop-sub="true" :ref="`subTable-${props.row.id}`"
-                           @update="assign(props.row, 'sub', $event)" />
+                           @update="assign(props.index, 'sub', $event)" />
             </template>
         </b-table>
 
         <div v-if="!propSub" class="buttons is-centered margin-line">
-            <button class="button is-primary" type="button" @click="addFeature">Добавить</button>
+            <button class="button is-primary" type="button" @click="add">Добавить</button>
         </div>
     </div>
 </template>
@@ -116,46 +116,45 @@
 
         data() {
             return {
-                openedRows: [],
-                inputTypes: Feature.getTypes(!this.propSub)
+                opened: [],
+                dataTypes: Feature.getTypes(!this.propSub)
             }
         },
 
         mounted() {
-            this.openSub();
+            this.openRows();
         },
 
         methods: {
-            addFeature() {
-                this.add();
+            add() {
+                this.cancel();
                 this.item = new Feature();
-
             },
 
-            editFeature(row) {
-                this.edit();
+            edit(index, row) {
+                this.cancel();
+                this.index = index;
                 this.item = Feature.fromObj(row);
             },
 
             saveFeature() {
                 this.save();
-                this.openSub();
-            },
-
-            openSub() {
-                this.collection.orderBy('ord');
-                this.openedRows = this.items.filter(el => el.type === 'group').map(el => el.id);
+                this.openRows();
             },
 
             addSub(row) {
-                this.$refs[`subTable-${row.id}`].addFeature();
+                this.$refs[`subTable-${row.id}`].add();
+            },
+
+            openRows() {
+                this.opened = this.items.filter(el => el.type === 'group').map(el => el.id);
             },
 
             featuresDrop(payload) {
                 this.drop(payload);
 
-                setTimeout(() => this.openedRows = [], 0);
-                setTimeout(() => this.openSub(), 0);
+                setTimeout(() => this.opened = [], 0);
+                setTimeout(() => this.openRows(), 0);
             }
         }
     }

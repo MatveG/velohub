@@ -1,6 +1,6 @@
 
+import Vue from "vue";
 import {required, requiredIf, minLength} from "vuelidate/lib/validators";
-import SortedCollection from "@/services/SortedCollection";
 
 export const common = {
     props: {
@@ -17,16 +17,10 @@ export const common = {
 
     data() {
         return {
-            method: null,
+            items: this.propItems,
             item: {},
-            collection: new SortedCollection(this.propItems),
+            index: null,
         }
-    },
-
-    computed: {
-        items: function() {
-            return this.collection.all();
-        },
     },
 
     validations: {
@@ -42,7 +36,7 @@ export const common = {
 
             values: {
                 required: requiredIf(function () {
-                    return this.item.type === 'select';
+                    return this.item.type === 'select' || this.item.type === 'multiple';
                 }),
                 minLength: minLength(1),
             }
@@ -50,22 +44,12 @@ export const common = {
     },
 
     methods: {
-        add() {
-            this.cancel();
-            this.method = 'add';
-        },
-
-        edit() {
-            this.cancel();
-            this.method = 'edit';
-        },
-
         save() {
-            if (this.validate() && this.unique()) {
-                if (this.method === 'add') {
-                    this.collection.push(this.item);
+            if (this.validate() && this.uniqueTitle()) {
+                if (this.index === null) {
+                    this.items.push(this.item);
                 } else {
-                    this.collection.put(this.item.id, this.item);
+                    this.items = this.items.map((el, i) => el = i === this.index ? this.item : el);
                 }
 
                 this.$emit('update', this.items);
@@ -73,8 +57,47 @@ export const common = {
             }
         },
 
-        unique() {
-            if (this.collection.find(el => el.title === this.item.title && el.id !== this.item.id)) {
+        assign(index, property, value) {
+            this.items[index][property] = value;
+            this.$emit('update', this.items);
+        },
+
+        remove(index) {
+            this.confirm('Удалить?', () => {
+                this.items.splice(index, 1);
+                this.$emit('update', this.items);
+                this.cancel();
+            });
+        },
+
+        cancel() {
+            this.$v.$reset();
+            this.index = null;
+            this.item = {};
+        },
+
+        drop(payload) {
+            this.dragdrop(payload);
+
+            if (this.hasOpen()) {
+                return false;
+            }
+
+            let [indexOne, indexTwo] = [payload.index, this.draggingRowIndex];
+
+            if (indexOne && indexTwo && indexOne !== indexTwo) {
+                let temp = this.items[indexTwo];
+
+                Vue.set(this.items, indexTwo, this.items[indexOne]);
+                Vue.set(this.items, indexOne, temp);
+
+                this.$refs.table.initSort();
+                this.$emit('update', this.items);
+            }
+        },
+
+        uniqueTitle() {
+            if (this.items.find(el => el.title === this.item.title && el.id !== this.item.id)) {
                 this.toast('Уже есть запись с таким Именем');
 
                 return false;
@@ -83,44 +106,8 @@ export const common = {
             return true;
         },
 
-        assign(row, property, value) {
-            this.collection.update(row.id, {[property]: value});
-            this.$emit('update', this.items);
-        },
-
-        remove(row) {
-            this.confirm('Удалить?', () => {
-                this.collection.remove(row.id);
-                this.$emit('update', this.items);
-                this.cancel();
-            });
-        },
-
-        cancel() {
-            this.$v.$reset();
-            this.method = null;
-            this.item = {};
-        },
-
-        reset() {
-            this.item.reset();
-        },
-
-        drop(payload) {
-            this.dragdrop(payload);
-
-            if (Object.keys(this.item).length) {
-                return false;
-            }
-
-            if (payload.row && this.draggingRow && payload.row.ord !== this.draggingRow.ord) {
-                this.collection
-                    .update(payload.row.id, {ord: this.draggingRow.ord})
-                    .update(this.draggingRow.id, {ord: payload.row.ord});
-
-                this.$refs.table.initSort();
-                this.$emit('update', this.items);
-            }
+        hasOpen() {
+            return !!Object.keys(this.item).length;
         },
     }
 };

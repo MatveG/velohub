@@ -1,9 +1,9 @@
 <template>
     <div>
         <b-table ref="table"
-                 :data="(method === 'add') ? [...items, item] : items"
-                 default-sort="ord"
+                 :data="(hasOpen() && index === null) ? [...items, item] : items"
                  custom-row-key="id"
+                 default-sort="index"
                  icon-pack="fa"
                  hoverable
                  draggable
@@ -14,8 +14,8 @@
                  class="valign-center">
 
             <template v-slot="props">
-                <b-table-column field="ord" width="5%" sortable centered>
-                    {{ props.row.ord }}
+                <b-table-column field="index" label="↓" width="5%" sortable centered>
+                    {{ props.index + 1 }}
                 </b-table-column>
 
                 <b-table-column field="title" label="Имя" width="30%" sortable>
@@ -28,8 +28,8 @@
                 <b-table-column field="type" label="Тип данных" width="20%" sortable centered>
                     <template v-if="props.row.id === item.id || props.row === item">
                         <b-field :type="{ 'is-danger': $v.item.type.$error }">
-                            <b-select v-model="item.type" @change.native="reset" expanded>
-                                <option v-for="(title, key) in inputTypes" :value="key">{{ title }}</option>
+                            <b-select v-model="item.type" @change.native="item.reset" expanded>
+                                <option v-for="(title, key) in dataTypes" :value="key">{{ title }}</option>
                             </b-select>
                         </b-field>
                         <template v-if="item.type === 'number'">
@@ -43,7 +43,7 @@
                             </b-field>
                         </template>
                     </template>
-                    <span v-else>{{ inputTypes[props.row.type] }}</span>
+                    <span v-else>{{ dataTypes[props.row.type] }}</span>
                 </b-table-column>
 
                 <b-table-column field="filter" label="Фильтр" width="15%" sortable centered>
@@ -61,7 +61,7 @@
                     </template>
                     <template v-else>
                         <b-dropdown hoverable :expanded="false" aria-role="list" class="dropdown-buttons">
-                            <button @click="editParameter(props.row)" slot="trigger" class="button is-primary fas fa-pen" />
+                            <button @click="edit(props.index, props.row)" slot="trigger" class="button is-primary fas fa-pen" />
 
                             <b-dropdown-item @click="remove(props.row)" aria-role="listitem">
                                 <b-icon pack="fas" icon="trash" />
@@ -73,7 +73,7 @@
         </b-table>
 
         <div class="buttons is-centered margin-line">
-            <button class="button is-primary" type="button" @click="addParameter">Добавить</button>
+            <button class="button is-primary" type="button" @click="add">Добавить</button>
         </div>
     </div>
 </template>
@@ -90,18 +90,19 @@
 
         data() {
             return {
-                inputTypes: Parameter.getTypes()
+                dataTypes: Parameter.getTypes()
             }
         },
 
         methods: {
-            addParameter() {
-                this.add();
+            add() {
+                this.cancel();
                 this.item = new Parameter();
             },
 
-            editParameter(row) {
-                this.edit();
+            edit(index, row) {
+                this.cancel();
+                this.index = index;
                 this.item = Parameter.fromObj(row);
             },
         }

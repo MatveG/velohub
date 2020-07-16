@@ -1,4 +1,8 @@
 
+import {customAlphabet} from "nanoid";
+
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_', 6);
+
 const types = {
     number: 'число',
     string: 'строка',
@@ -7,7 +11,7 @@ const types = {
 
 export default class Parameter {
     constructor(product) {
-        this.id = null;
+        this.id = nanoid();
         this.ord = null;
         this.title = null;
         this.latin = null;
