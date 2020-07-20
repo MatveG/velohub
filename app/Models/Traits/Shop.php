@@ -14,15 +14,15 @@ trait Shop
         return settings('shop', 'default_price');
     }
 
-    public static function currencyCode()
-    {
-        return self::shopCurrency()->{self::shopPrice()}->code;
-    }
-
-    public static function currencySign()
-    {
-        return self::shopCurrency()->{self::shopPrice()}->sign;
-    }
+//    public static function currencyCode()
+//    {
+//        return self::shopCurrency()->{self::shopPrice()}->code;
+//    }
+//
+//    public static function currencySign()
+//    {
+//        return self::shopCurrency()->{self::shopPrice()}->sign;
+//    }
 
     public function getThumbAttribute()
     {

@@ -4,6 +4,7 @@ import axios from 'axios';
 const PRODUCT_BLANK = {
     images: [],
     variants: [],
+    features: {}
 };
 
 export default {
@@ -40,7 +41,6 @@ export default {
             state.products = payload;
         },
 
-        //
         assignVariant(state, payload) {
             state.variant = payload;
         },

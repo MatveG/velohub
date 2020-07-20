@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Services\Admin\ImageUploadHandler;
+use App\Services\Admin\ShopImages;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -60,11 +60,11 @@ class CategoryController extends Controller
         ]);
 
         $category = Category::find($id);
-        $uploadedImages = ImageUploadHandler::uploadArray($request->images, (object)[
-            'folder' => $category->getImagesFolder(),
-            'uid' => $category->id,
-            'filename' => $category->latin
-        ]);
+        $uploadedImages = ShopImages::uploadImages(
+            $request->images,
+            $category->imagesFolder,
+            $category->imagesName
+        );
 
         return response()->json($uploadedImages);
     }

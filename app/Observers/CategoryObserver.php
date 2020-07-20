@@ -39,20 +39,28 @@ class CategoryObserver
         self::decrementOrd($category->parent_id, $category->ord);
     }
 
-    private static function mapLatinProperty($array)
-    {
-        return array_map(static function ($element) {
-            $element['latin'] = ($element['filter']) ? latinize($element['title']) : null;
-
-            return $element;
-        }, $array);
-    }
-
     private static function computeOrd($parentId) {
         return Category::where('parent_id', $parentId)->max('ord') + 1;
     }
 
     private static function decrementOrd($parentId, $initialValue) {
         return Category::where('parent_id', $parentId)->where('ord', '>', $initialValue)->decrement('ord');
+    }
+
+    private static function mapLatinProperty($array, $prefix = null)
+    {
+        return array_map(static function ($element) use ($prefix) {
+            if ($element['filter']) {
+                $element['latin'] = latinize(($prefix ? "$prefix-" : '') . $element['title']);
+            } else {
+                $element['latin'] = null;
+            }
+
+            if ($element['sub']) {
+                $element['sub'] = self::mapLatinProperty($element['sub'], $element['title']);
+            }
+
+            return $element;
+        }, $array);
     }
 }

@@ -3,7 +3,7 @@ import Vue from "vue";
 
 Vue.mixin({
     methods: {
-        validate() {
+            validate() {
             this.$v.$touch();
 
             if (this.$v.$invalid) {

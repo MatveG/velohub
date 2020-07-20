@@ -20,6 +20,7 @@ export default class Feature {
         this.title = null;
         this.latin = null;
         this.type = null;
+        this.hint = null;
         this.reset();
     }
 

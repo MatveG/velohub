@@ -12,7 +12,7 @@ class Variant extends Model
     use Traits\Relations\BelongsTo\Category;
 
     protected $name = 'variant';
-    protected $imagesFolder = '/media/vt';
+    protected $imagesFolder = '/media/variant';
     public $timestamps = false;
     protected $fillable = [
         'product_id',
@@ -67,6 +67,19 @@ class Variant extends Model
     public function setPricesAttribute($value)
     {
         $this->attributes['prices'] = json_encode((object)($value));
+    }
+
+    public function getImagesNameAttribute()
+    {
+        $format = '%s-%s.%d.%s';
+
+        return sprintf(
+            $format,
+            $this->product->latin,
+            latinize( implode( array_values((array)$this->parameters), '-' ) ),
+            $this->id,
+            settings('shop', 'images_format')
+        );
     }
 
 }

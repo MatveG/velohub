@@ -13,7 +13,7 @@ class Product extends Model
     use Traits\Relations\HasMany\Comments;
 
     protected $name = 'product';
-    protected $imagesFolder = '/media/pt';
+    protected $imagesFolder = '/media/product';
     protected $dates = [
         'created_at',
         'updated_at'
@@ -43,14 +43,20 @@ class Product extends Model
         'files',
         'features',
     ];
-//    protected $appends = [
-//        'link'
-//    ];
     protected $casts = [
-        'features' => 'object',
         'prices' => 'object',
         'images' => 'array',
     ];
+
+    public function getFeaturesAttribute($value)
+    {
+        return json_decode($this->attributes['features']);
+    }
+
+    public function setFeaturesAttribute($value)
+    {
+        $this->attributes['features'] = json_encode((object)($value));
+    }
 
     public function getFullNameAttribute()
     {
@@ -61,4 +67,5 @@ class Product extends Model
     {
         return route('product.show', ['latin' => $this->latin, 'id' => $this->id]);
     }
+
 }

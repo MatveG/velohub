@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Product;
 use App\Models\Variant;
-use App\Services\Admin\ImageUploadHandler;
+use App\Services\Admin\ShopImages;
 use Illuminate\Support\Facades\DB;
 
 class VariantObserver
@@ -16,7 +16,7 @@ class VariantObserver
     public function updating(Variant $variant)
     {
         if ($variant->isDirty('images')) {
-            ImageUploadHandler::deleteImages(array_diff(
+            ShopImages::deleteImages(array_diff(
                 json_decode($variant->getOriginal('images'), true),
                 $variant->images
             ));

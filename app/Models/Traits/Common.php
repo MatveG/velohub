@@ -21,9 +21,16 @@ trait Common
         $query->where($this->getTable() . '.is_active', 'true');
     }
 
-    public function getImagesFolder()
+    public function getImagesFolderAttribute()
     {
         return $this->imagesFolder;
+    }
+
+    public function getImagesNameAttribute()
+    {
+        $format = '%s.%d.%s';
+
+        return sprintf($format, $this->latin, $this->id, settings('shop', 'images_format'));
     }
 
 //    public function getCreatedAtAttribute($date)

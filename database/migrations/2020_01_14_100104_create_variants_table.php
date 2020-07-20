@@ -22,7 +22,7 @@ class CreateVariantsTable extends Migration
             $table->boolean('is_sale')->default(false)->index();
 
             $table->integer('stock')->default(0);
-            $table->float('price')->default(0);
+            $table->float('price')->nullable();
             $table->float('surcharge')->default(0);
             $table->float('weight')->nullable();
 

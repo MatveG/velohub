@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\Admin\ImageUploadHandler;
+use App\Services\Admin\ShopImages;
 
 class ProductController extends Controller
 {
@@ -35,10 +35,11 @@ class ProductController extends Controller
     {
         $this->validate($request, [
             'category_id' => 'required|integer',
+            'model' => 'required|min:2|max:255|string',
             'code' => 'max:255|nullable|unique:variants'
         ]);
 
-        $product = Product::create($request->all());
+        $product = tap(Product::create($request->all()))->load('category');
 
         return response()->json($product);
     }
@@ -46,6 +47,8 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
+            'category_id' => 'required|integer',
+            'model' => 'required|min:2|max:255|string',
             'code' => 'max:255|nullable|unique:products,code,' . $id
         ]);
 
@@ -75,11 +78,11 @@ class ProductController extends Controller
         ]);
 
         $product = Product::find($id);
-        $uploadedImages = ImageUploadHandler::uploadArray($request->images, (object)[
-            'folder' => $product->getImagesFolder(),
-            'uid' => $product->id,
-            'filename' => $product->latin
-        ]);
+        $uploadedImages = ShopImages::uploadImages(
+            $request->images,
+            $product->imagesFolder,
+            $product->imagesName
+        );
 
         return response()->json($uploadedImages);
     }

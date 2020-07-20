@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Variant;
-use App\Services\Admin\ImageUploadHandler;
+use App\Services\Admin\ShopImages;
 
 class VariantController extends Controller
 {
@@ -53,11 +53,11 @@ class VariantController extends Controller
         ]);
 
         $variant = Variant::with('Product')->find($id);
-        $uploadedImages = ImageUploadHandler::uploadArray($request->images, (object)[
-            'folder' => $variant->getImagesFolder(),
-            'uid' => $variant->id,
-            'filename' => $variant->product->latin
-        ]);
+        $uploadedImages = ShopImages::uploadImages(
+            $request->images,
+            $variant->imagesFolder,
+            $variant->imagesName
+        );
 
         return response()->json($uploadedImages);
     }

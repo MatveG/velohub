@@ -18,7 +18,8 @@
                                 <b-field label="Бренд" message="Пример: M&M's" horizontal>
                                     <b-input v-model="product.brand" required />
                                 </b-field>
-                                <b-field label="Модель" message="Пример: Milk Chocolate" horizontal>
+                                <b-field label="Модель" message="Пример: Milk Chocolate" horizontal
+                                         :type="{ 'is-danger': $v.product.model.$error }">
                                     <b-input v-model="product.model" required />
                                 </b-field>
                             </b-tab-item>
@@ -32,7 +33,7 @@
                             </b-tab-item>
 
                             <b-tab-item label="Характеристики">
-                                <product-features v-if="product.category" :prop-features="product.category.features" />
+                                <product-features v-if="product.category" :prop-features="product.category.features" ref="features" />
                             </b-tab-item>
 
                             <b-tab-item label="SEO">
@@ -66,7 +67,8 @@
                         <div class="has-text-centered">
                             <p><a href="" class="button" target="_blank">Посмотреть на сайте</a></p>
                         </div>
-                        <b-field label="Категория" label-position="on-border" class="margin-line">
+                        <b-field label="Категория" label-position="on-border" class="margin-line"
+                                 :type="{ 'is-danger': $v.product.category_id.$error }">
                             <b-select v-model="product.category_id" @select="changed()" expanded>
                                 <template v-for="category in categories">
                                     <optgroup v-if="category.is_parent" :label="category.title">
@@ -151,13 +153,12 @@
 
 <script>
     import {required, minLength, maxLength} from 'vuelidate/lib/validators'
-    import {mapGetters} from "vuex";
-    import {states} from '@/mixins/states';
+    import {mapGetters} from "vuex"
+    import {states} from '@/mixins/states'
     import CardComponent from '@/components/CardComponent'
-    import ImagesUpload from "@/components/ImagesUpload";
-    import ProductFeatures from "../components/ProductFeatures";
-    import ProductVariants from "../components/ProductVariants";
-    import between from "vuelidate/lib/validators/between";
+    import ImagesUpload from "@/components/ImagesUpload"
+    import ProductFeatures from "../components/ProductFeatures"
+    import ProductVariants from "../components/ProductVariants"
 
     export default {
         name: 'ProductEdit',
@@ -193,6 +194,9 @@
 
         validations: {
             product: {
+                category_id: {
+                    required,
+                },
                 model: {
                     required,
                     minLength: minLength(3),
@@ -239,7 +243,7 @@
             },
 
             save() {
-                if (!this.validate()) {
+                if (!this.validate() || (this.$refs.features && !this.$refs.features.validate())) {
                     return;
                 }
 

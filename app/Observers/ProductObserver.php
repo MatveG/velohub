@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Product;
 use App\Models\Variant;
+use App\Services\Admin\ShopImages;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -11,9 +12,23 @@ class ProductObserver
 {
     public function saving(Product $product)
     {
-        $product->latin = latinize($product->brand . ' ' . $product->model);
-
         //$this->clearUnusedFeatures($product);
+
+        if ($product->isDirty('brand') || $product->isDirty('model')) {
+            $product->latin = latinize($product->brand . ' ' . $product->model);
+        }
+
+        if ($product->isDirty('images')) {
+            $original = json_decode($product->getOriginal('images'), true);
+
+            if (is_array($original) && count($original) > 0) {
+                ShopImages::deleteImages($original, $product->images);
+            }
+        }
+
+        if ($product->isDirty('latin')) {
+            $product->images = ShopImages::renameImages($product->images, $product->imagesName);
+        }
 
         if ($product->variants()->count()) {
             $this->clearStockPropeties($product);
@@ -44,7 +59,8 @@ class ProductObserver
     {
         $product->code = null;
         $product->barcode = null;
-        $product->stock = 0;
+        $product->stock = null;
+        $product->weight = null;
     }
 
     private function syncVariantProperties(Product $product, $update = [])

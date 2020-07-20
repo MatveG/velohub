@@ -35,7 +35,7 @@
 
         props: {
             propImages: {
-                type: [Array],
+                type: [Array, String],
                 default: () => []
             },
 
@@ -73,7 +73,9 @@
         },
 
         mounted() {
-            this.height = this.$refs.upload.offsetWidth * (this.images.length ? 0.98 : 0.3);
+            if (!this.propImages.length) {
+                this.height = this.$refs.upload.offsetWidth * (this.images.length ? 0.98 : 0.3);
+            }
         },
 
         methods: {
