@@ -10,17 +10,13 @@ const PRODUCT_BLANK = {
 export default {
     state: {
         product: PRODUCT_BLANK,
-
         products: [],
-
         variant: {},
     },
 
     getters: {
         product: state => state.product,
-
         products: state => state.products,
-
         variant: state => state.variant,
     },
 

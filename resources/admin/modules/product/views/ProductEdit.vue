@@ -84,7 +84,7 @@
                         <b-field label="Цена" label-position="on-border">
                             <b-input v-model.number="product.price" type="number" step="any" placeholder="0.0" expanded />
                             <div class="control">
-                                <div class="button is-static">*sign*</div>
+                                <div class="button is-static">{{ settings('shop', 'currency').sign }}</div>
                             </div>
                         </b-field>
 
@@ -106,7 +106,7 @@
                                     <b-field label="Цена со скидкой" label-position="on-border">
                                         <b-input v-model.number="product.price_sale" :disabled="!product.is_sale" type="number" step="any" placeholder="0.0" expanded />
                                         <div class="control">
-                                            <div class="button is-static">*sign*</div>
+                                            <div class="button is-static">{{ settings('shop', 'currency').sign }}</div>
                                         </div>
                                     </b-field>
                                 </div>
@@ -190,7 +190,7 @@
             }
         },
 
-        computed: mapGetters(['product', 'categories']),
+        computed: mapGetters(['settings', 'product', 'categories']),
 
         validations: {
             product: {
@@ -218,6 +218,10 @@
 
         mounted () {
             this.$watch('product.is_stock', () => this.product.stock = +this.product.is_stock);
+
+            setTimeout(() => {
+                console.log(this.settings('shop', 'currency'));
+            }, 2000);
         },
 
         watch: {

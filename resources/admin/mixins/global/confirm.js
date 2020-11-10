@@ -1,4 +1,3 @@
-
 import Vue from "vue";
 import {DialogProgrammatic as Dialog} from "buefy";
 

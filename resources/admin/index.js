@@ -11,19 +11,11 @@ import './mixins/'
 Vue.use(Buefy);
 Vue.use(Vuelidate);
 
-window.settings = {
-    perPage: 15
-};
-
 const app = new Vue({
     router,
-    store
+    store,
+
+    mounted() {
+        this.$store.dispatch('fetchSettings');
+    }
 }).$mount('#app');
-
-
-
-// window.axios = Axios;
-// window.axios.defaults.headers.common = {
-//     'X-Requested-With': 'XMLHttpRequest',
-//     'X-CSRF-TOKEN' : document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-// };
