@@ -10,7 +10,7 @@
             <div class="columns">
                 <div class="column is-two-thirds">
                     <card-component title="Основная информация">
-                        <b-tabs v-model="tab1" type="is-boxed">
+                        <b-tabs v-model="tab" type="is-boxed">
                             <b-tab-item label="Название">
                                 <b-field label="Название" message="Пример: Конфеты" horizontal>
                                     <b-input v-model="product.title" required />
@@ -185,8 +185,9 @@
                     amount: 0,
                     percent: null,
                 },
-                tab1: 2,
-                timer: null,
+                tab: 0,
+                saveTimer: null,
+                discountTimer: null
             }
         },
 
@@ -199,14 +200,14 @@
                 },
                 model: {
                     required,
-                    minLength: minLength(3),
+                    minLength: minLength(2),
                     maxLength: maxLength(255)
                 }
             }
         },
 
-        created() {
-            this.$store.commit('resetProduct');
+        beforeMount() {
+            this.$store.dispatch('resetProduct');
 
             if (this.propId) {
                 this.$store.dispatch('fetchProduct', {id: this.propId});
@@ -217,11 +218,16 @@
         },
 
         mounted () {
-            this.$watch('product.is_stock', () => this.product.stock = +this.product.is_stock);
+            this.$watch('product.is_stock', () => {
+                if(!this.product.is_stock) {
+                    this.product.stock = 0;
+                    return;
+                }
 
-            setTimeout(() => {
-                console.log(this.settings('shop', 'currency'));
-            }, 2000);
+                if(this.product.stock === 0) {
+                    this.product.stock = 1;
+                }
+            });
         },
 
         watch: {
@@ -241,8 +247,8 @@
                 this.stateDraft();
 
                 if(this.propId) {
-                    clearTimeout(this.timer);
-                    this.timer = setTimeout(() => this.save(), 2000);
+                    clearTimeout(this.saveTimer);
+                    this.saveTimer = setTimeout(() => this.save(), 2000);
                 }
             },
 
@@ -251,8 +257,8 @@
                     return;
                 }
 
-                clearTimeout(this.timer);
                 this.stateLoading();
+                clearTimeout(this.saveTimer);
 
                 if (this.propId) {
                     this.$store.dispatch('patchProduct', this.product).then(() => this.stateSaved());
@@ -276,9 +282,10 @@
             },
 
             calcPriceSale() {
+                clearTimeout(this.discountTimer);
                 this.discount.amount = Math.round(this.product.price * this.discount.percent / 100);
                 this.product.price_sale = this.product.price - this.discount.amount;
-                this.discount.percent = null;
+                this.discountTimer = setTimeout(() => this.discount.percent = null, 2000);
             },
         }
     }

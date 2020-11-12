@@ -17,8 +17,18 @@
 
                 <div class="columns">
                     <div v-if="variant.parameters" v-for="parameter in product.category.parameters" class="column">
-                        <b-field :label="parameter.title" label-position="on-border">
-                            <b-input v-model="variant.parameters[parameter.id]" :placeholder="'Параметр [' + parameter.title + ']'" required />
+                        <b-field :label="parameter.title" label-position="on-border"
+                                 :type="{ 'is-danger': $v.variant.parameters[parameter.id] && $v.variant.parameters[parameter.id].$error }">
+                            <b-input v-if="parameter.type === 'number'" v-model="variant.parameters[parameter.id]"
+                                     :placeholder="'Параметр [' + parameter.title + ']'" type="number" step="any" required />
+
+                            <b-input v-if="parameter.type === 'string'" v-model="variant.parameters[parameter.id]"
+                                     :placeholder="'Параметр [' + parameter.title + ']'" required />
+
+                            <b-select v-if="parameter.type === 'select'" v-model="variant.parameters[parameter.id]" expanded required>
+                                <option :value="null">выберите</option>
+                                <option v-for="value in parameter.values">{{ value }}</option>
+                            </b-select>
                         </b-field>
                     </div>
                 </div>
@@ -50,9 +60,9 @@
 </template>
 
 <script>
-    import {required, minLength, maxLength} from 'vuelidate/lib/validators'
     import {mapGetters} from "vuex";
     import {states} from '@/mixins/states';
+    import {validationsByType} from "@/mixins/validationsByType";
     import CardComponent from "@/components/CardComponent";
     import ImagesUpload from "@/components/ImagesUpload";
 
@@ -64,7 +74,7 @@
             ImagesUpload
         },
 
-        mixins: [states],
+        mixins: [states, validationsByType],
 
         data() {
             return {
@@ -75,14 +85,19 @@
 
         computed: mapGetters(['product', 'variant']),
 
-        validations: {
-            variant: {
-                code: {
-                    required,
-                    minLength: minLength(3),
-                    maxLength: maxLength(255)
-                }
-            }
+        validations() {
+            let res = {
+                variant: {
+                    code: this.validationsByType('string'),
+                    parameters: {}
+                },
+            };
+
+            this.product.category.parameters.forEach(parameter => {
+                res.variant.parameters[parameter.id] = this.validationsByType(parameter.type);
+            });
+
+            return res;
         },
 
         methods: {
@@ -104,12 +119,6 @@
             save() {
                 if (!this.validate()) {
                     return;
-                }
-
-                for(let parameter of this.product.category.parameters) {
-                    if(!this.variant.parameters[parameter.id]) {
-                        return this.toast('Заполните параметры товара');
-                    }
                 }
 
                 clearTimeout(this.timer);

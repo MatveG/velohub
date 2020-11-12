@@ -40,7 +40,7 @@
                     <b-field>
                         <div class="control has-icons-right">
                             <b-input v-model.number="props.row.price" disabled />
-                            <span class="icon is-small is-right">*sign*</span>
+                            <span class="icon is-small is-right">{{ settings('shop', 'currency').sign }}</span>
                         </div>
                         <b-input v-model.number="props.row.surcharge" @input.native="calcPrice(props.row)"
                                  @change.native="update(props.row)" type="number" step="any" />
@@ -99,7 +99,7 @@
             }
         },
 
-        computed: mapGetters(['product']),
+        computed: mapGetters(['settings', 'product']),
 
         watch: {
             'discount': function () {
@@ -132,7 +132,7 @@
                 this.timer[row.id] = setTimeout(() => {
                     this.stateLoading();
                     this.$store.dispatch('patchVariant', row).then(() => this.stateSaved());
-                }, 3000);
+                }, 2000);
             },
 
             destroy(row) {

@@ -47,7 +47,7 @@ class CategoryObserver
         return Category::where('parent_id', $parentId)->where('ord', '>', $initialValue)->decrement('ord');
     }
 
-    private static function mapLatinProperty($array, $prefix = null)
+    private static function mapLatinProperty(array $array, ?string $prefix = null)
     {
         return array_map(static function ($element) use ($prefix) {
             if ($element['filter']) {
@@ -56,7 +56,7 @@ class CategoryObserver
                 $element['latin'] = null;
             }
 
-            if ($element['sub']) {
+            if (!empty($element['sub'])) {
                 $element['sub'] = self::mapLatinProperty($element['sub'], $element['title']);
             }
 

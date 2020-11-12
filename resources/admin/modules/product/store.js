@@ -21,27 +21,25 @@ export default {
     },
 
     mutations: {
-        resetProduct(state) {
-            state.product = {...PRODUCT_BLANK};
-        },
-
-        assignProduct(state, payload) {
+        ASSIGN_PRODUCT(state, payload) {
             state.product = payload;
         },
 
-        updateProduct(state, payload) {
+        UPDATE_PRODUCT(state, payload) {
             Object.assign(state.product, payload);
+
+            // update products if the product is within
         },
 
-        assignProducts(state, payload) {
+        ASSIGN_PRODUCTS(state, payload) {
             state.products = payload;
         },
 
-        assignVariant(state, payload) {
+        ASSIGN_VARIANT(state, payload) {
             state.variant = payload;
         },
 
-        updateVariant(state, payload) {
+        UPDATE_VARIANT(state, payload) {
             Object.assign(state.variant, payload);
 
             if (state.product.variants.find(el => el.id === payload.id)) {
@@ -51,51 +49,55 @@ export default {
             }
         },
 
-        deleteVariant(state, payload) {
+        DELETE_VARIANT(state, payload) {
             state.product.variants = state.product.variants.filter(el => el !== payload);
         }
     },
 
     actions: {
+        resetProduct(context) {
+            context.commit('ASSIGN_PRODUCT', PRODUCT_BLANK);
+        },
+
         async fetchProducts(context) {
             const res = await axios.get('/admin/products');
-            context.commit('assignProducts', res.data);
+            context.commit('ASSIGN_PRODUCTS', res.data);
         },
 
         async fetchProduct(context, payload) {
             const res = await axios.get(`/admin/products/${payload.id}`);
-            context.commit('assignProduct', res.data);
+            context.commit('ASSIGN_PRODUCT', res.data);
         },
 
         async storeProduct(context, payload) {
             const res = await axios.post(`/admin/products`, payload);
-            context.commit('updateProduct', res.data);
+            context.commit('UPDATE_PRODUCT', res.data);
         },
 
         async patchProduct(context, payload) {
             const res = await axios.patch(`/admin/products/${payload.id}`, payload);
-            context.commit('updateProduct', res.data);
+            context.commit('UPDATE_PRODUCT', res.data);
         },
 
         async destroyProduct(context, payload) {
             await axios.delete(`/admin/products/${payload.id}`);
             const res = await axios.get(`/admin/products`);
-            context.commit('assignProducts', res.data);
+            context.commit('ASSIGN_PRODUCTS', res.data);
         },
 
         async storeVariant(context, payload) {
             const res = await axios.post(`/admin/variants`, payload);
-            context.commit('updateVariant', res.data);
+            context.commit('UPDATE_VARIANT', res.data);
         },
 
         async patchVariant(context, payload) {
             const res = await axios.patch(`/admin/variants/${payload.id}`, payload);
-            context.commit('updateVariant', res.data);
+            context.commit('UPDATE_VARIANT', res.data);
         },
 
         async destroyVariant(context, payload) {
             await axios.delete(`/admin/variants/${payload.id}`);
-            context.commit('deleteVariant', payload);
+            context.commit('DELETE_VARIANT', payload);
         },
     },
 };

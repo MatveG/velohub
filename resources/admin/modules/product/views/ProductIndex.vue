@@ -84,12 +84,12 @@
         data () {
             return {
                 checked: [],
-                perPage: settings.perPage,
+                perPage: null,
             }
         },
 
         computed: {
-            ...mapGetters(['products']),
+            ...mapGetters(['settings', 'products']),
 
             paginated() {
                 return this.perPage < this.products.length;
@@ -103,6 +103,7 @@
         },
 
         mounted () {
+            this.perPage = this.settings('shop', 'items_per_page');
             this.$store.dispatch('fetchProducts');
         },
 

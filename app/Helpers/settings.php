@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('settings')) {
-    function settings($group, $key)
+    function settings($group = null, $key = null)
     {
         static $settings;
 
@@ -12,6 +12,11 @@ if (!function_exists('settings')) {
             }
         }
 
-        return $settings[$group][$key] ?? null;
+        if(empty($group)) {
+            return $settings;
+        }
+
+        return empty($key) ? $settings[$group] : $settings[$group][$key];
+//        return $settings[$group][$key] ?? null;
     }
 }

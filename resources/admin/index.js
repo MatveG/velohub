@@ -15,7 +15,7 @@ const app = new Vue({
     router,
     store,
 
-    mounted() {
-        this.$store.dispatch('fetchSettings');
+    beforeMount() {
+        this.$store.dispatch('setSettings', this.$el.getAttribute('settings'));
     }
 }).$mount('#app');

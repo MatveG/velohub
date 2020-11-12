@@ -87,12 +87,12 @@
 
         data () {
             return {
-                perPage: settings.perPage
+                perPage: null
             }
         },
 
         computed: {
-            ...mapGetters(['categories']),
+            ...mapGetters(['settings', 'categories']),
 
             items() {
                 return this.categories.filter(el => el.parent_id === this.propParent);
@@ -105,6 +105,11 @@
             paginated() {
                 return !this.propNested && this.perPage < this.items.length;
             },
+        },
+
+        mounted () {
+            this.perPage = this.settings('shop', 'items_per_page');
+
         },
 
         methods: {

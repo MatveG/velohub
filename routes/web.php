@@ -44,9 +44,6 @@ Route::get('/media/ul/{img}')->name('img.upload');
 Route::view('/admin/', 'Admin::index');
 
 Route::namespace('Admin')->group(function () {
-    // settings
-    Route::get('/admin/settings', 'SettingController@index');
-
     // categories
     Route::get('/admin/categories', 'CategoryController@index');
     Route::get('/admin/categories/{id}', 'CategoryController@edit');

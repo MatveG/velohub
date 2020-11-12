@@ -42,15 +42,16 @@
 </template>
 
 <script>
-    import {required, minLength, maxLength} from "vuelidate/lib/validators"
-    import numeric from "vuelidate/lib/validators/numeric"
     import {mapGetters} from "vuex"
+    import {validationsByType} from "@/mixins/validationsByType";
     import ProductFeatures from "./ProductFeatures"
 
     export default {
         name: 'ProductFeatures',
 
         components: {ProductFeatures},
+
+        mixins: [validationsByType],
 
         props: {
             propFeatures: {
@@ -69,12 +70,12 @@
             };
 
             this.propFeatures.filter(el => el.required).forEach(feature => {
-                res.product.features[feature.id] = this.validByType(feature);
+                res.product.features[feature.id] = this.validationsByType(feature.type);
             });
 
             this.propFeatures.filter(el => el.type === 'group').forEach(feature => {
                 feature.sub.filter(el => el.required).forEach(subFeature => {
-                    res.product.features[subFeature.id] = this.validByType(subFeature);
+                    res.product.features[subFeature.id] = this.validationsByType(subFeature.type);
                 });
             });
 
@@ -84,42 +85,6 @@
         mounted() {
             this.$v.$touch();
         },
-
-        methods: {
-            validByType(feature) {
-                switch (feature.type) {
-                    case 'number':
-                        return {
-                            required,
-                            numeric
-                        };
-                    case 'text':
-                        return {
-                            required,
-                            minLength: minLength(15),
-                            maxLength: maxLength(15000)
-                        };
-                    case 'bool':
-                        return {
-                            required
-                        };
-                    case 'multiple':
-                        return {
-                            required,
-                            minLength: minLength(1),
-                            $each: {
-                                required
-                            }
-                        };
-                    default:
-                        return {
-                            required,
-                            minLength: minLength(3),
-                            maxLength: maxLength(255)
-                        }
-                }
-            }
-        }
     }
 </script>
 

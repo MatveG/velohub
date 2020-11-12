@@ -73,9 +73,7 @@
         },
 
         mounted() {
-            if (!this.propImages.length) {
-                this.height = this.$refs.upload.offsetWidth * (this.images.length ? 0.98 : 0.3);
-            }
+            this.height = this.$refs.upload.offsetWidth * (this.images.length ? 0.98 : 0.2);
         },
 
         methods: {

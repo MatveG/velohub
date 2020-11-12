@@ -11,15 +11,17 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $product = Product::with('category:id,title')->get([
-            'category_id',
-            'title',
-            'id',
-            'code',
-            'brand',
-            'model',
-            'is_active',
-        ]);
+//        $product = Product::with('category:id,title')->get([
+//            'category_id',
+//            'title',
+//            'id',
+//            'code',
+//            'brand',
+//            'model',
+//            'is_active',
+//        ]);
+
+        $product = Product::with('category:id,title')->get()->makeHidden(['created_at', 'updated_at', 'search']);
 
         return response()->json($product);
     }
