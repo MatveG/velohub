@@ -1,7 +1,7 @@
 
 <template>
     <div>
-        <b-table :data="product.variants"
+        <b-table :data="variants"
                  :loading="loading"
                  :hoverable="true"
                  default-sort="code"
@@ -18,15 +18,15 @@
                     <span :class="[!props.row.code ? 'has-text-grey-light' : '']">{{ (props.row.code) ? props.row.code : '[empty]' }}</span>
                 </b-table-column>
 
-                <b-table-column field="parameters" label="Параметры" width="30%" centered>
-                    <div class="buttons is-centered">
-                        <template v-for="parameter in product.category.parameters">
-                            <button v-if="props.row.parameters[parameter.id]" class="button is-rounded is-small is-static">
-                                {{ props.row.parameters[parameter.id] }}
-                            </button>
-                        </template>
-                    </div>
-                </b-table-column>
+<!--                <b-table-column field="parameters" label="Параметры" width="30%" centered>-->
+<!--                    <div class="buttons is-centered">-->
+<!--                        <template v-for="parameter in product.category.parameters">-->
+<!--                            <button v-if="props.row.parameters[parameter.id]" class="button is-rounded is-small is-static">-->
+<!--                                {{ props.row.parameters[parameter.id] }}-->
+<!--                            </button>-->
+<!--                        </template>-->
+<!--                    </div>-->
+<!--                </b-table-column>-->
 
                 <b-table-column field="stock" label="Остаток" width="15%" sortable centered>
                     <b-field>
@@ -86,6 +86,11 @@
         mixins: [states],
 
         props: {
+            productId: {
+                type: [Number],
+                default: null
+            },
+
             discount: {
                 type: [Number],
                 default: 0
@@ -99,20 +104,24 @@
             }
         },
 
-        computed: mapGetters(['settings', 'product']),
+        computed: mapGetters(['settings', 'product', 'variants']),
 
         watch: {
             'discount': function () {
-                this.product.variants.forEach((el) => this.calcPrice(el));
+                this.variants.forEach((el) => this.calcPrice(el));
             },
 
             'product.price': function () {
-                this.product.variants.forEach((el) => this.calcPrice(el));
+                this.variants.forEach((el) => this.calcPrice(el));
             },
 
             'product.is_sale': function () {
-                this.product.variants.forEach((el) => el.is_sale = this.product.is_sale);
+                this.variants.forEach((el) => el.is_sale = this.product.is_sale);
             },
+        },
+
+        mounted() {
+            this.$store.dispatch('fetchVariants', { product_id: this.productId });
         },
 
         methods: {

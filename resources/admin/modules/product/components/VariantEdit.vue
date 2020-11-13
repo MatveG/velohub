@@ -78,12 +78,13 @@
 
         data() {
             return {
+                variant: {},
                 timer: null,
                 modal: false,
             }
         },
 
-        computed: mapGetters(['product', 'variant']),
+        computed: mapGetters(['product']),
 
         validations() {
             let res = {

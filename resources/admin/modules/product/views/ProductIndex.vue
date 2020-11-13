@@ -22,8 +22,8 @@
                 <template slot-scope="props">
                     <b-table-column label="Фото" field="thumb" width="10%" centered>
                         <div class="image">
-                            <img :src="props.row.thumb" class="is-rounded">
-                        </div>
+                            <img :src="props.row.thumb" class="is-rounded" alt="">
+                        </div>1
                     </b-table-column>
 
                     <b-table-column label="Код" field="id" width="7%" searchable sortable centered>
@@ -42,8 +42,8 @@
                         <span class="is-italic">{{ props.row.brand }}</span>
                     </b-table-column>
 
-                    <b-table-column label="Категория" field="category.title" width="15%" searchable>
-                        {{ (props.row.category) ? props.row.category.title : '' }}
+                    <b-table-column label="Категория" field="category_id" width="15%" searchable>
+                        {{ getCategoryTitle(props.row.category_id) }}
                     </b-table-column>
 
                     <b-table-column field="is_active" label="Активен" width="15%" sortable centered>
@@ -104,6 +104,7 @@
 
         mounted () {
             this.perPage = this.settings('shop', 'items_per_page');
+            this.$store.dispatch('fetchCategories');
             this.$store.dispatch('fetchProducts');
         },
 
@@ -115,19 +116,25 @@
                 });
             },
 
-            update(row) {
+            async update(row) {
                 this.stateLoading();
-                this.$store.dispatch('patchProduct', row).then(() => this.stateSaved());
+                await this.$store.dispatch('patchProduct', row);
+                this.stateSaved();
+            },
+
+            async destroy(row) {
+                this.stateLoading();
+                await this.$store.dispatch('destroyProduct', row);
+                this.stateSaved();
             },
 
             confirmDestroy(row) {
                 this.confirm('Удалить?', this.destroy.bind(null, row));
             },
 
-            destroy(row) {
-                this.stateLoading();
-                this.$store.dispatch('destroyProduct', row).then(() => this.stateSaved());
-            },
+            getCategoryTitle(id) {
+                return (this.$store.getters.getCategoryById(id) || {}).title;
+            }
         }
     }
 </script>

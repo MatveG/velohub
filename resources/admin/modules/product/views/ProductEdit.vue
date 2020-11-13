@@ -117,7 +117,7 @@
                         </div>
                     </card-component>
 
-                    <card-component v-if="!product.variants.length" title="Наличие" class="margin-line">
+                    <card-component title="Наличие" class="margin-line">
                         <b-field label="Артикул" label-position="on-border">
                             <b-input v-model="product.code" />
                         </b-field>
@@ -146,7 +146,7 @@
             </div>
         </form>
         <card-component title="Варианты товара" class="margin-line">
-            <product-variants v-if="product.id" @update="product.variants=$event" :discount="discount.amount" />
+            <product-variants v-if="product.id" :product-id="product.id" :discount="discount.amount" />
         </card-component>
     </section>
 </template>
@@ -206,34 +206,20 @@
             }
         },
 
-        beforeMount() {
-            this.$store.dispatch('resetProduct');
-
-            if (this.propId) {
-                this.$store.dispatch('fetchProduct', {id: this.propId});
-            } else if (this.propParent) {
-                this.saved = false;
-            }
-            this.$store.dispatch('fetchCategories');
-        },
-
         mounted () {
-            this.$watch('product.is_stock', () => {
-                if(!this.product.is_stock) {
-                    this.product.stock = 0;
-                    return;
-                }
-
-                if(this.product.stock === 0) {
-                    this.product.stock = 1;
-                }
-            });
+            this.$store.dispatch(this.propId ? 'fetchProduct' : 'resetProduct', this.propId);
+            this.$store.dispatch('fetchCategories');
         },
 
         watch: {
             'product.price_sale': function () {
                 this.discount.amount = this.product.price - this.product.price_sale;
             },
+
+            'product.is_stock': function () {
+                this.product.stock = !this.product.is_stock ? 0 :
+                    this.product.stock === 0 ? 1 : this.product.stock;
+            }
         },
 
         methods: {
@@ -252,27 +238,25 @@
                 }
             },
 
-            save() {
+            async save() {
                 if (!this.validate() || (this.$refs.features && !this.$refs.features.validate())) {
-                    return;
+                    return false;
                 }
 
                 this.stateLoading();
                 clearTimeout(this.saveTimer);
 
                 if (this.propId) {
-                    this.$store.dispatch('patchProduct', this.product).then(() => this.stateSaved());
+                    await this.$store.dispatch('patchProduct', this.product);
+                } else {
+                    await this.$store.dispatch('storeProduct', this.product);
 
-                    return;
+                    // await this.$router.push({
+                    //     name: 'product-edit',
+                    //     params: {propId: this.product.id}
+                    // });
                 }
-
-                this.$store.dispatch('storeProduct', this.product).then(() => {
-                    this.$router.replace({
-                        name: 'product-edit',
-                        params: { propId: this.product.id }
-                    });
-                    this.stateSaved();
-                });
+                this.stateSaved();
             },
 
             toggleDiscount() {
@@ -290,5 +274,3 @@
         }
     }
 </script>
-
-ТЬ,ю

@@ -1,4 +1,3 @@
-
 import Vue from 'vue';
 import Vuex from 'vuex';
 import setting from "@/modules/setting/store";

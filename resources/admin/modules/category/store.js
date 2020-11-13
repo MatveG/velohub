@@ -1,7 +1,6 @@
-
 import axios from 'axios';
 
-const BLANK = {
+const CATEGORY_BLANK = {
     parent_id: 0,
     images: [],
     features: [],
@@ -10,8 +9,7 @@ const BLANK = {
 
 export default {
     state: {
-        category: BLANK,
-
+        category: CATEGORY_BLANK,
         categories: [],
     },
 
@@ -20,7 +18,9 @@ export default {
 
         categories: state => state.categories,
 
-        categoriesParent: state => [
+        getCategoryById: state => id => state.categories.find(el => el.id === id),
+
+        getParentCategories: state => [
             { id: 0, title: '[root]' },
             ...state.categories.filter(el => el.is_parent)
         ],
@@ -28,7 +28,7 @@ export default {
 
     mutations: {
         resetCategory(state) {
-            state.category = {...BLANK};
+            state.category = {...CATEGORY_BLANK};
         },
 
         assignCategory(state, payload) {
@@ -46,8 +46,10 @@ export default {
 
     actions: {
         async fetchCategories(context) {
-            const res = await axios.get('/admin/categories');
-            context.commit('assignCategories', res.data);
+            if(!context.state.categories.length) {
+                const res = await axios.get('/admin/categories');
+                context.commit('assignCategories', res.data);
+            }
         },
 
         async fetchCategory(context, id) {

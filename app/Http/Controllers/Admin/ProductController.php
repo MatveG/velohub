@@ -11,24 +11,14 @@ class ProductController extends Controller
 {
     public function index()
     {
-//        $product = Product::with('category:id,title')->get([
-//            'category_id',
-//            'title',
-//            'id',
-//            'code',
-//            'brand',
-//            'model',
-//            'is_active',
-//        ]);
-
-        $product = Product::with('category:id,title')->get()->makeHidden(['created_at', 'updated_at', 'search']);
+        $product = Product::get()->makeHidden(['created_at', 'updated_at', 'search']);
 
         return response()->json($product);
     }
 
     public function edit($id)
     {
-        $product = Product::with(['category', 'variants'])->find($id);
+        $product = Product::find($id);
 
         return response()->json($product);
     }
@@ -41,7 +31,7 @@ class ProductController extends Controller
             'code' => 'max:255|nullable|unique:variants'
         ]);
 
-        $product = tap(Product::create($request->all()))->load('category');
+        $product = Product::create($request->all());
 
         return response()->json($product);
     }
@@ -56,11 +46,6 @@ class ProductController extends Controller
 
         $product = tap(Product::findOrFail($id))->update($request->all());
         $changes = array_keys($product->getChanges());
-
-        if ($product->wasChanged('category_id')) {
-            $product->load('category');
-            $changes[] = 'category';
-        }
 
         return response()->json($product->only($changes));
     }

@@ -62,7 +62,7 @@ Route::namespace('Admin')->group(function () {
 
     // Variants
     Route::get('/admin/variants/{product_id}', 'VariantController@index');
-    Route::post('/admin/variants', 'VariantController@store');
+    Route::post('/admin/variants/{product_id}', 'VariantController@store');
     Route::patch('/admin/variants/{id}', 'VariantController@update');
     Route::delete('/admin/variants/{id}', 'VariantController@destroy');
     Route::post('/admin/variants/{id}/upload-images', 'VariantController@uploadImages');
