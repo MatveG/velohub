@@ -63,7 +63,7 @@
         </div>
 
         <b-modal :active.sync="modal" aria-modal class="modal-edit-variant">
-            <variant-edit @close="modal=false" />
+            <variant-edit :variant="variant" @close="modal=false" />
         </b-modal>
     </div>
 </template>
@@ -86,11 +86,6 @@
         mixins: [states],
 
         props: {
-            productId: {
-                type: [Number],
-                default: null
-            },
-
             discount: {
                 type: [Number],
                 default: 0
@@ -100,6 +95,7 @@
         data() {
             return {
                 modal: false,
+                variant: {},
                 timer: {},
             }
         },
@@ -120,18 +116,17 @@
             },
         },
 
-        mounted() {
-            this.$store.dispatch('fetchVariants', { product_id: this.productId });
-        },
-
         methods: {
             create() {
-                this.$store.commit('assignVariant', Variant.fromProduct(this.product));
+                //this.$store.commit('assignVariant', Variant.fromProduct(this.product));
+                this.variant = Variant.fromProduct(this.product);
                 this.modal = true;
             },
 
             edit(row) {
-                this.$store.commit('assignVariant', Variant.fromObj(row));
+                //this.$store.dispatch('fetchVariant', row.id);
+                //this.$store.commit('assignVariant', Variant.fromObj(row));
+                this.variant = Variant.fromObj(row);
                 this.modal = true;
             },
 

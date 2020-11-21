@@ -13,19 +13,19 @@ export default {
     },
 
     mutations: {
-        ASSIGN_VARIANTS(state, payload) {
+        VARIANTS_ASSIGN(state, payload) {
             state.variants = payload;
         },
 
-        ADD_VARIANT(state, payload) {
+        VARIANT_ADD(state, payload) {
             state.product.variants.push(payload);
         },
 
-        UPDATE_VARIANT(state, payload) {
+        VARIANT_UPDATE(state, payload) {
             state.product.variants = state.product.variants.map(el => el.id === payload.id ? payload : el);
         },
 
-        DELETE_VARIANT(state, payload) {
+        VARIANTS_REMOVE(state, payload) {
             state.product.variants = state.product.variants.filter(el => el !== payload);
         }
     },
@@ -33,7 +33,13 @@ export default {
     actions: {
         async fetchVariants(context, payload) {
             const res = await axios.get(`/admin/variants/${payload.product_id}`);
-            context.commit('ASSIGN_VARIANTS', res.data);
+            context.commit('VARIANTS_ASSIGN', res.data);
+        },
+
+        async fetchVariant(context, id) {
+            // const res = await axios.get(`/admin/variants/${payload.product_id}`);
+            // context.commit('ASSIGN_VARIANTS', res.data);
+            console.log(id);
         },
 
         async storeVariant(context, payload) {

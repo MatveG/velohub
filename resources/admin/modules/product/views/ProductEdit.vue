@@ -117,7 +117,7 @@
                         </div>
                     </card-component>
 
-                    <card-component title="Наличие" class="margin-line">
+                    <card-component v-if="!variants.length" title="Наличие" class="margin-line">
                         <b-field label="Артикул" label-position="on-border">
                             <b-input v-model="product.code" />
                         </b-field>
@@ -146,7 +146,7 @@
             </div>
         </form>
         <card-component title="Варианты товара" class="margin-line">
-            <product-variants v-if="product.id" :product-id="product.id" :discount="discount.amount" />
+            <product-variants v-if="product.id" :discount="discount.amount" />
         </card-component>
     </section>
 </template>
@@ -191,7 +191,7 @@
             }
         },
 
-        computed: mapGetters(['settings', 'product', 'categories']),
+        computed: mapGetters(['settings', 'product', 'categories', 'variants']),
 
         validations: {
             product: {
@@ -207,7 +207,12 @@
         },
 
         mounted () {
-            this.$store.dispatch(this.propId ? 'fetchProduct' : 'resetProduct', this.propId);
+            if(this.propId) {
+                this.$store.dispatch('fetchProduct', this.propId);
+                this.$store.dispatch('fetchVariants', { product_id: this.propId });
+            } else {
+                this.$store.dispatch('resetProduct', this.propId);
+            }
             this.$store.dispatch('fetchCategories');
         },
 
@@ -249,12 +254,12 @@
                 if (this.propId) {
                     await this.$store.dispatch('patchProduct', this.product);
                 } else {
-                    await this.$store.dispatch('storeProduct', this.product);
-
-                    // await this.$router.push({
-                    //     name: 'product-edit',
-                    //     params: {propId: this.product.id}
-                    // });
+                    let data = await this.$store.dispatch('storeProduct', this.product);
+                    await this.$store.dispatch('fetchProduct', data.id);
+                    await this.$router.replace({
+                        name: 'product-edit',
+                        params: {propId: data.id}
+                    });
                 }
                 this.stateSaved();
             },

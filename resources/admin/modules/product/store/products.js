@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const PRODUCT_BLANK = {
+const BLANK_PRODUCT = {
     images: [],
     features: {}
 };
 
 export default {
     state: {
-        product: PRODUCT_BLANK,
+        product: BLANK_PRODUCT,
         products: [],
     },
 
@@ -18,35 +18,30 @@ export default {
     },
 
     mutations: {
-        SET_PRODUCT(state, payload) {
+        PRODUCT_SET(state, payload) {
             state.product = payload;
         },
 
-        ASSIGN_PRODUCT(state, payload) {
+        PRODUCT_ASSIGN(state, payload) {
             Object.assign(state.product, payload);
         },
 
-        SET_PRODUCTS(state, payload) {
+        PRODUCTS_SET(state, payload) {
             state.products = payload;
         },
 
-        PUSH_TO_PRODUCTS(state, payload) {
+        PRODUCTS_PUSH(state, payload) {
             state.products.push(payload);
         },
 
-        REMOVE_FROM_PRODUCTS(state, id) {
+        PRODUCTS_REMOVE(state, id) {
             state.products = state.products.filter(el => el.id !== id);
         },
     },
 
     actions: {
         async resetProduct(context) {
-            context.commit('SET_PRODUCT', PRODUCT_BLANK);
-        },
-
-        async fetchProducts(context) {
-            const res = await axios.get('/admin/products');
-            context.commit('SET_PRODUCTS', res.data);
+            context.commit('PRODUCT_SET', BLANK_PRODUCT);
         },
 
         async fetchProduct(context, id) {
@@ -56,28 +51,39 @@ export default {
                 const res = await axios.get(`/admin/products/${id}`);
                 product = res.data;
             }
-            context.commit('SET_PRODUCT', product);
+            context.commit('PRODUCT_SET', product);
         },
 
         async storeProduct(context, payload) {
             const res = await axios.post(`/admin/products`, payload);
+
             if(res.status === 200) {
-                context.commit('PUSH_TO_PRODUCTS', res.data);
+                context.commit('PRODUCTS_PUSH', res.data);
             }
+
+            return res.data;
         },
 
         async patchProduct(context, payload) {
             const res = await axios.patch(`/admin/products/${payload.id}`, payload);
             if(res.status === 200) {
-                context.commit('ASSIGN_PRODUCT', res.data);
+                context.commit('PRODUCT_ASSIGN', res.data);
+            }
+        },
+
+        async fetchProducts(context, force = false) {
+            if(force || !context.state.products.length) {
+                const res = await axios.get('/admin/products');
+                context.commit('PRODUCTS_SET', res.data);
             }
         },
 
         async destroyProduct(context, id) {
             const res = await axios.delete(`/admin/products/${id}`);
             if(res.status === 200) {
-                context.commit('REMOVE_FROM_PRODUCTS', id);
+                context.commit('PRODUCTS_REMOVE', id);
             }
         },
+
     },
 };

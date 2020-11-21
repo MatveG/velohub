@@ -76,15 +76,25 @@
 
         mixins: [states, validationsByType],
 
+        props: {
+            variant: {
+                type: [Object],
+                default: {}
+            },
+        },
+
         data() {
             return {
-                variant: {},
                 timer: null,
                 modal: false,
             }
         },
 
-        computed: mapGetters(['product']),
+        computed: {
+            ...mapGetters(['product']),
+
+            category: this.$store.getters.getCategoryById(product.category_id)
+        },
 
         validations() {
             let res = {
@@ -100,6 +110,10 @@
 
             return res;
         },
+
+        // mounted () {
+        //     console.log(this.variant);
+        // },
 
         methods: {
             assign(property, value) {
