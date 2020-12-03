@@ -90,11 +90,11 @@
             }
         },
 
-        computed: {
-            ...mapGetters(['product']),
+        computed: mapGetters(['product']),
 
-            category: this.$store.getters.getCategoryById(product.category_id)
-        },
+        // mounted() {
+        //     console.log(this.product.category.parameters);
+        // },
 
         validations() {
             let res = {
@@ -110,10 +110,6 @@
 
             return res;
         },
-
-        // mounted () {
-        //     console.log(this.variant);
-        // },
 
         methods: {
             assign(property, value) {

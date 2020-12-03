@@ -18,15 +18,15 @@
                     <span :class="[!props.row.code ? 'has-text-grey-light' : '']">{{ (props.row.code) ? props.row.code : '[empty]' }}</span>
                 </b-table-column>
 
-<!--                <b-table-column field="parameters" label="Параметры" width="30%" centered>-->
-<!--                    <div class="buttons is-centered">-->
-<!--                        <template v-for="parameter in product.category.parameters">-->
-<!--                            <button v-if="props.row.parameters[parameter.id]" class="button is-rounded is-small is-static">-->
-<!--                                {{ props.row.parameters[parameter.id] }}-->
-<!--                            </button>-->
-<!--                        </template>-->
-<!--                    </div>-->
-<!--                </b-table-column>-->
+                <b-table-column field="parameters" label="Параметры" width="30%" centered>
+                    <div class="buttons is-centered">
+                        <template v-for="parameter in product.category.parameters">
+                            <button v-if="props.row.parameters[parameter.id]" class="button is-rounded is-small is-static">
+                                {{ props.row.parameters[parameter.id] }}
+                            </button>
+                        </template>
+                    </div>
+                </b-table-column>
 
                 <b-table-column field="stock" label="Остаток" width="15%" sortable centered>
                     <b-field>
@@ -94,8 +94,8 @@
 
         data() {
             return {
-                modal: false,
                 variant: {},
+                modal: false,
                 timer: {},
             }
         },
@@ -118,14 +118,11 @@
 
         methods: {
             create() {
-                //this.$store.commit('assignVariant', Variant.fromProduct(this.product));
                 this.variant = Variant.fromProduct(this.product);
                 this.modal = true;
             },
 
             edit(row) {
-                //this.$store.dispatch('fetchVariant', row.id);
-                //this.$store.commit('assignVariant', Variant.fromObj(row));
                 this.variant = Variant.fromObj(row);
                 this.modal = true;
             },

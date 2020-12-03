@@ -51,6 +51,9 @@ export default {
                 const res = await axios.get(`/admin/products/${id}`);
                 product = res.data;
             }
+            product.category = context.getters.getCategoryById(product.category_id);
+            console.log(product.category);
+
             context.commit('PRODUCT_SET', product);
         },
 

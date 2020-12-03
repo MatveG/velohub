@@ -206,14 +206,15 @@
             }
         },
 
-        mounted () {
+        async mounted () {
+            await this.$store.dispatch('fetchCategories');
+
             if(this.propId) {
                 this.$store.dispatch('fetchProduct', this.propId);
                 this.$store.dispatch('fetchVariants', { product_id: this.propId });
             } else {
                 this.$store.dispatch('resetProduct', this.propId);
             }
-            this.$store.dispatch('fetchCategories');
         },
 
         watch: {

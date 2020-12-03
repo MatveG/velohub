@@ -13,53 +13,49 @@ export default {
     },
 
     mutations: {
-        VARIANTS_ASSIGN(state, payload) {
+        VARIANTS_SET(state, payload) {
             state.variants = payload;
         },
 
+        VARIANTS_REMOVE(state, payload) {
+            state.variants = state.variants.filter(el => el.id !== payload.id);
+        },
+
         VARIANT_ADD(state, payload) {
-            state.product.variants.push(payload);
+            state.variants.push(payload);
         },
 
         VARIANT_UPDATE(state, payload) {
-            state.product.variants = state.product.variants.map(el => el.id === payload.id ? payload : el);
+            state.variants = state.variants.map(el => el.id === payload.id ? payload : el);
         },
-
-        VARIANTS_REMOVE(state, payload) {
-            state.product.variants = state.product.variants.filter(el => el !== payload);
-        }
     },
 
     actions: {
         async fetchVariants(context, payload) {
             const res = await axios.get(`/admin/variants/${payload.product_id}`);
-            context.commit('VARIANTS_ASSIGN', res.data);
-        },
-
-        async fetchVariant(context, id) {
-            // const res = await axios.get(`/admin/variants/${payload.product_id}`);
-            // context.commit('ASSIGN_VARIANTS', res.data);
-            console.log(id);
+            if(res.status === 200) {
+                context.commit('VARIANTS_SET', res.data);
+            }
         },
 
         async storeVariant(context, payload) {
             const res = await axios.post(`/admin/variants/${payload.product_id}`, payload);
             if(res.status === 200) {
-                context.commit('UPDATE_VARIANT', res.data);
+                context.commit('VARIANT_UPDATE', res.data);
             }
         },
 
         async patchVariant(context, payload) {
             const res = await axios.patch(`/admin/variants/${payload.id}`, payload);
             if(res.status === 200) {
-                context.commit('UPDATE_VARIANT', res.data);
+                context.commit('VARIANT_UPDATE', res.data);
             }
         },
 
         async destroyVariant(context, payload) {
             const res = await axios.delete(`/admin/variants/${payload.id}`);
             if(res.status === 200) {
-                context.commit('DELETE_VARIANT', payload);
+                context.commit('VARIANTS_REMOVE', payload);
             }
         },
     },
