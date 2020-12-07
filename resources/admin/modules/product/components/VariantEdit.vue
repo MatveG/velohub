@@ -53,18 +53,18 @@
             <div class="buttons margin-line is-centered">
                 <button :disabled="saved" @click="save" :class="{ 'is-loading': loading }"
                         type="button" class="button is-primary">Сохранить</button>
-                <button @click="$emit('close')" type="button" class="button">Закрыть</button>
+                <button @click="close()" type="button" class="button">Закрыть</button>
             </div>
         </form>
     </div>
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
-    import {states} from '@/mixins/states';
-    import {validationsByType} from "@/mixins/validationsByType";
     import CardComponent from "@/components/CardComponent";
     import ImagesUpload from "@/components/ImagesUpload";
+    import {states} from '@/mixins/states';
+    import {validationsByType} from "@/mixins/validationsByType";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "VariantEdit",
@@ -78,7 +78,7 @@
 
         props: {
             variant: {
-                type: [Object],
+                type: Object,
                 default: {}
             },
         },
@@ -91,10 +91,6 @@
         },
 
         computed: mapGetters(['product']),
-
-        // mounted() {
-        //     console.log(this.product.category.parameters);
-        // },
 
         validations() {
             let res = {
@@ -128,17 +124,20 @@
             },
 
             save() {
-                if (!this.validate()) {
-                    return;
+                if (this.validate()) {
+                    this.stateLoading();
+                    clearTimeout(this.timer);
+
+                    this.$store
+                        .dispatch(this.variant.id ? 'patchVariant' : 'storeVariant', this.variant)
+                        .then(() => this.stateSaved());
                 }
-
-                clearTimeout(this.timer);
-
-                this.stateLoading();
-                this.$store
-                    .dispatch(this.variant.id ? 'patchVariant' : 'storeVariant', this.variant)
-                    .then(() => this.stateSaved());
             },
+
+            close() {
+                clearInterval(this.timer);
+                this.$emit('close');
+            }
         }
     }
 

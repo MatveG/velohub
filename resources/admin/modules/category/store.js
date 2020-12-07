@@ -18,7 +18,7 @@ export default {
 
         categories: state => state.categories,
 
-        getCategoryById: state => id => state.categories.find(el => el.id === id),
+        getCategoryById: state => id => state.categories.find(el => el.id === id) || {},
 
         getParentCategories: state => [
             { id: 0, title: '[root]' },

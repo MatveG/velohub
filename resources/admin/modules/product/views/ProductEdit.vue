@@ -117,7 +117,7 @@
                         </div>
                     </card-component>
 
-                    <card-component v-if="!variants.length" title="Наличие" class="margin-line">
+                    <card-component v-if="!product.variants.length" title="Наличие" class="margin-line">
                         <b-field label="Артикул" label-position="on-border">
                             <b-input v-model="product.code" />
                         </b-field>
@@ -152,13 +152,13 @@
 </template>
 
 <script>
-    import {required, minLength, maxLength} from 'vuelidate/lib/validators'
-    import {mapGetters} from "vuex"
-    import {states} from '@/mixins/states'
     import CardComponent from '@/components/CardComponent'
     import ImagesUpload from "@/components/ImagesUpload"
     import ProductFeatures from "../components/ProductFeatures"
     import ProductVariants from "../components/ProductVariants"
+    import {required, minLength, maxLength} from 'vuelidate/lib/validators'
+    import {mapGetters} from "vuex"
+    import {states} from '@/mixins/states'
 
     export default {
         name: 'ProductEdit',
@@ -191,7 +191,7 @@
             }
         },
 
-        computed: mapGetters(['settings', 'product', 'categories', 'variants']),
+        computed: mapGetters(['product', 'categories']),
 
         validations: {
             product: {
@@ -206,15 +206,17 @@
             }
         },
 
-        async mounted () {
-            await this.$store.dispatch('fetchCategories');
+        mounted () {
+            this.$store.dispatch('fetchCategories');
 
             if(this.propId) {
                 this.$store.dispatch('fetchProduct', this.propId);
-                this.$store.dispatch('fetchVariants', { product_id: this.propId });
+                this.$store.dispatch('fetchVariants', this.propId);
             } else {
-                this.$store.dispatch('resetProduct', this.propId);
+                this.$store.dispatch('resetProduct');
             }
+
+            //setTimeout(() => console.log(this.product.images), 1000)
         },
 
         watch: {

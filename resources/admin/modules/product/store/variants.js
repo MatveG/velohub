@@ -31,8 +31,8 @@ export default {
     },
 
     actions: {
-        async fetchVariants(context, payload) {
-            const res = await axios.get(`/admin/variants/${payload.product_id}`);
+        async fetchVariants(context, productId) {
+            const res = await axios.get(`/admin/variants/${productId}`);
             if(res.status === 200) {
                 context.commit('VARIANTS_SET', res.data);
             }
@@ -41,7 +41,7 @@ export default {
         async storeVariant(context, payload) {
             const res = await axios.post(`/admin/variants/${payload.product_id}`, payload);
             if(res.status === 200) {
-                context.commit('VARIANT_UPDATE', res.data);
+                context.commit('VARIANT_ADD', res.data);
             }
         },
 

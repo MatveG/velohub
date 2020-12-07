@@ -1,7 +1,7 @@
 
 <template>
     <div>
-        <b-table :data="variants"
+        <b-table :data="product.variants"
                  :loading="loading"
                  :hoverable="true"
                  default-sort="code"
@@ -21,9 +21,9 @@
                 <b-table-column field="parameters" label="Параметры" width="30%" centered>
                     <div class="buttons is-centered">
                         <template v-for="parameter in product.category.parameters">
-                            <button v-if="props.row.parameters[parameter.id]" class="button is-rounded is-small is-static">
+                            <span v-if="props.row.parameters[parameter.id]" :title="parameter.title" class="tag ml-1">
                                 {{ props.row.parameters[parameter.id] }}
-                            </button>
+                            </span>
                         </template>
                     </div>
                 </b-table-column>
@@ -53,8 +53,10 @@
                 </b-table-column>
 
                 <b-table-column field="id" label="Действия" width="10%" centered>
-                    <button class="button fas fa-pen" type="button" @click="edit(props.row)" />
-                    <button class="button fas fa-trash-alt" type="button" @click="destroy(props.row)" />
+                    <div class="is-grouped field">
+                        <button class="button fas fa-pen" type="button" @click="edit(props.row)" />
+                        <button class="button fas fa-trash-alt ml-1" type="button" @click="destroy(props.row)" />
+                    </div>
                 </b-table-column>
             </template>
         </b-table>
@@ -69,11 +71,11 @@
 </template>
 
 <script>
+    import CardComponent from "@/components/CardComponent";
+    import VariantEdit from "@/modules/product/components/VariantEdit";
     import {mapGetters} from "vuex";
     import {states} from '@/mixins/states';
     import Variant from "../classes/Variant";
-    import CardComponent from "@/components/CardComponent";
-    import VariantEdit from "@/modules/product/components/VariantEdit";
 
     export default {
         name: 'ProductVariants',
@@ -87,7 +89,7 @@
 
         props: {
             discount: {
-                type: [Number],
+                type: Number,
                 default: 0
             },
         },
@@ -100,19 +102,19 @@
             }
         },
 
-        computed: mapGetters(['settings', 'product', 'variants']),
+        computed: mapGetters(['product']),
 
         watch: {
             'discount': function () {
-                this.variants.forEach((el) => this.calcPrice(el));
+                this.product.variants.forEach((el) => this.calcPrice(el));
             },
 
             'product.price': function () {
-                this.variants.forEach((el) => this.calcPrice(el));
+                this.product.variants.forEach((el) => this.calcPrice(el));
             },
 
             'product.is_sale': function () {
-                this.variants.forEach((el) => el.is_sale = this.product.is_sale);
+                this.product.variants.forEach((el) => el.is_sale = this.product.is_sale);
             },
         },
 
@@ -163,3 +165,5 @@
         }
     }
 </script>
+
+<style/>

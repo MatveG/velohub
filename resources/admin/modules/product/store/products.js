@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const BLANK_PRODUCT = {
-    images: [],
-    features: {}
+    features: {},
+    variants: [],
+    images: []
 };
 
 export default {
@@ -12,7 +13,11 @@ export default {
     },
 
     getters: {
-        product: state => state.product,
+        product: (state, getters) => {
+            state.product.category = getters.getCategoryById(state.product.category_id);
+            state.product.variants = getters.variants;
+            return state.product;
+        },
 
         products: state => state.products,
     },
@@ -41,7 +46,7 @@ export default {
 
     actions: {
         async resetProduct(context) {
-            context.commit('PRODUCT_SET', BLANK_PRODUCT);
+            context.commit('PRODUCT_SET', {...BLANK_PRODUCT});
         },
 
         async fetchProduct(context, id) {
@@ -51,10 +56,8 @@ export default {
                 const res = await axios.get(`/admin/products/${id}`);
                 product = res.data;
             }
-            product.category = context.getters.getCategoryById(product.category_id);
-            console.log(product.category);
 
-            context.commit('PRODUCT_SET', product);
+            context.commit('PRODUCT_SET', {...product});
         },
 
         async storeProduct(context, payload) {
@@ -86,7 +89,6 @@ export default {
             if(res.status === 200) {
                 context.commit('PRODUCTS_REMOVE', id);
             }
-        },
-
+        }
     },
 };
