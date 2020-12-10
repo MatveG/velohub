@@ -87,7 +87,7 @@
 
                 this.requestUpload(files).then((res) => {
                     this.images = this.images.concat(res.data);
-                    this.emitUpdate();
+                    // this.emitUpdate();
                 });
             },
 

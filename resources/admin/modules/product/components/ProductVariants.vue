@@ -30,8 +30,7 @@
 
                 <b-table-column field="stock" label="Остаток" width="15%" sortable centered>
                     <b-field>
-                        <b-input v-model.number="props.row.stock" @change.native="update(props.row)"
-                                 @keypress.native="banDecimal($event)" type="number" />
+                        <b-input v-model.number="props.row.stock" @change.native="update(props.row)" type="number" />
                         <div class="control"><div class="button is-static">шт</div></div>
                     </b-field>
                 </b-table-column>
@@ -75,7 +74,9 @@
     import VariantEdit from "@/modules/product/components/VariantEdit";
     import {mapGetters} from "vuex";
     import {states} from '@/mixins/states';
+    import {forceInteger} from "@/mixins/forceInteger";
     import Variant from "../classes/Variant";
+    import {validationsByType} from "@/mixins/validationsByType";
 
     export default {
         name: 'ProductVariants',
@@ -85,7 +86,7 @@
             CardComponent,
         },
 
-        mixins: [states],
+        mixins: [states, forceInteger, validationsByType],
 
         props: {
             discount: {
@@ -96,13 +97,32 @@
 
         data() {
             return {
-                variant: {},
                 modal: false,
+                variant: {},
                 timer: {},
             }
         },
 
         computed: mapGetters(['product']),
+
+        validations() {
+            let res = {
+                product: {
+                    variants: []
+                }
+            };
+
+            this.product.variants.forEach((variant, i) => {
+                res.product.variants[i] = {
+                    stock: this.validationsByType('integer'),
+                    surcharge: this.validationsByType('number')
+                }
+            });
+
+            console.log(this.product.variants);
+
+            return res;
+        },
 
         watch: {
             'discount': function () {
@@ -118,6 +138,10 @@
             },
         },
 
+        mounted() {
+            this.$store.dispatch('fetchVariants', this.product.id);
+        },
+
         methods: {
             create() {
                 this.variant = Variant.fromProduct(this.product);
@@ -130,20 +154,31 @@
             },
 
             update(row) {
-                clearTimeout(this.timer[row.id]);
-
-                this.timer[row.id] = setTimeout(() => {
-                    this.stateLoading();
-                    this.$store.dispatch('patchVariant', row).then(() => this.stateSaved());
-                }, 2000);
+                this.$v.$touch();
+                // clearTimeout(this.timer);
+                //
+                // row.draft = true;
+                //
+                // this.timer = setTimeout(async () => {
+                //     if (this.validate()) {
+                //         this.stateLoading();
+                //
+                //         await Promise.all(this.product.variants
+                //             .filter(el => el.draft)
+                //             .map(el => this.$store.dispatch('patchVariant', el)));
+                //
+                //         this.stateSaved();
+                //     }
+                // }, 2000);
             },
 
             destroy(row) {
-                this.confirm('Удалить?', () => {
+                this.confirm('Удалить?', async () => {
                     this.stateLoading();
-                    this.$store
-                        .dispatch('destroyVariant', row)
-                        .then(() => this.stateSaved());
+
+                    await this.$store.dispatch('destroyVariant', row);
+
+                    this.stateSaved();
                 });
             },
 
@@ -157,10 +192,6 @@
                     row.price = +this.product.price + +row.surcharge;
                     row.price -= (this.product.is_sale && row.is_sale) ? this.discount : 0;
                 }
-            },
-
-            banDecimal(event) {
-                this.banDecimal(event);
             },
         }
     }

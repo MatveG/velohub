@@ -22,7 +22,7 @@ class ProductObserver
             $original = json_decode($product->getOriginal('images'), true);
 
             if (is_array($original) && count($original) > 0) {
-                ShopImages::deleteImages($original, $product->images);
+                ShopImages::deleteImages(array_diff($original, $product->images));
             }
         }
 

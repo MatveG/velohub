@@ -110,8 +110,7 @@
         methods: {
             assign(property, value) {
                 this.variant[property] = value;
-                this.stateDraft();
-                this.save();
+                this.stateDraft().save();
             },
 
             changed() {
@@ -123,19 +122,19 @@
                 }
             },
 
-            save() {
+            async save() {
                 if (this.validate()) {
                     this.stateLoading();
-                    clearTimeout(this.timer);
 
-                    this.$store
-                        .dispatch(this.variant.id ? 'patchVariant' : 'storeVariant', this.variant)
-                        .then(() => this.stateSaved());
+                    clearTimeout(this.timer);
+                    await this.$store.dispatch(this.variant.id ? 'patchVariant' : 'storeVariant', this.variant);
+
+                    this.stateSaved();
                 }
             },
 
             close() {
-                clearInterval(this.timer);
+                clearTimeout(this.timer);
                 this.$emit('close');
             }
         }

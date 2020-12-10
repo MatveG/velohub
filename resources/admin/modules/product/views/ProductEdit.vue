@@ -53,14 +53,14 @@
                         </b-tabs>
                     </card-component>
 
-                    <card-component v-if="product.id" title="Фотографии" class="margin-line">
-                        <images-upload @update="assign('images', $event)" :prop-images="product.images"
+                    <card-component title="Фотографии" class="margin-line">
+                        <images-upload v-if="mounted && product.id" @update="assign('images', $event)" :prop-images="product.images"
                                        :prop-max="10" prop-width="20%" :prop-api="`/admin/products/${product.id}`" />
                     </card-component>
                 </div>
 
                 <div class="column">
-                    <card-component :title="`ID товара: ${product.id}`" class="tile is-child">
+                    <card-component :title="`ID товара: ${product.id || ''}`" class="tile is-child">
                         <b-field class="has-text-centered">
                             <b-switch v-model="product.is_active">Активен</b-switch>
                         </b-field>
@@ -146,7 +146,7 @@
             </div>
         </form>
         <card-component title="Варианты товара" class="margin-line">
-            <product-variants v-if="product.id" :discount="discount.amount" />
+            <product-variants v-if="mounted && product.id" :discount="discount.amount" />
         </card-component>
     </section>
 </template>
@@ -181,13 +181,14 @@
 
         data () {
             return {
+                mounted: false,
+                tab: 0,
+                saveTimer: null,
+                discountTimer: null,
                 discount: {
                     amount: 0,
                     percent: null,
-                },
-                tab: 0,
-                saveTimer: null,
-                discountTimer: null
+                }
             }
         },
 
@@ -208,15 +209,8 @@
 
         mounted () {
             this.$store.dispatch('fetchCategories');
-
-            if(this.propId) {
-                this.$store.dispatch('fetchProduct', this.propId);
-                this.$store.dispatch('fetchVariants', this.propId);
-            } else {
-                this.$store.dispatch('resetProduct');
-            }
-
-            //setTimeout(() => console.log(this.product.images), 1000)
+            this.$store.dispatch(this.propId ? 'fetchProduct' : 'resetProduct', this.propId);
+            this.mounted = true;
         },
 
         watch: {

@@ -1,5 +1,6 @@
 import {maxLength, minLength, required} from "vuelidate/lib/validators";
 import numeric from "vuelidate/lib/validators/numeric";
+import integer from "vuelidate/lib/validators/integer";
 
 export const validationsByType = {
     methods: {
@@ -9,6 +10,12 @@ export const validationsByType = {
                     return {
                         required,
                         numeric
+                    };
+
+                case 'integer':
+                    return {
+                        required,
+                        integer
                     };
 
                 case 'text':
