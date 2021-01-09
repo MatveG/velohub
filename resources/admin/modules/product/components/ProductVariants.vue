@@ -30,7 +30,8 @@
 
                 <b-table-column field="stock" label="Остаток" width="15%" sortable centered>
                     <b-field>
-                        <b-input v-model.number="props.row.stock" @change.native="update(props.row)" type="number" />
+                        <b-input v-model.number="props.row.stock" type="number"
+                                 @keypress.native="forceInteger($event)" @change.native="update(props.row)" />
                         <div class="control"><div class="button is-static">шт</div></div>
                     </b-field>
                 </b-table-column>
@@ -42,7 +43,7 @@
                             <span class="icon is-small is-right">{{ settings('shop', 'currency').sign }}</span>
                         </div>
                         <b-input v-model.number="props.row.surcharge" @input.native="calcPrice(props.row)"
-                                 @change.native="update(props.row)" type="number" step="any" />
+                                 @change.native="update(props.row)" type="number"/>
                     </b-field>
                 </b-table-column>
 
@@ -76,7 +77,6 @@
     import {states} from '@/mixins/states';
     import {forceInteger} from "@/mixins/forceInteger";
     import Variant from "../classes/Variant";
-    import {validationsByType} from "@/mixins/validationsByType";
 
     export default {
         name: 'ProductVariants',
@@ -86,7 +86,7 @@
             CardComponent,
         },
 
-        mixins: [states, forceInteger, validationsByType],
+        mixins: [states, forceInteger],
 
         props: {
             discount: {
@@ -104,25 +104,6 @@
         },
 
         computed: mapGetters(['product']),
-
-        validations() {
-            let res = {
-                product: {
-                    variants: []
-                }
-            };
-
-            this.product.variants.forEach((variant, i) => {
-                res.product.variants[i] = {
-                    stock: this.validationsByType('integer'),
-                    surcharge: this.validationsByType('number')
-                }
-            });
-
-            console.log(this.product.variants);
-
-            return res;
-        },
 
         watch: {
             'discount': function () {
@@ -154,22 +135,19 @@
             },
 
             update(row) {
-                this.$v.$touch();
-                // clearTimeout(this.timer);
-                //
-                // row.draft = true;
-                //
-                // this.timer = setTimeout(async () => {
-                //     if (this.validate()) {
-                //         this.stateLoading();
-                //
-                //         await Promise.all(this.product.variants
-                //             .filter(el => el.draft)
-                //             .map(el => this.$store.dispatch('patchVariant', el)));
-                //
-                //         this.stateSaved();
-                //     }
-                // }, 2000);
+                clearTimeout(this.timer);
+
+                row.draft = true;
+
+                this.timer = setTimeout(async () => {
+                    this.stateLoading();
+
+                    await Promise.all(this.product.variants
+                        .filter(el => el.draft)
+                        .map(el => this.$store.dispatch('patchVariant', el)));
+
+                    this.stateSaved();
+                }, 2000);
             },
 
             destroy(row) {

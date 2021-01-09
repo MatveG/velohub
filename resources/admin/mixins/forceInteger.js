@@ -1,7 +1,7 @@
 
 export const forceInteger = {
     methods: {
-        forceInteger() {
+        forceInteger(event) {
             event = (event) ? event : window.event;
             let code = (event.which) ? event.which : event.keyCode;
 
