@@ -33,7 +33,7 @@ class CreateProductsTable extends Migration
             $table->string('title')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
-            $table->string('latin')->nullable();
+            $table->string('slug')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();

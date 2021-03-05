@@ -13,7 +13,7 @@ class WigetsTableSeeder extends Seeder
     public function run()
     {
         DB::table('widgets')->insert([
-            'latin' => 'header-contacts',
+            'slug' => 'header-contacts',
             'name' => 'Contact details in Header',
             'text' => '<strong>+38 (098) 100-10-67</strong>
                 <a class="ml-1 icon-25 icon-telegram align-middle" href="tg://resolve?domain="></a>
@@ -21,7 +21,7 @@ class WigetsTableSeeder extends Seeder
                 <span class="ml-1 small">ПН-ПТ 10<sup>00</sup>-19<sup>00</sup></span>',
         ]);
         DB::table('widgets')->insert([
-            'latin' => 'footer-contacts',
+            'slug' => 'footer-contacts',
             'name' => 'Contacts details in Footer',
             'text' => '<p>
 <strong><a href="call:+380981001067">+38 (098) 100-10-67</a></strong>
@@ -38,7 +38,7 @@ class WigetsTableSeeder extends Seeder
 </p>',
         ]);
         DB::table('widgets')->insert([
-            'latin' => 'footer-address',
+            'slug' => 'footer-address',
             'name' => 'Address details in Footer',
             'text' => '<p>
                   <b>Оболонь</b>:<br>

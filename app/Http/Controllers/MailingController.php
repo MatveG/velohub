@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Validator;
 
 class MailingController extends Controller
 {
-    public function store(Request $request)
+    public function subscribe(Request $request)
     {
-        $this->validate($request);
+        $this->validateForm($request);
 
         if (DB::table('mailing')->where('email', $request->email)->exists()) {
             return back()->with('notify', 'Вы уже подписаны на рассылку!');
@@ -21,9 +21,9 @@ class MailingController extends Controller
         return back()->with('notify', 'Спасибо за подписку!');
     }
 
-    public function destroy(Request $request)
+    public function unsubscribe(Request $request)
     {
-        $this->validate($request);
+        $this->validateForm($request);
 
         if (DB::table('mailing')->where('email', $request->email)->where('key', $request->key)->doesntExist()) {
             return response('Такого адреса нет в нашей рассылке!');
@@ -34,7 +34,7 @@ class MailingController extends Controller
         return response('');
     }
 
-    public function validate(Request $request)
+    private function validateForm(Request $request)
     {
         $validator = Validator::make($request->all(), ['email' => 'required|email']);
 

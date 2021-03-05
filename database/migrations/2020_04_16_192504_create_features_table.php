@@ -28,7 +28,7 @@ class CreateFeaturesTable extends Migration
 
             $table->string('type')->nullable();
             $table->string('title')->nullable();
-            $table->string('latin')->nullable();
+            $table->string('slug')->nullable();
             $table->string('units')->nullable();
 
             $table->text('values')->default('[]');

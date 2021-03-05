@@ -65,7 +65,7 @@
                     <b-field label="Родительская категория">
                         <b-autocomplete v-if="category"
                                         :value="parentCategory.title"
-                                        :data="categoriesParent"
+                                        :data="getParentCategories"
                                         :open-on-focus="true"
                                         field="title"
                                         @select="(option) => assign('parent_id', option.id)">
@@ -127,10 +127,10 @@
         },
 
         computed: {
-            ...mapGetters(['category', 'categories', 'categoriesParent']),
+            ...mapGetters(['category', 'categories', 'getParentCategories']),
 
             parentCategory: function() {
-                return this.categoriesParent.find((el) => el.id === this.category.parent_id) || {};
+                return this.getParentCategories.find((el) => el.id === this.category.parent_id) || {};
             },
 
             hasChildren: function() {

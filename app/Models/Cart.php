@@ -14,8 +14,8 @@ class Cart extends Model
         'sign',
     ];
 
-    public function skus()
+    public function variants()
     {
-        return $this->belongsToMany(Sku::class, 'cart_sku')->withPivot('amount');
+        return $this->belongsToMany(Variant::class, 'cart_variants')->withPivot('amount');
     }
 }

@@ -1,4 +1,3 @@
-
 <nav id="navbar-main" class="navbar-main navbar navbar-expand-lg fixed-top">
     <a class="navbar-brand" href="{{ route('index') }}">
         <div class="text-white text-uppercase" style="font-size:150%;">вело</div>
@@ -7,7 +6,8 @@
 
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
-            @widget('catalog')
+{{--            @widget('catalog')--}}
+            @include('partials.catalog')
         </ul>
 
         <div class="navbar-info-icons text-center">
@@ -22,7 +22,7 @@
         <div id="navbar-info-phone" class="row collapse navbar-info-block" data-parent="#navbar-info">
             <div class="col-1"></div>
             <div class="col-10 navbar-info-body">
-                @widget('text', 'header-contacts')
+                @widget(header-contacts)
             </div>
             <div class="col-1 align-self-center">
                 <button class="btn close" data-toggle="collapse" data-target="#navbar-info-phone">&times;</button>
@@ -42,7 +42,7 @@
         <div id="navbar-info-compare" class="row collapse navbar-info-block" data-parent="#navbar-info">
             <div class="col-1"></div>
             <div class="col-10 navbar-info-body">
-                @widget('compare')
+{{--                @widget('compare')--}}
             </div>
             <div class="col-1 align-self-center">
                 <button class="btn close" data-toggle="collapse" data-target="#navbar-info-compare">&times;</button>

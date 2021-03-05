@@ -40,7 +40,7 @@ export default {
       // axios
       //   .post(window.routeMediaStore, formData, {
       //     headers: {
-      //       'Content-Type': 'multipart/form-data'
+      //       'Document-Type': 'multipart/form-data'
       //     },
       //     onUploadProgress: this.progressEvent
       //   })

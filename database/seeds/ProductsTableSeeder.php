@@ -20,7 +20,7 @@ class ProductsTableSeeder extends Seeder
                 'is_stock' => '1',
                 'is_active' => '1',
                 'is_sale' => $faker->numberBetween(0, 1),
-                'latin' => $faker->slug(),
+                'slug' => $faker->slug(),
                 'title' => $faker->name,
                 'brand' => $faker->randomElement(['Asus', 'Intel', 'Apple', 'Acer', 'HP', 'Razer']),
                 'model' => $faker->name,

@@ -56,10 +56,10 @@ class FilterService
     {
         $this->filters->prices = (object)[
             'min' => (object)[ 'title' => 'Цена от', 'values' => [
-                $query->selectRaw("min((prices->>'retail')::int)")->pluck('min')->first() => false]
+                $query->selectRaw("min(price)")->pluck('min')->first() => false]
             ],
             'max' => (object)[ 'title' => 'Цена до', 'values' => [
-                $query->selectRaw("max((prices->>'retail')::int)")->pluck('max')->first() => false]
+                $query->selectRaw("max(price)")->pluck('max')->first() => false]
             ],
         ];
 

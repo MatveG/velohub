@@ -3,14 +3,6 @@
 namespace App\Providers;
 
 use App;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Variant;
-use App\Observers\ProductObserver;
-use App\Widgets\Widget;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,11 +19,6 @@ class AppServiceProvider extends ServiceProvider
             require_once $filename;
         }
 
-        // Register Widget class
-        App::singleton('widget', function() { return new Widget(); });
-
-        // Define path to Custom Views
-        $this->loadViewsFrom(resource_path() . '/views/widgets', 'Widgets');
         $this->loadViewsFrom(resource_path() . '/admin/views', 'Admin');
     }
 
@@ -42,14 +29,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Product::observe(App\Observers\ProductObserver::class);
-        Category::observe(App\Observers\CategoryObserver::class);
-        Variant::observe(App\Observers\VariantObserver::class);
+        App\Models\Category::observe(App\Observers\ProductObserver::class);
+        App\Models\Category::observe(App\Observers\CategoryObserver::class);
+        App\Models\Variant::observe(App\Observers\VariantObserver::class);
 
-        // Register Blade directive for Widget
-        Blade::directive('widget', function ($name) {
-            return "<?php echo app('widget')->show($name); ?>";
-        });
+        App\View\Directives\WidgetDirectives::directives();
 
+        App\View\Share\CartShare::share();
+        App\View\Share\CategoryShare::share();
+        App\View\Share\MenuShare::share();
     }
 }

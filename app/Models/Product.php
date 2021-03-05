@@ -65,7 +65,7 @@ class Product extends Model
 
     public function getLinkAttribute()
     {
-        return route('product.show', ['latin' => $this->latin, 'id' => $this->id]);
+        return route('product.show', ['slug' => $this->slug, 'id' => $this->id]);
     }
 
 }

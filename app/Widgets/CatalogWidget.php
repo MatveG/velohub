@@ -24,7 +24,7 @@ class CatalogWidget
         $menuItems = $this->category
           ->whereParent_id($pId)
           ->active()
-          ->orderBy('sorting')
+          ->orderBy('ord')
           ->get();
 
         foreach ($menuItems as $menu) {
@@ -44,6 +44,8 @@ class CatalogWidget
             $result[] = $curr;
         }
 
+//        dd($result);
+
         return $result;
     }
 
@@ -59,7 +61,7 @@ class CatalogWidget
             }
 
             $items = $menu->products()
-                ->join('skus', 'skus.product_id', '=', 'products.id')
+                ->join('variants', 'variants.product_id', '=', 'products.id')
                 ->active()
                 ->groupBy($groupBy)
                 ->pluck($pluck)

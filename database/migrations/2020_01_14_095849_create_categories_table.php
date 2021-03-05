@@ -24,7 +24,7 @@ class CreateCategoriesTable extends Migration
 
             $table->string('title')->nullable();
             $table->string('title_short')->nullable();
-            $table->string('latin')->nullable();
+            $table->string('slug')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();

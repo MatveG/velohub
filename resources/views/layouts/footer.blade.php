@@ -3,7 +3,7 @@
     <div class="col p-0 text-center">
         <h3><span>Вело подписка</span></h3>
         <p>Одно письмо в месяц с приятными скидками, акциями и информацией о новинках</p>
-        <form class="p-0 col-lg-6 col-md-8 col-sm-12 form m-auto" method="post" action="{{ route('mailing.store') }}">
+        <form class="p-0 col-lg-6 col-md-8 col-sm-12 form m-auto" method="post" action="{{ route('mailing.subscribe') }}">
             @csrf
             <div class="input-group">
                 <label>
@@ -20,18 +20,18 @@
         <div class="col-sm-2 pt-4">
             <h5><span>Навигация</span></h5>
             <ul class="nav flex-column">
-                @widget('menu')
+                @include('partials.menu')
             </ul>
         </div>
 
         <div class="col-sm-4 pt-4">
             <h5><span>Наши контакты</span></h5>
-            @widget('text', 'footer-contacts')
+            @widget(footer-contacts)
         </div>
 
         <div class="col-sm-4 pt-4">
             <h5><span>Наши магазины</span></h5>
-            @widget('text', 'footer-address')
+            @widget(footer-address)
         </div>
 
         <div class="col-sm-2 pt-4">

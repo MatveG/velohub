@@ -10,33 +10,34 @@ class CartService
     protected $cart;
     protected $items;
 
-    public function __construct(Cart $cart)
+    public function __construct()
     {
-        if(empty($_COOKIE['cart'])) {
+        $this->cart = new Cart();
+        if (empty($_COOKIE['cart'])) {
             return;
         }
 
-        $cookie = json_decode( rawurldecode($_COOKIE['cart']) );
+        $cookie = json_decode(rawurldecode($_COOKIE['cart']));
         $this->cart = $cart->where('id', $cookie->id)->where('sign', $cookie->sign)->first();
 
-        if(!$this->cart) {
-            setcookie('cart', '', time()-60, '/', null);
+        if (!$this->cart) {
+            setcookie('cart', '', time() - 60, '/', null);
             return;
         }
 
         if($cookie->actual !== true) {
-            $this->cart->skus()->detach();
+            $this->cart->variants()->detach();
 
             foreach ($cookie->items as $item) {
-                $this->cart->skus()->attach($item->id, ['amount' => $item->q]);
-                $this->cart->skus->push($item->id, ['amount' => $item->q]);
+                $this->cart->variants()->attach($item->id, ['amount' => $item->q]);
+                $this->cart->variants->push($item->id, ['amount' => $item->q]);
             }
 
             $cookie->actual = true;
             setcookie('cart', json_encode($cookie), time()+60*60*24*365, '/', null);
         }
 
-        $this->items = $this->cart->skus()->get();
+        $this->items = $this->cart->variants()->get();
     }
 
     public function getItems()

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
-    public function store(Request $request, Comment $comment, int $product_id)
+    public function __invoke(Request $request, Comment $comment, int $product_id)
     {
         $validator = Validator::make($request->all(), [
             'rating' => 'required|numeric',

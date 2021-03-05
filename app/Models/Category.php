@@ -35,8 +35,14 @@ class Category extends Model
         'parameters' => 'array',
     ];
 
-    public function getLinkAttribute() {
-        return route('category.show', ['latin' => $this->latin, 'id' => $this->id]);
+    public function childs()
+    {
+        return $this->hasMany(Category::class, 'parent_id', 'id');
+    }
+
+    public function getLinkAttribute()
+    {
+        return route('category.show', ['slug' => $this->slug, 'id' => $this->id]);
     }
 
 }

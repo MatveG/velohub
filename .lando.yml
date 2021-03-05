@@ -1,0 +1,41 @@
+name: velohub
+recipe: laravel
+config:
+  php: '7.3'
+  database: postgres
+  cache: redis
+  xdebug: true
+  webroot: public
+tooling:
+  tinker:
+    service: appserver
+    description: "Drop into a tinker console"
+    cmd: "php artisan tinker"
+  migrate:
+    service: appserver
+    description: "Fresh migrate and seed the database"
+    cmd: "php artisan migrate:fresh --seed"
+  config-clear:
+    service: appserver
+    description: "Drop into a tinker console"
+    cmd: "php artisan config:clear"
+  cache-clear:
+    service: appserver
+    description: "Drop into a tinker console"
+    cmd: "php artisan cache:clear"
+  ide:
+    service: appserver
+    description: "Update the IDE docs"
+    cmd:
+      - "php artisan ide-helper:meta"
+      - "php artisan ide-helper:models --write --reset"
+  phpunit:
+    service: appserver
+    description: "Run PHP Unit tests: lando phpunit"
+    cmd: "vendor/bin/phpunit --testsuite Feature --coverage-html tests/coverage"
+  phpunitdebug:
+    service: appserver
+    cmd: php -d xdebug.remote_port=9000 vendor/bin/phpunit
+excludes:
+  - vendor
+  - node_modules

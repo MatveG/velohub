@@ -17,7 +17,7 @@ class CartController extends Controller
         $this->checkAjaxRequiredFields($request, ['id']);
 
         $cart = $cart->create(['sign' => uniqid('', false)]);
-        $cart->skus()->attach($request->id);
+        $cart->variants()->attach($request->id);
 
         return response()->json([
             'ok' => 1,
@@ -33,8 +33,8 @@ class CartController extends Controller
         $where = [['id', $request->cart_id], ['sign', $request->sign]];
         $cart = $cart->where($where)->first() ?: $cart->create(['sign' => uniqid('', false)]);
 
-        if (!$cart->skus()->find($request->get('id'))) {
-            $cart->skus()->attach($request->get('id'));
+        if (!$cart->variants()->find($request->get('id'))) {
+            $cart->variants()->attach($request->get('id'));
         }
 
         return response()->json(['ok' => 1]);
