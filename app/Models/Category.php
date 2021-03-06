@@ -42,7 +42,7 @@ class Category extends Model
 
     public function getLinkAttribute()
     {
-        return route('category.show', ['slug' => $this->slug, 'id' => $this->id]);
+        return route('category', ['slug' => $this->slug, 'id' => $this->id]);
     }
 
 }

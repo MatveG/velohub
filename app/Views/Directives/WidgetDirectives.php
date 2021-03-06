@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Directives;
+namespace App\Views\Directives;
 
 use App\Models\Widget;
 use Illuminate\Support\Facades\Blade;

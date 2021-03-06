@@ -9,7 +9,8 @@ class CompareController extends Controller
     public function __invoke(string $latin)
     {
         $category = $this->category->where('latin', $latin)->firstOrFail();
-        $idArr = (!empty($_COOKIE['compare'])) ? json_decode(urldecode($_COOKIE['compare'])) : [];
+
+        $idArr = !empty($_COOKIE['compare']) ? json_decode(urldecode($_COOKIE['compare'])) : [];
 
         $products = $this
             ->repo

@@ -32,11 +32,5 @@ class AppServiceProvider extends ServiceProvider
         App\Models\Category::observe(App\Observers\ProductObserver::class);
         App\Models\Category::observe(App\Observers\CategoryObserver::class);
         App\Models\Variant::observe(App\Observers\VariantObserver::class);
-
-        App\View\Directives\WidgetDirectives::directives();
-
-        App\View\Share\CartShare::share();
-        App\View\Share\CategoryShare::share();
-        App\View\Share\MenuShare::share();
     }
 }

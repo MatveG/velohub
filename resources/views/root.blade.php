@@ -10,20 +10,18 @@
             <section>
                 <h2><span>Скидки</span></h2>
                 <div class="row text-center">
-                    @foreach($saleProducts as $item)
-                        @include('includes.shop.item')
-                    @endforeach
+                    @include('partials.products', ['products' => $saleProducts])
                 </div>
             </section>
         @endif
+
         <hr>
+
         @if($newProducts)
             <section>
                 <h2><span>Новинки</span></h2>
                 <div class="row text-center">
-                    @foreach($newProducts as $item)
-                        @include('includes.shop.item')
-                    @endforeach
+                    @include('partials.products', ['products' => $newProducts])
                 </div>
             </section>
         @endif

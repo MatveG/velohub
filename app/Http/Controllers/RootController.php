@@ -26,13 +26,13 @@ class RootController extends Controller
             ->limit(6)
             ->get();
 
-        $seo = (object)[
+        $meta = (object)[
             'title' => $content->seo_title,
             'description' => $content->seo_description,
             'keywords' => $content->seo_keywords,
         ];
 
-        return view('root', compact(['content', 'saleProducts', 'newProducts', 'seo']));
+        return view('root', compact(['content', 'saleProducts', 'newProducts', 'meta']));
     }
 
 }

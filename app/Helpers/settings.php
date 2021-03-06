@@ -5,14 +5,14 @@ if (!function_exists('settings')) {
     {
         static $settings;
 
-        if(empty($settings)) {
+        if (empty($settings)) {
             foreach (DB::table('settings')->get() as $row) {
                 $settings[$row->group][$row->key] =
                     ($row->value[0] === '{') ? json_decode($row->value) : $row->value;
             }
         }
 
-        if(empty($group)) {
+        if (empty($group)) {
             return $settings;
         }
 

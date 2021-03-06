@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h3><span>Список товаров</span></h3>
-                        @include('includes.cart.products')
+                        @include('partials.cart.products')
                         <div class="text-center">
                             <button class="btn btn-gray w-50" data-target="#modal-cart" data-toggle="modal">Редактировать</button>
                         </div>
@@ -23,7 +23,7 @@
 
                     <div class="col-md-6">
                         <h3><span>Данные получателя</span></h3>
-                        @include('includes.cart.form')
+                        @include('partials.cart.form')
                     </div>
                 </div>
             @endif

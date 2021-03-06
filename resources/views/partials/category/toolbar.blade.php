@@ -1,9 +1,9 @@
 
-<section class="row">
-    <div class="col-md-3">
+<section class="d-flex justify-content-between">
+    <div>
         <form name="sort" action="" method="get">
             <label>
-                <select class="custom-select shop-select-sort" size="1" name="sort">
+                <select class="form-select shop-select-sort" size="1" name="sort">
                     <option value="" selected>сортировка</option>
                     <option value="n-o" {{ request()->sort === 'n-o' ? 'selected' : '' }}>сначала новинки</option>
                     <option value="l-h" {{ request()->sort === 'l-h' ? 'selected' : '' }}>сначала дешевые</option>
@@ -13,7 +13,7 @@
             </label>
         </form>
     </div>
-    <div class="col-md-9 pt-3 pt-lg-0">
+    <div>
         <div class="float-right pagination">{{ $products->appends(request()->query())->onEachSide(1)->links() }}</div>
     </div>
 </section>

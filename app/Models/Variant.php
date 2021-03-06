@@ -78,7 +78,7 @@ class Variant extends Model
             $this->product->latin,
             latinize( implode( array_values((array)$this->parameters), '-' ) ),
             $this->id,
-            settings('shop', 'images_format')
+            settings('category', 'images_format')
         );
     }
 

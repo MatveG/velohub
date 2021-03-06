@@ -1,8 +1,8 @@
 
 $(() => {
-    $('.shop-select-sort').on('change', applySorting);
-    $('.shop-filter-input').on('change', applyFilter);
-    $('.shop-filter-checkbox').on('click', applyFilter);
+    $('.category-select-sort').on('change', applySorting);
+    $('.category-filter-input').on('change', applyFilter);
+    $('.category-filter-checkbox').on('click', applyFilter);
 });
 
 function applySorting() {

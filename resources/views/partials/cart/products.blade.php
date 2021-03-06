@@ -1,4 +1,4 @@
-    @if($items)
+@if($items)
     <div class="table-responsive">
         <table class="table text-center">
             <tbody>

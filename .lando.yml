@@ -7,6 +7,10 @@ config:
   xdebug: true
   webroot: public
 tooling:
+  autoload:
+    service: appserver
+    description: "Composer dump-autoload"
+    cmd: "composer dump-autoload"
   tinker:
     service: appserver
     description: "Drop into a tinker console"

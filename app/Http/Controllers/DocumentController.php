@@ -6,19 +6,19 @@ use App\Models\Document;
 
 class DocumentController extends Controller
 {
-    public function show(Document $content, string $slug)
+    public function show(Document $document, string $slug)
     {
-        $content = $content
+        $document = $document
             ->where('slug', $slug)
-            ->where('is_active', true)
+            ->isActive()
             ->firstOrFail();
 
-        $seo = (object)[
-            'title' => $content->seo_title,
-            'description' => $content->seo_description,
-            'keywords' => $content->seo_keywords,
+        $meta = (object)[
+            'title' => $document->seo_title,
+            'description' => $document->seo_description,
+            'keywords' => $document->seo_keywords,
         ];
 
-        return view('content', compact(['seo', 'content']));
+        return view('document', compact(['document', 'meta']));
     }
 }

@@ -21,6 +21,11 @@ trait Common
         $query->where($this->getTable() . '.is_active', 'true');
     }
 
+    public function scopeIsActive($query)
+    {
+        $query->where($this->getTable() . '.is_active', 'true');
+    }
+
     public function getImagesFolderAttribute()
     {
         return $this->imagesFolder;
@@ -30,7 +35,7 @@ trait Common
     {
         $format = '%s.%d.%s';
 
-        return sprintf($format, $this->latin, $this->id, settings('shop', 'images_format'));
+        return sprintf($format, $this->latin, $this->id, settings('category', 'images_format'));
     }
 
 //    public function getCreatedAtAttribute($date)

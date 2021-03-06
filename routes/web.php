@@ -2,38 +2,36 @@
 
 // Cart
 Route::get('/cart/form/', 'CartController@form')->name('cart.form');
-Route::post('/cart/send/', 'CartController@send')->name('cart.send');
+
 // Category
-Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')->where('path', '.*')->name('category.show');
-Route::get('/category/{slug}/{id}/{path?}/',
-    ['middleware' => ['alter.sort'], 'uses' => 'CategoryController']
-)->where('path', '.*')->name('category.show');
+Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')
+    ->where('path', '.*')
+    ->middleware('alter.sort')
+    ->name('category');
+
 // Comment
-Route::post('/comment/{product_id}/store/', 'CommentController')->name('comment.store');
+Route::post('/comment/{product_id}/store/', 'CommentController@store')->name('comment.store');
+
 // Compare
 Route::get('/compare/{slug}/{id}', 'CompareController')->name('category.compare');
-// Mailing
-Route::post('/mailing/subscribe/', 'MailingController@subscribe')->name('mailing.subscribe');
-Route::post('/mailing/unsubscribe/', 'MailingController@unsubscribe')->name('mailing.un subscribe');
+
+// Order
+Route::post('/order/', 'OrderController@store')->name('order.store');
+
 // Product
 Route::get('/product/{slug}/{id}/', 'ProductController')->name('product.show');
+
 // Search
-Route::get('/search/{path?}/', 'SearchController')->where('path', '.*')->name('product.search');
+Route::get('/search/{path?}/', 'SearchController')
+    ->where('path', '.*')
+    ->middleware('alter.sort')
+    ->name('search');
+
 // Document
-Route::get('/{slug}/', 'DocumentController@show')->name('content.show');
+Route::get('/{slug}/', 'DocumentController@show')->name('document');
+
 // Root
 Route::get('/', 'RootController@index')->name('index');
-
-
-
-
-
-// Ajax
-Route::post('/ajax/cart/new/', 'CartController@new')->name('ajax.cart.new');
-Route::patch('/ajax/cart/add/', 'CartController@add')->name('ajax.cart.add');
-Route::get('/ajax/widget/{name}/', function (string $name) {
-    return app('widget')->show($name, request()->param);
-})->name('ajax.widget');
 
 // Images routing
 Route::get('/media/ct/{img}')->name('img.category');
@@ -42,9 +40,8 @@ Route::get('/media/ul/{img}')->name('img.upload');
 
 // Admin
 Route::view('/admin/', 'Admin::index');
-
 Route::namespace('Admin')->group(function () {
-    // categories
+    // Categories
     Route::get('/admin/categories', 'CategoryController@index');
     Route::get('/admin/categories/{id}', 'CategoryController@edit');
     Route::post('/admin/categories', 'CategoryController@store');
@@ -52,7 +49,7 @@ Route::namespace('Admin')->group(function () {
     Route::delete('/admin/categories/{id}', 'CategoryController@destroy');
     Route::post('/admin/categories/{id}/upload-images', 'CategoryController@uploadImages');
 
-    // products
+    // Products
     Route::get('/admin/products/', 'ProductController@index');
     Route::get('/admin/products/{id}', 'ProductController@edit');
     Route::post('/admin/products', 'ProductController@store');
@@ -66,5 +63,4 @@ Route::namespace('Admin')->group(function () {
     Route::patch('/admin/variants/{id}', 'VariantController@update');
     Route::delete('/admin/variants/{id}', 'VariantController@destroy');
     Route::post('/admin/variants/{id}/upload-images', 'VariantController@uploadImages');
-
 });

@@ -48,6 +48,16 @@ class Product extends Model
         'images' => 'array',
     ];
 
+    public function analogs()
+    {
+        return $this
+            ->hasMany(Product::class, 'category_id', 'category_id')
+            ->where('brand', $this->brand)
+            ->where('price', '>=', $this->price * 0.85)
+            ->where('price', '<=', $this->price * 1.15)
+            ->isActive();
+    }
+
     public function getFeaturesAttribute($value)
     {
         return json_decode($this->attributes['features']);
@@ -58,10 +68,10 @@ class Product extends Model
         $this->attributes['features'] = json_encode((object)($value));
     }
 
-    public function getFullNameAttribute()
-    {
-        return $this->title . ' ' . $this->brand . ' ' . $this->model;
-    }
+//    public function getFullNameAttribute()
+//    {
+//        return $this->title . ' ' . $this->brand . ' ' . $this->model;
+//    }
 
     public function getLinkAttribute()
     {

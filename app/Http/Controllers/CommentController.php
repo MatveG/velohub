@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
-    public function __invoke(Request $request, Comment $comment, int $product_id)
+    public function store(Request $request, int $product_id)
     {
         $validator = Validator::make($request->all(), [
             'rating' => 'required|numeric',
@@ -20,10 +20,11 @@ class CommentController extends Controller
             return back()->with('notify', 'Некорректно заполнены обязательные поля')->withInput();
         }
 
-        $comment->product_id = $product_id;
+        $comment = new Comment();
         $comment->fill($request->all());
+        $comment->product_id = $product_id;
         $comment->save();
 
-        return back()->with('notify', 'Спасибо! Отзыв будет скоро опубликован.');
+        return back()->with('notify', 'Спасибо! Ваш отзыв будет скоро опубликован.');
     }
 }

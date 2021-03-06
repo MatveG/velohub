@@ -45,26 +45,7 @@ class CartController extends Controller
         $items = $service->getCartItems();
         $seo = (object) ['title' => '','description' => '','keywords' => ''];
 
-        return view('cart-form', compact(['items', 'seo']));
+        return view('cart', compact(['items', 'seo']));
     }
 
-    public function send(Request $request, Order $order, CartService $service)
-    {
-        $this->validate($request, [
-            'name' => 'required|min:3',
-            'phone' => 'required|min:9',
-            'address' => 'required|min:3',
-            'payment' => 'required|numeric',
-            'shipping' => 'required|numeric',
-        ]);
-
-        $order->fill(request()->all());
-        $order->items = $service->getItemsJson();
-        $order->save();
-        $service->clearCart();
-
-        $seo = (object) ['title' => '','description' => '','keywords' => ''];
-
-        return view('cart-send', compact(['common', 'seo']));
-    }
 }

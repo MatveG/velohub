@@ -1,4 +1,6 @@
-<a class="dropdown-item" href="{{ $child->link }}">{{ $child->title }}</a>
+<a class="dropdown-item" href="{{ $child->link }}">
+    {{ $child->title }}
+</a>
 
 @if($child->is_parent)
     <div>

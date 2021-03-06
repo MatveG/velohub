@@ -40,7 +40,7 @@
                     <b-field>
                         <div class="control has-icons-right">
                             <b-input v-model.number="props.row.price" disabled />
-                            <span class="icon is-small is-right">{{ settings('shop', 'currency').sign }}</span>
+                            <span class="icon is-small is-right">{{ settings('category', 'currency').sign }}</span>
                         </div>
                         <b-input v-model.number="props.row.surcharge" @input.native="calcPrice(props.row)"
                                  @change.native="update(props.row)" type="number"/>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Share;
+namespace App\Views\Share;
 
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;

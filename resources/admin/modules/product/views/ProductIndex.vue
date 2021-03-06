@@ -103,7 +103,7 @@
         },
 
         mounted () {
-            this.perPage = this.settings('shop', 'items_per_page');
+            this.perPage = this.settings('category', 'items_per_page');
             this.$store.dispatch('fetchCategories');
             this.$store.dispatch('fetchProducts');
         },

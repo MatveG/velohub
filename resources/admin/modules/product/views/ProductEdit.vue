@@ -84,7 +84,7 @@
                         <b-field label="Цена" label-position="on-border">
                             <b-input v-model.number="product.price" type="number" step="any" placeholder="0.0" expanded />
                             <div class="control">
-                                <div class="button is-static">{{ settings('shop', 'currency').sign }}</div>
+                                <div class="button is-static">{{ settings('category', 'currency').sign }}</div>
                             </div>
                         </b-field>
 
@@ -106,7 +106,7 @@
                                     <b-field label="Цена со скидкой" label-position="on-border">
                                         <b-input v-model.number="product.price_sale" :disabled="!product.is_sale" type="number" step="any" placeholder="0.0" expanded />
                                         <div class="control">
-                                            <div class="button is-static">{{ settings('shop', 'currency').sign }}</div>
+                                            <div class="button is-static">{{ settings('category', 'currency').sign }}</div>
                                         </div>
                                     </b-field>
                                 </div>

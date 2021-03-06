@@ -1,5 +1,5 @@
 
-<form class="form m-auto" method="get" action="{{ route('product.search') }}">
+<form class="form m-auto" method="get" action="{{ route('search') }}">
     <div class="input-group">
         <input type="search" class="form-control" name="find"
                placeholder="Поиск товара" value="{{ request('find') }}" required>

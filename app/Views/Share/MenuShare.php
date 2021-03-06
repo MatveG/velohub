@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Share;
+namespace App\Views\Share;
 
 use App\Models\Menu;
 use Illuminate\Support\Facades\View;
