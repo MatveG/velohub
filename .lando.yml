@@ -6,6 +6,9 @@ config:
   cache: redis
   xdebug: true
   webroot: public
+services:
+  database:
+    portforward: 5433
 tooling:
   autoload:
     service: appserver

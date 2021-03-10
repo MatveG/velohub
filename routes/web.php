@@ -1,12 +1,15 @@
 <?php
 
+// Admin
+Route::view('/admin/', 'Admin::index');
+
 // Cart
 Route::get('/cart/form/', 'CartController@form')->name('cart.form');
 
 // Category
 Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')
     ->where('path', '.*')
-    ->middleware('alter.sort')
+    ->middleware(['parse.path', 'parse.sort'])
     ->name('category');
 
 // Comment
@@ -38,8 +41,6 @@ Route::get('/media/ct/{img}')->name('img.category');
 Route::get('/media/pt/{img}')->name('img.product');
 Route::get('/media/ul/{img}')->name('img.upload');
 
-// Admin
-Route::view('/admin/', 'Admin::index');
 Route::namespace('Admin')->group(function () {
     // Categories
     Route::get('/admin/categories', 'CategoryController@index');

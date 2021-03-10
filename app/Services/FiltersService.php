@@ -2,43 +2,44 @@
 
 namespace App\Services;
 
-class ProductFiltersService
+class FiltersService
 {
-    protected $settings = [];
-    protected $filters;
+    private $query;
+    private $input;
+    private $filters = [];
 
-    public function get()
+    public function __construct(object $query, array $input)
     {
-        return $this->filters;
+        $this->query = $query;
+        $this->input = $input;
     }
 
-    public function parsePath(string $path)
+    public function __get($property)
     {
-        $this->filters = (object)[
-            'base' => str_replace($path, '', url()->full()),
-            'active' => (empty($path)) ? false : true,
-        ];
+        return property_exists($this, $property) ? $this->$property : null;
+    }
 
-        if (empty($path)) {
-            return $this;
+    public static function init(...$args): self
+    {
+        return new self(...$args);
+    }
+
+    public function withFilters(array $filters): self
+    {
+        foreach ($filters as $filter) {
+            $filter->loadValues($this->query);
+            $filter->loadChecked($this->input);
         }
-
-        foreach (explode('/', $path) as $pathArray) {
-            list($pathKey, $pathVal) = explode('-is-', $pathArray, 2);
-
-            if (empty($pathKey) || empty($pathVal)) {
-                continue;
-            }
-
-            if (strpos($pathVal, '-or-')) {
-                $this->settings[$pathKey] = explode('-or-', $pathVal);
-                continue;
-            }
-            $this->settings[$pathKey][] = $pathVal;
-        }
+        $this->filters = $filters;
 
         return $this;
     }
+
+
+
+
+
+
 
     public function usePrice(object $query)
     {
@@ -56,30 +57,6 @@ class ProductFiltersService
                 $short = ($key === 'price-min') ? 'min' : 'max';
                 $this->filters->prices->{$short}->values = [$setting[0] => true];
             }
-        }
-
-        return $this;
-    }
-
-    public function useBrand(object $query)
-    {
-        $this->filters->brands = (object) ['brand' => (object)[ 'title' => 'Бренд', 'values' => [] ] ];
-
-        $values = $this
-            ->clearQuery($query)
-            ->groupBy('brand')
-            ->pluck('brand')
-            ->toarray();
-
-        natsort($values);
-
-        foreach ($values as $value) {
-            if (empty($value)) {
-                continue;
-            }
-
-            $this->filters->brands->brand->values[$value] =
-                isset($this->settings['brand']) && in_array($value, $this->settings['brand'], true);
         }
 
         return $this;

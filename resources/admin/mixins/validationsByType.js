@@ -42,7 +42,7 @@ export const validationsByType = {
                 default:
                     return {
                         required,
-                        minLength: minLength(3),
+                        minLength: minLength(1),
                         maxLength: maxLength(255)
                     }
             }

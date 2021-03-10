@@ -13,44 +13,40 @@
                 </button>
 
                 <div id="collapse-filters" class="collapse d-lg-block">
-                    @if($filters->active)
-                        <a class="btn btn-light w-100" href="{{ $filters->base }}">сбросить</a>
-                    @endif
-                    @if(isset($filters->prices) &&
-                        (array_key_first($filters->prices->min->values) ||
-                        array_key_first($filters->prices->max->values)) )
+{{--                    @if(request()->filter)--}}
+{{--                        <a class="btn btn-light w-100" href="{{$category->link}}">сбросить</a>--}}
+{{--                    @endif--}}
+
+                    @if(($filter = $filters->get('price')))
                         <div class="mt-2">
                             <strong>Цена</strong>
-                            <div class="row form-group">
-                                <div class="col-5 pr-0">
-                                    <label for="prc_min">
-                                        <input class="form-control shop-filter-input" name="price-min" value="{{ array_key_first($filters->prices->min->values) }}">
-                                    </label>
-                                </div>
-                                <div class="col-2 p-2 m-0">до</div>
-                                <div class="col-5 pl-0">
-                                    <label for="prc_min">
-                                        <input class="form-control shop-filter-input" name="price-max" value="{{ array_key_first($filters->prices->max->values) }}">
-                                    </label>
-                                </div>
+                            <div class="d-flex justify-content-between form-group">
+                                <label for="prc_min">
+                                    <input class="form-control shop-filter-input" name="price-min" value="{{ $filter->getValues()[0] }}">
+                                </label>
+                                <div class="p-2">до</div>
+                                <label for="prc_min">
+                                    <input class="form-control shop-filter-input" name="price-max" value="{{ $filter->getValues()[1] }}">
+                                </label>
                             </div>
                         </div>
                     @endif
 
-                    @if(isset($filters->brands))
-                        @foreach($filters->brands as $name => $filter)
+                    @if(($filter = $filters->get('brand')))
+                        <b>{{ $filter->title }}</b>
+                        @include('partials.category.filter')
+                    @endif
+
+                    @if($filters->has('features'))
+                        @foreach($filters->get('features')->filters as $name => $filter)
+                            <b>{{ $filter->title }}</b>
                             @include('partials.category.filter')
                         @endforeach
                     @endif
 
-                    @if(isset($filters->features))
-                        @foreach($filters->features as $name => $filter)
-                            @include('partials.category.filter')
-                        @endforeach
-                    @endif
-
-                    @if(isset($filters->options))
-                        @foreach($filters->options as $name => $filter)
+                    @if($filters->has('properties'))
+                        @foreach($filters->get('properties')->filters as $name => $filter)
+                            <b>{{ $filter->title }}</b>
                             @include('partials.category.filter')
                         @endforeach
                     @endif

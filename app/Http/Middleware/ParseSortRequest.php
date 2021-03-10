@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class AlterSortRequest
+class ParseSortRequest
 {
     /**
      * Handle an incoming request.
@@ -20,9 +20,7 @@ class AlterSortRequest
         $request->sortOrd = 'desc';
 
         if ($request->sort && strpos($request->sort, '-')) {
-            $sortRequest = explode('-', $request->sort);
-            $request->sortCol = $sortRequest[0];
-            $request->sortOrd = $sortRequest[1];
+            [$request->sortCol, $request->sortOrd] = explode('-', $request->sort);
         }
 
         return $next($request);
