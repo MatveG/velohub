@@ -17,8 +17,12 @@
 
         @if($product->category->features)
             <div class="spacer"></div>
-            @foreach($product->category->features as $key => $feature)
-                <span>{{ $feature->title }}: <i>{{ $product->features->{$key} }} {{ $feature->units }}</i></span><br>
+            @foreach($product->category->features as $feature)
+                @if(!empty($product->features[$feature['id']]))
+                    <span>{{ $feature['title'] }}:
+                        <i>{{ $product->features[$feature['id']] }} {{ $feature['units'] }}</i>
+                    </span><br>
+                @endif
             @endforeach
         @endif
     </div>

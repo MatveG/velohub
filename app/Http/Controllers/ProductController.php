@@ -10,7 +10,7 @@ class ProductController extends Controller
     public function __invoke(Request $request, string $slug, int $id)
     {
         $product = Product::with('variants')
-            ->where('id', $id)
+            ->whereId($id)
             ->isActive()
             ->firstOrFail();
 

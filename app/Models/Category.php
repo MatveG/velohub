@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Casts\Feature;
 
 class Category extends Model
 {
@@ -35,12 +36,22 @@ class Category extends Model
         'parameters' => 'array',
     ];
 
-    public function childs()
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 
-    public function getLinkAttribute()
+//    public function getFeaturesAttribute($value)
+//    {
+//        $features = json_decode($this->attributes['features'], true);
+//        $features = array_map(function ($feature) {
+//            return Feature::init($feature);
+//        }, $features);
+//
+//        return $features;
+//    }
+
+    public function getLinkAttribute(): string
     {
         return route('category', ['slug' => $this->slug, 'id' => $this->id]);
     }

@@ -15,8 +15,10 @@ class CreateCartsTable extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('user_id')->unsigned()->default(0);
-            $table->string('sign')->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->string('uuid')->nullable();
+            $table->json('products')->default(json_encode([]));
+            $table->timestamps();
         });
     }
 

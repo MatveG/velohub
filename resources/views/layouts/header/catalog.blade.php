@@ -7,7 +7,7 @@
             </a>
 
             <div class="dropdown-menu rounded-0" aria-labelledby="dropdown-{{$category->id}}">
-                @foreach ($category->childs as $child)
+                @foreach ($category->children as $child)
                     @include('layouts.header.catalog-child')
                 @endforeach
             </div>

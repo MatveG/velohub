@@ -25,7 +25,11 @@ class OrderController extends Controller
 
         $service->clearCart();
 
-        $meta = $seo = (object) ['title' => '','description' => '','keywords' => ''];
+        $meta = $seo = (object) [
+            'title' => '',
+            'description' => '',
+            'keywords' => ''
+        ];
 
         return view('order', compact(['common', 'seo', 'meta']));
     }

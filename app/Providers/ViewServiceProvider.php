@@ -26,7 +26,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         App\Views\Directives\WidgetDirectives::directives();
 
-        App\Views\Share\CartShare::share();
+//         App\Views\Share\CartShare::share();
         App\Views\Share\CategoryShare::share();
         App\Views\Share\MenuShare::share();
     }

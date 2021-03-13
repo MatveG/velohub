@@ -3,8 +3,8 @@
     <li class="nav-item">
       <a href="{{ $menu->link }}" class="nav-link">{{ $menu->name }}</a>
     </li>
-    @if(!empty($menu->childs))
-        @foreach ($menu->childs as $child)
+    @if(!empty($menu->children))
+        @foreach ($menu->children as $child)
             @include('partials.menu-child')
         @endforeach
     @endif

@@ -3,49 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Services\CartService;
 
-/**
- * Shopping Cart Controller
- */
 class CartController extends Controller
 {
-    public function new(Request $request, Cart $cart)
+    public function create(): JsonResponse
     {
-        $this->checkAjaxRequiredFields($request, ['id']);
+        $cart = Cart::create(['products' => []]);
+        $cart->uuid = uniqid('', false);
+        $cart->save();
 
-        $cart = $cart->create(['sign' => uniqid('', false)]);
-        $cart->variants()->attach($request->id);
-
-        return response()->json([
-            'ok' => 1,
-            'id' => $cart->id,
-            'sign' => $cart->sign,
-        ]);
+        return response()->json($cart->only(['uuid', 'products']));
     }
 
-    public function add(Request $request, Cart $cart)
+    public function get(string $uuid): JsonResponse
     {
-        $this->checkAjaxRequiredFields($request, ['cart_id', 'sign', 'id']);
+        // validation
 
-        $where = [['id', $request->cart_id], ['sign', $request->sign]];
-        $cart = $cart->where($where)->first() ?: $cart->create(['sign' => uniqid('', false)]);
+        $cart = Cart::where('uuid', $uuid)->first(['products']);
 
-        if (!$cart->variants()->find($request->get('id'))) {
-            $cart->variants()->attach($request->get('id'));
-        }
+        $cart->products = array_map(function ($el) {
+            $product = Product::find($el['id']);
+            $product->variant_id = $el['variant_id'];
+            $product->amount = $el['amount'];
 
-        return response()->json(['ok' => 1]);
+            return $product->only(['id', 'variant_id', 'amount', 'title',
+                'brand', 'model', 'price', 'image', 'link']);
+        }, $cart->products);
+
+        return response()->json($cart->only(['products']));
     }
 
-    public function form(CartService $service)
+    public function update(Request $request, string $uuid): JsonResponse
     {
-        $items = $service->getCartItems();
-        $seo = (object) ['title' => '','description' => '','keywords' => ''];
+        // validation
 
-        return view('cart', compact(['items', 'seo']));
+        $cart = Cart::where('uuid', $uuid)->firstOrFail();
+        $cart->products = array_map(function ($el) {
+            return [
+                'id' => $el['id'],
+                'variant_id' => $el['variant_id'] ?? null,
+                'amount' => $el['amount']
+            ];
+        }, $request->products);
+        $cart->save();
+
+        return response()->json();
     }
+
+//    public function add(Request $request, Cart $cart): JsonResponse
+//    {
+//        $this->checkAjaxRequiredFields($request, ['cart_id', 'sign', 'id']);
+//
+//        $where = [['id', $request->cart_id], ['sign', $request->sign]];
+//        $cart = $cart->where($where)->first() ?: $cart->create(['sign' => uniqid('', false)]);
+//
+//        if (!$cart->variants()->find($request->get('id'))) {
+//            $cart->variants()->attach($request->get('id'));
+//        }
+//
+//        return response()->json(['ok' => 1]);
+//    }
 
 }

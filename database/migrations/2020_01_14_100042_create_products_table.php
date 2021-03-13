@@ -46,7 +46,7 @@ class CreateProductsTable extends Migration
             $table->text('files')->default('[]');
             $table->text('settings')->default('{}');
 
-            $table->jsonb('features')->default('{}');
+            $table->json('features')->default('{}');
 
             $table->timestamps();
         });

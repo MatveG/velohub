@@ -2,35 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Support\Collection;
+use App\Models\Product;
+use App\Services\Filters\Filter;
+use App\Services\Filters\SliderFilter;
 
 class SearchController extends Controller
 {
-    public function __invoke(Request $request, string $path = ''): View
+    public function __invoke(Request $request, string $path = '')
     {
         $this->validate($request, ['find' => 'required']);
 
-//        $filters = $this
-//            ->filters
-//            ->parsePath($path)
-//            ->usePrice($query)
-//            ->useBrand($query)
-//            ->get();
+        $query = Product::isActive()->searchBy($request->find);
 
-        $filters = new \StdClass();
-        $filters->active = false;
+        $filters = $this->initFilters($query, $request);
 
-        $find = $request->find;
-        $find = preg_replace('/[^+A-Za-z0-9- ]/', '', $find);
-        $find = str_replace(' ', '|', trim($find));
-
-        $products = Product::isActive()
-//            ->filter($filters)
-            ->whereRaw("search @@ to_tsquery('" . $find . "')")
-            ->orderBy('products.' . $request->sortCol, $request->sortOrd)
-            ->orderByRaw("ts_rank(search, to_tsquery('" . $find . "')) DESC")
+        $products = $query->orderBy('products.' . $request->orderBy, $request->orderWay)
+            ->orderByRelevance($request->find)
             ->paginate();
 
         $meta = (object)[
@@ -40,5 +29,19 @@ class SearchController extends Controller
         ];
 
         return view('category', compact(['products', 'filters', 'meta']));
+    }
+
+    private function initFilters(object $query, object $request): Collection
+    {
+        return collect([
+            'price' => SliderFilter::init('products.price', 'price', 'Price')
+                ->fetchValues($query)
+                ->fetchParams($request->filter),
+            'brand' => Filter::init('products.brand', 'brand', 'Brand')
+                ->fetchValues($query)
+                ->fetchParams($request->filter),
+        ])->each(function ($element) use ($query) {
+            $element->applyFilter($query);
+        });
     }
 }

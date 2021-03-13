@@ -28,12 +28,12 @@ class ParseFilterRequest
         $params = [];
 
         foreach (explode('/', $path) as $piece) {
-            $explodeOne = explode('-is-', $piece, 2);
+            $keyValue = explode('-is-', $piece, 2);
 
-            if (count($explodeOne) === 2) {
-                [$key, $value] = $explodeOne;
-                $explodeTwo = explode('-or-', $value);
-                $params[$key] = count($explodeTwo) ? $explodeTwo : $value;
+            if (count($keyValue) === 2) {
+                [$key, $value] = $keyValue;
+                $valuesArr = explode('-or-', $value);
+                $params[$key] = count($valuesArr) ? $valuesArr : $value;
             }
         }
 

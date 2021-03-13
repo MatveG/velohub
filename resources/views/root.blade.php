@@ -10,7 +10,9 @@
             <section>
                 <h2><span>Скидки</span></h2>
                 <div class="row text-center">
-                    @include('partials.products', ['products' => $saleProducts])
+                    @foreach($saleProducts as $product)
+                        @include('partials.product')
+                    @endforeach
                 </div>
             </section>
         @endif
@@ -21,14 +23,16 @@
             <section>
                 <h2><span>Новинки</span></h2>
                 <div class="row text-center">
-                    @include('partials.products', ['products' => $newProducts])
+                    @foreach($newProducts as $product)
+                        @include('partials.product')
+                    @endforeach
                 </div>
             </section>
         @endif
 
-        @if($content)
+        @if($document)
             <section class="container rounded">
-                {{ $content->text }}
+                {{ $document->text }}
             </section>
         @endif
     </main>

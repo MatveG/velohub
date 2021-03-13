@@ -6,7 +6,7 @@
             </div>
             <h4><span>Корзина покупок</span></h4>
             <div class="modal-body text-center">
-{{--                @widget('cart')--}}
+
             </div>
         </div>
     </div>

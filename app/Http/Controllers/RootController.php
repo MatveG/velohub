@@ -7,32 +7,30 @@ use App\Models\Product;
 
 class RootController extends Controller
 {
-    public function index(Document $content, Product $product)
+    public function __invoke()
     {
-        $content = $content->where('slug', 'index')->firstOrFail();
+        $document = Document::where('slug', 'index')->firstOrFail();
 
-        $saleProducts = $product
-            ->where('is_active', true)
+        $saleProducts = Product::where('is_active', true)
             ->where('is_stock', true)
             ->where('is_sale', true)
             ->orderBy('products.id', 'desc')
             ->limit(6)
             ->get();
 
-        $newProducts = $product
-            ->where('is_active', true)
+        $newProducts = Product::where('is_active', true)
             ->where('is_stock', true)
             ->orderBy('products.id', 'desc')
             ->limit(6)
             ->get();
 
         $meta = (object)[
-            'title' => $content->seo_title,
-            'description' => $content->seo_description,
-            'keywords' => $content->seo_keywords,
+            'title' => $document->seo_title,
+            'description' => $document->seo_description,
+            'keywords' => $document->seo_keywords,
         ];
 
-        return view('root', compact(['content', 'saleProducts', 'newProducts', 'meta']));
+        return view('rootReducer', compact(['document', 'saleProducts', 'newProducts', 'meta']));
     }
 
 }

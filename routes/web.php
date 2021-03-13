@@ -1,5 +1,10 @@
 <?php
 
+Route::post('/api/cart/create', 'CartController@create')->name('cart.create');
+Route::get('/api/cart/{uuid}/', 'CartController@get')->name('cart.create');
+Route::patch('/api/cart/{uuid}/', 'CartController@update')->name('cart.update');
+//Route::patch('/ajax/cart/add/', 'CartController@add')->name('ajax.cart.add');
+
 // Admin
 Route::view('/admin/', 'Admin::index');
 
@@ -27,14 +32,14 @@ Route::get('/product/{slug}/{id}/', 'ProductController')->name('product.show');
 // Search
 Route::get('/search/{path?}/', 'SearchController')
     ->where('path', '.*')
-    ->middleware('alter.sort')
+    ->middleware(['parse.path', 'parse.sort'])
     ->name('search');
 
 // Document
-Route::get('/{slug}/', 'DocumentController@show')->name('document');
+Route::get('/{slug}/', 'DocumentController')->name('document');
 
 // Root
-Route::get('/', 'RootController@index')->name('index');
+Route::get('/', 'RootController')->name('index');
 
 // Images routing
 Route::get('/media/ct/{img}')->name('img.category');

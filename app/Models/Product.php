@@ -47,6 +47,7 @@ class Product extends Model
         'prices' => 'object',
         'images' => 'array',
     ];
+    protected $appends = ['link'];
 
     public function analogs()
     {
@@ -58,9 +59,9 @@ class Product extends Model
             ->isActive();
     }
 
-    public function getFeaturesAttribute($value)
+    public function getFeaturesAttribute()
     {
-        return json_decode($this->attributes['features']);
+        return json_decode($this->attributes['features'], true);
     }
 
     public function setFeaturesAttribute($value)
@@ -76,6 +77,23 @@ class Product extends Model
     public function getLinkAttribute()
     {
         return route('product.show', ['slug' => $this->slug, 'id' => $this->id]);
+    }
+
+    public function scopeSearchBy($query, $string)
+    {
+        $query->whereRaw("search @@ to_tsquery('" . $this->searchEscape($string) . "')");
+    }
+
+    public function scopeOrderByRelevance($query, $string)
+    {
+        $query->orderByRaw("ts_rank(search, to_tsquery('" . $this->searchEscape($string) . "')) DESC");
+    }
+
+    private function searchEscape(string $string): string
+    {
+        return str_replace(' ', '  |', trim(
+            preg_replace('/[^+A-Za-z0-9- ]/', '', $string)
+        ));
     }
 
 }

@@ -16,12 +16,8 @@ class ParseSortRequest
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->sortCol = 'id';
-        $request->sortOrd = 'desc';
-
-        if ($request->sort && strpos($request->sort, '-')) {
-            [$request->sortCol, $request->sortOrd] = explode('-', $request->sort);
-        }
+        [$request->orderBy, $request->orderWay] = $request->sort && strpos($request->sort, '-') ?
+            explode('-', $request->sort) : ['id', 'desc'];
 
         return $next($request);
     }

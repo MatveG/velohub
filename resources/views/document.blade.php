@@ -2,7 +2,15 @@
 
 @section('content')
     <main role="main" class="content">
-        <h1><span>{{ $document->name }}</span></h1>
+        <div id="showCart"></div>
+
+        <hr>
+
+        <di class="m-auto w-25">
+            <div id="buyProduct"></div>
+        </di>
+
+{{--        <h1><span>{{ $document->name }}</span></h1>--}}
 
       {{ $document->text }}
     </main>

@@ -30,7 +30,7 @@ class CreateVariantsTable extends Migration
             $table->string('barcode')->nullable();
 
             $table->text('images')->nullable();
-            $table->jsonb('parameters')->nullable();
+            $table->json('parameters')->nullable();
         });
     }
 

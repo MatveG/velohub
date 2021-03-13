@@ -6,10 +6,9 @@ use App\Models\Document;
 
 class DocumentController extends Controller
 {
-    public function show(Document $document, string $slug)
+    public function __invoke(Document $document, string $slug)
     {
-        $document = $document
-            ->where('slug', $slug)
+        $document = $document->where('slug', $slug)
             ->isActive()
             ->firstOrFail();
 

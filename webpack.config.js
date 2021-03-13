@@ -31,8 +31,17 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: ['@babel/transform-runtime']
+                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                        plugins: [
+                            [
+                                '@babel/plugin-transform-runtime',
+                                {"regenerator": true}
+                            ],
+                            [
+                                '@babel/plugin-proposal-class-properties',
+                                {"loose": true}
+                            ]
+                        ]
                     }
                 }
             },

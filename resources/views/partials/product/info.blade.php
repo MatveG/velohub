@@ -4,7 +4,7 @@
 
 <span class="price" title="Может быть использован для оплаты 30% следующего заказа или 50% сервиса">
     <span class="small">
-        {{ round( $product->price * settings('shop', 'cashback_amount') ) }}
+        0
     </span>
 </span>
 <span class="small">₴</span>

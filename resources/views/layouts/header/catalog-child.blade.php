@@ -4,7 +4,7 @@
 
 @if($child->is_parent)
     <div>
-        @foreach ($child->childs as $child)
+        @foreach ($child->children as $child)
             @include('widgets.includes.catalog')
         @endforeach
     </div>

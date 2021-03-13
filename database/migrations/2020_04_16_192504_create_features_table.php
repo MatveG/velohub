@@ -33,7 +33,7 @@ class CreateFeaturesTable extends Migration
 
             $table->text('values')->default('[]');
 
-            $table->jsonb('settings')->nullable();
+            $table->json('settings')->nullable();
 
             $table->timestamps();
         });

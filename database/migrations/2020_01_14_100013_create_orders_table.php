@@ -22,7 +22,7 @@ class CreateOrdersTable extends Migration
             $table->float('discount')->default(0);
             $table->float('shipping')->default(0);
             $table->float('sum')->default(0);
-            $table->jsonb('common')->nullable();
+            $table->json('products')->nullable();
             $table->string('phone')->nullable();
             $table->string('name')->nullable();
             $table->string('address')->nullable();

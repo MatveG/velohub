@@ -36,7 +36,9 @@
             <h3><span>Аналоги</span></h3>
 
             <div class="row w-100 text-center">
-                @include('partials.products', ['products' => $product->analogs->take(6)])
+                @foreach($product->analogs->take(6) as $product)
+                    @include('partials.product')
+                @endforeach
             </div>
         </section>
     </main>
