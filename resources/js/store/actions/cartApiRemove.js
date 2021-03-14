@@ -1,7 +1,7 @@
-import {cartRemove} from './cart';
+import {cartRemove} from './cartActions';
 import patchRequest from './patchRequest';
 
-export default function cartProductRemove(product) {
+export default function cartApiRemove(product) {
     return (dispatch, getState) => {
         const state = getState();
 

@@ -11,7 +11,7 @@ class CartController extends Controller
 {
     public function create(): JsonResponse
     {
-        $cart = Cart::create(['products' => []]);
+        $cart = new Cart(['products' => []]);
         $cart->uuid = uniqid('', false);
         $cart->save();
 
@@ -21,19 +21,9 @@ class CartController extends Controller
     public function get(string $uuid): JsonResponse
     {
         // validation
+        $cart = Cart::where('uuid', $uuid)->firstOrFail();
 
-        $cart = Cart::where('uuid', $uuid)->first(['products']);
-
-        $cart->products = array_map(function ($el) {
-            $product = Product::find($el['id']);
-            $product->variant_id = $el['variant_id'];
-            $product->amount = $el['amount'];
-
-            return $product->only(['id', 'variant_id', 'amount', 'title',
-                'brand', 'model', 'price', 'image', 'link']);
-        }, $cart->products);
-
-        return response()->json($cart->only(['products']));
+        return response()->json(['products' => $this->mapCartProducts($cart->products)]);
     }
 
     public function update(Request $request, string $uuid): JsonResponse
@@ -41,16 +31,34 @@ class CartController extends Controller
         // validation
 
         $cart = Cart::where('uuid', $uuid)->firstOrFail();
-        $cart->products = array_map(function ($el) {
-            return [
-                'id' => $el['id'],
-                'variant_id' => $el['variant_id'] ?? null,
-                'amount' => $el['amount']
-            ];
-        }, $request->products);
-        $cart->save();
+        $cart->update($request->all());
 
-        return response()->json();
+        return response()->json(['products' => $this->mapCartProducts($cart->products)]);
+    }
+
+    private function mapCartProducts(array $products): array
+    {
+        return array_map(function ($el) {
+            $product = Product::find($el['id']);
+
+            if (empty($product)) {
+                return null;
+            }
+            $product->variant_id = $el['variant_id'] ?? null;
+            $product->amount = $el['amount'];
+
+            return $product->only([
+                'id',
+                'variant_id',
+                'amount',
+                'title',
+                'brand',
+                'model',
+                'price',
+                'image',
+                'link'
+            ]);
+        }, $products);
     }
 
 //    public function add(Request $request, Cart $cart): JsonResponse

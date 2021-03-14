@@ -7,6 +7,6 @@ export default function patchRequest(products) {
             return response;
         })
         .catch((err) => {
-            throw new Error('Error patching cart data');
+            throw new Error('Error patching cartReducer data');
         });
 }

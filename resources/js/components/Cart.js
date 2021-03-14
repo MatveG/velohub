@@ -1,13 +1,11 @@
 import React from "react";
 import {connect} from 'react-redux';
 import CartTable from '../layouts/CartTable';
-import CartItem from './CartProduct';
-import cartFetch from '../store/actions/cartFetch';
-import {getCartCookies} from '../utils/cartCookies';
+import CartProduct from './CartProduct';
+import cartApiFetch from '../store/actions/cartApiFetch';
 
 class Cart extends React.Component {
     componentDidMount() {
-        console.log(getCartCookies());
         this.props.fetchCartData();
     }
 
@@ -22,23 +20,19 @@ class Cart extends React.Component {
 
         return (
             <CartTable total={this.props.total}>
-                {this.props.products.map((el, idx) => <CartItem key={idx} product={el}/>)}
+                {this.props.products.map((el, idx) => <CartProduct key={idx} product={el}/>)}
             </CartTable>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        ...state,
-        total: state.products.reduce((total, el) => total + el.amount * el.price, 0)
-    }
-}
+const mapState = ({products}) => ({
+    products,
+    total: products.reduce((total, el) => total + el.amount * el.price, 0)
+});
 
-const mapActionsToProps = (dispatch) => {
-    return {
-        fetchCartData: (uuid) => dispatch(cartFetch(uuid))
-    };
-};
+const mapActions = (dispatch) => ({
+    fetchCartData: (uuid) => dispatch(cartApiFetch(uuid))
+});
 
-export default connect(mapStateToProps, mapActionsToProps)(Cart)
+export default connect(mapState, mapActions)(Cart)

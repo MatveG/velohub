@@ -1,8 +1,8 @@
 <?php
 
 Route::post('/api/cart/create', 'CartController@create')->name('cart.create');
-Route::get('/api/cart/{uuid}/', 'CartController@get')->name('cart.create');
-Route::patch('/api/cart/{uuid}/', 'CartController@update')->name('cart.update');
+Route::post('/api/cart/{uuid}', 'CartController@get')->name('cart.get');
+Route::patch('/api/cart/{uuid}', 'CartController@update')->name('cart.update');
 //Route::patch('/ajax/cart/add/', 'CartController@add')->name('ajax.cart.add');
 
 // Admin

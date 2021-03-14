@@ -55,6 +55,6 @@
 
     <div class="text-center">
         <button class="btn btn-gray border" data-dismiss="modal">Продолжить покупки</button>
-        <a href="{{ route('cart.form') }}" class="btn btn-bright border">Оформить заказ</a>
+        <a href="{{ route('cartReducer.form') }}" class="btn btn-bright border">Оформить заказ</a>
     </div>
 @endif

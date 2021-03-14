@@ -1,14 +1,17 @@
+// is_stock product and variants
+// delete expired products from cart
+
 import React from 'react';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-import cartReducer from './store/reducers/cartReducer';
+import CartReducer from './store/reducers/cartReducer';
 import Cart from './components/Cart';
 import Buy from './components/Buy';
 
 const store = createStore(
-    cartReducer,
+    CartReducer,
     applyMiddleware(thunk)
 );
 
@@ -44,7 +47,7 @@ render(
 
 // import "./../sass/app.scss";
 
-// require('./cart');
+// require('./cartReducer');
 // require('./common');
 // require('./compare');
 // require('./shop');

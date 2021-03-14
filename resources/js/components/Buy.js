@@ -1,63 +1,20 @@
 import React, {useState} from "react";
 import {connect} from 'react-redux';
 import BuyVariants from './BuyVariants';
-import cartProductAdd from "../store/actions/cartProductAdd";
+import cartApiPush from "../store/actions/cartApiPush";
 
 const product = {
     "id": 997,
-    "category_id": 2,
-    "is_active": true,
     "is_stock": true,
-    "is_sale": true,
-    "stock": null,
-    "price": "3597",
-    "price_sale": null,
-    "weight": null,
-    "sale_text": null,
-    "code": null,
-    "barcode": null,
-    "title": "Melissa Jacobson",
-    "brand": "HP",
-    "model": "Lauren Gibson",
-    "slug": "id-soluta-eius-exercitationem",
-    "seo_title": null,
-    "seo_description": null,
-    "seo_keywords": null,
-    "summary": "Sunt natus nihil modi et assumenda. Aperiam sed sapiente corporis at. Veritatis et rerum accusantium culpa ab sit. Vero voluptatem est voluptas commodi expedita possimus fugit.",
-    "description": "Alice called out 'The race is over!' and they all stopped and looked at Two. Two began in a piteous tone. And she went on in these words: 'Yes, we went to work shaking him and punching him in the.",
-    "images": [
-        "/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-1.jpg",
-        "/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-2.jpg"
-    ],
-    "videos": "[]",
-    "files": "[]",
-    "settings": "{}",
-    "features": {
-        "os": "DOS",
-        "ram": 24,
-        "ssd": 32,
-        "year": 2019,
-        "options": [
-            "Wi-Fi",
-            "BT",
-            "scaner",
-            "more1",
-            "more2",
-            "more3"
-        ],
-        "processor": "Intel"
-    },
-    "created_at": "2021-03-05 16:42:57",
-    "updated_at": "2021-03-05 16:42:57",
-    "search": "'gibson':5A 'hp':3C 'jacobson':2B 'lauren':4A 'melissa':1B"
 };
 const variants = [
     {
-        "id": 1001,
-        "variant_id": 113,
+        "id": 101,
+        "product_id": 100,
         "category_id": 2,
         "is_active": true,
         "is_sale": true,
+        "is_stock": true,
         "stock": 0,
         "price": 110,
         "surcharge": "0",
@@ -70,11 +27,12 @@ const variants = [
         }
     },
     {
-        "id": 1002,
-        "variant_id": null,
+        "id": 201,
+        "product_id": 200,
         "category_id": 2,
         "is_active": true,
         "is_sale": true,
+        "is_stock": false,
         "stock": 0,
         "price": 90,
         "surcharge": "0",
@@ -96,14 +54,19 @@ const Buy = (props) => {
         setVariant(variants[chosen] ? variants[chosen] : {});
     };
 
-    const optionInCart = () => {
-        return !!props.products.find((el) => el.variant_id === variant.variant_id) ||
-            (!product.variant_id && props.products.find((el) => el.id === product.id));
+    const isStock = () => {
+        return variant.is_stock || (!variant.id && product.is_stock);
     }
 
-    if (!product.is_stock) {
-        return (
-            <p><b>нет в наличии</b></p>
+    const existsInCart = () => {
+        return (!!variant.id && !!props.products.find((el) => el.variant_id === variant.id)) ||
+            (!variant.id && !!props.products.find((el) => el.id === product.id));
+    }
+
+    const addToCart = () => {
+        props.addToCart(variant.id ?
+            {id: variant.product_id, variant_id : variant.id} :
+            {id: product.id}
         );
     }
 
@@ -112,35 +75,35 @@ const Buy = (props) => {
             <h4>
                 <span>Купить</span>
             </h4>
-            {variants.length ? (<BuyVariants variants={variants} selectOption={selectOption} />) : null}
+            {variants.length && <BuyVariants variants={variants} selectOption={selectOption} />}
             <p>
                 <span id="price" className="price">
-                    {variant.price ? variant.price : product.price}
+                    {variant.price || product.price}
                 </span>
             </p>
 
-            {optionInCart() ? (
-                <button className="btn btn-gray w-50" role="button"
-                        data-target="#modal-cart" data-toggle="modal">уже в корзине</button>
+            {isStock() ? (
+                existsInCart() ? (
+                    <button className="btn btn-gray w-50" role="button"
+                            data-target="#modal-cartReducer" data-toggle="modal">уже в корзине</button>
+                ) : (
+                    <button className="btn btn-bright w-50" role="button"
+                            onClick={addToCart}>В корзину</button>
+                )
             ) : (
-                <button className="btn btn-bright w-50" role="button"
-                        onClick={() => props.addToCart(product)}>В корзину</button>
+                <p><b>нет в наличии</b></p>
             )}
         </div>
     );
 }
 
-const mapState = ({products}) => {
-    return {
-        products
-    }
-}
+const mapState = ({products}) => ({
+    products
+});
 
-const mapActions = (dispatch) => {
-    return {
-        addToCart: (product) => dispatch(cartProductAdd(product))
-    };
-};
+const mapActions = (dispatch) => ({
+    addToCart: (product) => dispatch(cartApiPush(product))
+});
 
 export default connect(mapState, mapActions)(Buy)
 

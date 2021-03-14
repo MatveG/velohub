@@ -1,30 +1,30 @@
 import React from "react";
 import {connect} from 'react-redux'
-import cartProductUpdate from '../store/actions/cartProductUpdate';
-import cartProductRemove from '../store/actions/cartProductRemove';
+import cartApiUpdate from '../store/actions/cartApiUpdate';
+import cartApiRemove from '../store/actions/cartApiRemove';
 
 const CartProduct = (props) => {
-    const incrAmount = (product) => {
-        product.amount++;
-        props.updateProduct(product);
+    const remove = () => {
+        props.removeProduct(props.product);
     };
 
-    const decrAmount = (product) => {
-        if (product.amount > 1) {
-            product.amount--;
+    const incrAmount = () => {
+        props.product.amount++;
+        props.updateProduct(props.product);
+    };
+
+    const decrAmount = () => {
+        if (props.product.amount > 1) {
+            props.product.amount--;
+            props.updateProduct(props.product);
         }
-        props.updateProduct(product);
-    };
-
-    const remove = (product) => {
-        props.removeProduct(product);
     };
 
     return (
         <tr>
             <td className="border-0 align-middle">
                 <button className="btn btn-sm btn-gray btn-cart-remove"
-                        onClick={() => remove(props.product)}>&times;</button>
+                        onClick={remove}>&times;</button>
             </td>
             <th scope="row" className="border-0 text-left">
                 <div className="p-2">
@@ -47,11 +47,11 @@ const CartProduct = (props) => {
             <td className="border-0 align-middle text-center">
                 <div className="nowrap">
                     <a className="btn btn-sm btn-gray btn-cart-decrease"
-                       onClick={() => decrAmount(props.product)} href="#">-</a>&nbsp;
+                       onClick={decrAmount} href="#">-</a>&nbsp;
                     <span id="amount-{{ $product->id }}"
                           className="font-weight-bold">{props.product.amount}</span>&nbsp;
                     <a className="btn btn-sm btn-gray btn-cart-increase"
-                       onClick={() => incrAmount(props.product)} href="#">+</a>
+                       onClick={incrAmount} href="#">+</a>
                 </div>
             </td>
             <td className="border-0 align-middle">{props.product.amount * props.product.price}</td>
@@ -59,11 +59,9 @@ const CartProduct = (props) => {
     );
 }
 
-const mapActions = (dispatch) => {
-    return {
-        updateProduct: (product) => dispatch(cartProductUpdate(product)),
-        removeProduct: (product) => dispatch(cartProductRemove(product)),
-    };
-};
+const mapActions = (dispatch) => ({
+    updateProduct: (product) => dispatch(cartApiUpdate(product)),
+    removeProduct: (product) => dispatch(cartApiRemove(product)),
+});
 
 export default connect(null, mapActions)(CartProduct);

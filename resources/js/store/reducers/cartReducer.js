@@ -1,28 +1,37 @@
 import {
-    CART_ERROR,
+    CART_EMPTY,
+    CART_FETCH,
     CART_PENDING,
     CART_PUSH,
-    CART_UPDATE,
     CART_REMOVE,
-    CART_REWRITE,
-    CART_EMPTY
-} from '../actions/cart';
+    CART_UPDATE,
+    CART_ERROR,
+} from '../actions/cartActions';
 
-const initialState = {
+const initial = {
     pending: false,
     error: null,
     products: []
 }
 
-const cartReducer = (state = initialState, action = {}) => {
+const cartReducer = (state = initial, action = {}) => {
     const {type, payload} = action;
 
     switch (type) {
-        case CART_ERROR:
+        case CART_EMPTY:
             return {
                 ...state,
-                error: payload,
                 pending: false,
+                error: null,
+                products: initial.products
+            };
+
+        case CART_FETCH:
+            return {
+                ...state,
+                pending: false,
+                error: null,
+                products: payload || initial.products
             };
 
         case CART_PENDING:
@@ -40,16 +49,6 @@ const cartReducer = (state = initialState, action = {}) => {
                 products: [...state.products, payload],
             };
 
-        case CART_UPDATE:
-            return {
-                ...state,
-                pending: false,
-                error: null,
-                products: state.products.map((el) => {
-                    return el.id === payload.id ? {...payload} : el;
-                }),
-            };
-
         case CART_REMOVE:
             return {
                 ...state,
@@ -58,20 +57,21 @@ const cartReducer = (state = initialState, action = {}) => {
                 products: state.products.filter((el) => el.id !== payload.id),
             };
 
-        case CART_REWRITE:
+        case CART_UPDATE:
             return {
                 ...state,
                 pending: false,
                 error: null,
-                products: payload || initialState.products
+                products: state.products.map((el) => {
+                    return el.id === payload.id ? {...payload} : {...el};
+                }),
             };
 
-        case CART_EMPTY:
+        case CART_ERROR:
             return {
                 ...state,
+                error: payload,
                 pending: false,
-                error: null,
-                products: initialState.products
             };
 
         default: return state;

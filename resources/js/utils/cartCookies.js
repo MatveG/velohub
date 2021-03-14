@@ -1,26 +1,18 @@
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
+let cartCookies = cookies.get('_ucart');
 
 export function getCartCookies() {
-    return cookies.get('_ucart');
+    cookies.set('_ucart', cartCookies, {maxAge: 60 * 60 * 24 * 90});
+
+    return cartCookies;
 }
 
 export function setCartCookies(value) {
-    return cookies.set('_ucart', value); // add expire
+    cartCookies = value;
+    cookies.set('_ucart', value, {maxAge: 60 * 60 * 24 * 90});
+
+    return cartCookies;
 }
 
-
-// function cartCookies() {
-//     const cartCookies = cookies.get('_ucart');
-//
-//     axios.post('/ajax/cart/', {})
-//         .then((response) => {
-//             cookies.set('_ucart', response.data.uuid)
-//             resolve(response.data.products);
-//         })
-//         .catch((err) => {
-//             reject(err)
-//         });
-// }
-//
