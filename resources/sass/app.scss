@@ -230,32 +230,14 @@ hr{
 .compare-toggle {
     padding: .25rem .5rem;
 }
-.product-image{
-    height: 22rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+.product-thumb {
+    width: 6rem;
+    height: 6rem;
 }
-.product-image img{
-    max-width: 100%;
-    max-height: 100%;
-    display: block;
-}
-.product-image-modal {
-    display: flex;
-    height: 100%;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.price{
+.product-price{
     font-size: 150%;
     letter-spacing: .1rem;
     color:#fa5600;
-}
-.main-image {
-    -webkit-transition: all .3s;
-    transition: all .3s;
 }
 /*** Tooltip ***/
 .tooltip-inner {
@@ -299,69 +281,6 @@ footer {
     }
     .nav-link {
         padding: 0 0 .5rem 0;
-    }
-}
-/*** Modal ***/
-.modal-dialog {
-    width: 67% ;
-    max-width: none ;
-}
-.modal-content {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-    border: 0;
-
-    .modal-header{
-        margin-bottom: -1.7rem ;
-        padding: .5rem 1rem ;
-        border: 0 ;
-        border-radius: 0 ;
-    }
-    .modal-body {
-        padding: 1rem 2rem ;
-    }
-}
-/*** Modal on mobiles ***/
-@media (max-width: 575px) {
-    .modal-dialog {
-        width: 100% ;
-        height: 100% ;
-        margin: 0 ;
-        padding: 0 ;
-        border: $gray solid 1px ;
-    }
-    .modal-content {
-        height: auto ;
-        min-height: 100% ;
-    }
-}
-/*** Modal middle hack ***/
-@media (min-width: 576px) {
-    .modal {
-        text-align: center;
-        padding: 0 ;
-    }
-    .modal:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-        margin-right: -4px;
-    }
-    .modal-dialog {
-        display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-    }
-    .row-flex {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .col-middle {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
     }
 }
 /*** Misc ***/

@@ -16,11 +16,11 @@
             <strong>Цена</strong>
             <div class="d-flex justify-content-between form-group">
                 <label for="prc_min">
-                    <input class="form-control shop-filter-input" name="price-min" value="{{ $filter->getValues()[0] }}">
+                    <input class="form-control category-filter" name="price-min" value="{{ $filter->getValues()[0] }}">
                 </label>
                 <div class="p-2">до</div>
                 <label for="prc_min">
-                    <input class="form-control shop-filter-input" name="price-max" value="{{ $filter->getValues()[1] }}">
+                    <input class="form-control category-filter" name="price-max" value="{{ $filter->getValues()[1] }}">
                 </label>
             </div>
         </div>

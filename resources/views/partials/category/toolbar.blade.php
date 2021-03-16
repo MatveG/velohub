@@ -3,12 +3,12 @@
     <div>
         <form name="sort" action="" method="get">
             <label>
-                <select class="form-select shop-select-sort" size="1" name="sort">
+                <select class="form-select category-select-sort" size="1" name="sort">
                     <option value="" selected>сортировка</option>
-                    <option value="n-o" {{ request()->sort === 'n-o' ? 'selected' : '' }}>сначала новинки</option>
-                    <option value="l-h" {{ request()->sort === 'l-h' ? 'selected' : '' }}>сначала дешевые</option>
-                    <option value="h-l" {{ request()->sort === 'h-l' ? 'selected' : '' }}>сначала дорогие</option>
-                    <option value="a-z" {{ request()->sort === 'a-z' ? 'selected' : '' }}>по названию</option>
+                    <option value="id-desc" {{ request()->sort === 'n-o' ? 'selected' : '' }}>сначала новинки</option>
+                    <option value="price-asc" {{ request()->sort === 'l-h' ? 'selected' : '' }}>сначала дешевые</option>
+                    <option value="price-desc" {{ request()->sort === 'h-l' ? 'selected' : '' }}>сначала дорогие</option>
+                    <option value="title-asc" {{ request()->sort === 'a-z' ? 'selected' : '' }}>по названию</option>
                 </select>
             </label>
         </form>

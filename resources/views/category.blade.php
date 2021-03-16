@@ -14,14 +14,14 @@
 
                 @include('partials.category.toolbar')
 
-                @if(!$products)
-                    <main class="col-12 mt-3 text-center">
-                        <i>По данному запросу не найдено ни одного товара.</i>
-                    </main>
-                @endif
-
                 <main class="mt-3 mb-3">
                     <div class="row text-center">
+                        @if(!$products)
+                            <div class="col-12 text-center">
+                                <i>По данному запросу не найдено ни одного товара.</i>
+                            </div>
+                        @endif
+
                         @foreach($products as $product)
                             @include('partials.product')
                         @endforeach

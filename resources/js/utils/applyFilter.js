@@ -1,47 +1,19 @@
-
-$(() => {
-    $('.category-select-sort').on('change', applySorting);
-    $('.category-filter-input').on('change', applyFilter);
-    $('.category-filter-checkbox').on('click', applyFilter);
-});
-
-function applySorting() {
-    let urlParts = window.location.search.substring(1).split('&');
-    let name = this.name;
-    let value = this.value;
+export default ({name, value, type, checked}) => {
+    const shards = window.location.pathname.split('/');
+    const newQuery = [];
+    const firsIn = [];
     let flag = true;
 
-    for (let i = 0; i < urlParts.length; i++) {
-        if (!urlParts[i].startsWith(name + '=')) continue;
+    for (let i = 0; i < shards.length; i++) {
+        if (!shards[i]) continue;
 
-        urlParts[i] = `${name}=${value}`;
-        flag = false;
-    }
-
-    if (flag === true) {
-        urlParts[urlParts.length] = name + '=' + value;
-    }
-
-    window.location = '?' + urlParts.join('&');
-}
-
-function applyFilter() {
-    let name = this.name;
-    let value = this.value;
-    let urlParts = window.location.pathname.split('/');
-    let newQuery = [], firsIn = [];
-    let flag = true;
-
-    for (let i = 0; i < urlParts.length; i++) {
-        if (!urlParts[i]) continue;
-
-        if (!urlParts[i].includes('-is-')) {
-            firsIn.push(urlParts[i]);
+        if (!shards[i].includes('-is-')) {
+            firsIn.push(shards[i]);
             continue;
         }
 
-        let urlKey = urlParts[i].substr(0, urlParts[i].indexOf('-is-'));
-        let urlVal = urlParts[i].substr(urlParts[i].indexOf('-is-') + 4);
+        const urlKey = shards[i].substr(0, shards[i].indexOf('-is-'));
+        const urlVal = shards[i].substr(shards[i].indexOf('-is-') + 4);
 
         if (!urlKey || !urlVal) continue;
 
@@ -51,22 +23,22 @@ function applyFilter() {
                 flag = false;
             }
         } else if (name === urlKey) {
-            let urlValues = urlVal.split('-or-');
-            let newValues = [];
+            const urlValues = urlVal.split('-or-');
+            const newValues = [];
 
             for (let n = 0; n < urlValues.length; n++) {
                 if (urlValues[n] !== value) {
                     newValues.push(urlValues[n]);
-                    continue
+                    continue;
                 }
                 flag = false;
             }
 
-            if (this.type === 'checkbox' && this.checked) {
+            if (type === 'checkbox' && checked) {
                 newValues.push(value);
             }
 
-            if (this.type === 'text' && value) {
+            if (type === 'text' && value) {
                 newValues.push(value);
             }
 
@@ -82,10 +54,11 @@ function applyFilter() {
     }
 
     window.location = '/' + sortAndCombineQuery(newQuery, firsIn) + '/' + window.location.search;
-}
+};
 
 function sortAndCombineQuery(newQuery, firsIn) {
-    let secondIn = [], thirdIn = [];
+    let secondIn = [];
+    const thirdIn = [];
 
     for (let i = 0; i < newQuery.length; i++) {
         if (newQuery[i].startsWith('price-min')) {
@@ -103,7 +76,7 @@ function sortAndCombineQuery(newQuery, firsIn) {
 
         thirdIn.push(newQuery[i]);
     }
-    secondIn = secondIn.filter(value => value !== undefined);
+    secondIn = secondIn.filter((value) => value !== undefined);
 
     return [...firsIn, ...secondIn, ...thirdIn.sort()].join('/');
 }

@@ -1,0 +1,21 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "google",
+        "plugin:react/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "max-len": ["error", 100],
+        "require-jsdoc": "off",
+        "react/prop-types": "off"
+    }
+}

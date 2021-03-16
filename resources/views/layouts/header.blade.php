@@ -9,9 +9,7 @@
             @include('layouts.header.catalog')
         </ul>
 
-        <div class="p-3 text-center">
-            @include('layouts.header.buttons')
-        </div>
+        @include('layouts.header.buttons')
     </nav>
 
     @include('layouts.header.info')

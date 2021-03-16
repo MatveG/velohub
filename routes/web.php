@@ -1,9 +1,10 @@
 <?php
 
-Route::post('/api/cart/create', 'CartController@create')->name('cart.create');
-Route::post('/api/cart/{uuid}', 'CartController@get')->name('cart.get');
-Route::patch('/api/cart/{uuid}', 'CartController@update')->name('cart.update');
-//Route::patch('/ajax/cart/add/', 'CartController@add')->name('ajax.cart.add');
+// Cart products
+Route::get('/api/carts/products', 'CartProductController@index');
+Route::patch('/api/carts/products/attach', 'CartProductController@attach');
+Route::patch('/api/carts/products/detach', 'CartProductController@detach');
+Route::patch('/api/carts/products/update', 'CartProductController@update');
 
 // Admin
 Route::view('/admin/', 'Admin::index');

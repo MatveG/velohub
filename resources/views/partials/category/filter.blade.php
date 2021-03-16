@@ -1,7 +1,7 @@
 @foreach($filter->getValues() as $value)
     <div class="custom-control custom-checkbox">
         <input id="{{ $filter->column }}-{{ $value }}"
-               class="custom-control-input shop-filter-checkbox"
+               class="custom-control-input category-filter"
                type="checkbox"
                name="{{ $filter->slug }}"
                value="{{ $value }}"

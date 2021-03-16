@@ -3,63 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    public function create(): JsonResponse
+    public function foo(Request $request): JsonResponse
     {
-        $cart = new Cart(['products' => []]);
-        $cart->uuid = uniqid('', false);
+        DB::statement("UPDATE carts SET products = '[{\"id\":50,\"variant_id\":null,\"amount\":1},{\"id\":100,\"variant_id\":101,\"amount\":1}]' WHERE id = 153");
+
+        $cart = Cart::where('id', 153)->firstOrFail();
+
+        $cart->products = array_filter($cart->products, function ($el) {
+            return $el['id'] !== 50;
+        });
         $cart->save();
 
-        return response()->json($cart->only(['uuid', 'products']));
+
+        dd($cart->products);
+
+        return response()->json($this->mapCartProducts($cart->products));
     }
 
-    public function get(string $uuid): JsonResponse
-    {
-        // validation
-        $cart = Cart::where('uuid', $uuid)->firstOrFail();
-
-        return response()->json(['products' => $this->mapCartProducts($cart->products)]);
-    }
-
-    public function update(Request $request, string $uuid): JsonResponse
-    {
-        // validation
-
-        $cart = Cart::where('uuid', $uuid)->firstOrFail();
-        $cart->update($request->all());
-
-        return response()->json(['products' => $this->mapCartProducts($cart->products)]);
-    }
-
-    private function mapCartProducts(array $products): array
-    {
-        return array_map(function ($el) {
-            $product = Product::find($el['id']);
-
-            if (empty($product)) {
-                return null;
-            }
-            $product->variant_id = $el['variant_id'] ?? null;
-            $product->amount = $el['amount'];
-
-            return $product->only([
-                'id',
-                'variant_id',
-                'amount',
-                'title',
-                'brand',
-                'model',
-                'price',
-                'image',
-                'link'
-            ]);
-        }, $products);
-    }
+//    public function show(Request $request): JsonResponse
+//    {
+//        $uuid = $request->cookie('_ucart');
+//        $cart = $uuid ? Cart::where('uuid', $request->cookie('_ucart'))->first() : null;
+//
+//        if (!$uuid || !$cart) {
+//            $cart = new Cart();
+//            $cart->uuid = uniqid('', false);
+//            $cart->products = [];
+//            $cart->save();
+//
+//            return response()->json([])->cookie(
+//                cookie('_ucart', $cart->uuid, 60 * 24 * 90)
+//            );
+//        }
+//
+//        return response()->json($this->mapCartProducts($cart->products));
+//    }
 
 //    public function add(Request $request, Cart $cart): JsonResponse
 //    {

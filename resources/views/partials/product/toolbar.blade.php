@@ -21,11 +21,11 @@
                 <span>Описание</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link scroll-to-id" href="#product-comments" data-id="product-comments">
-                <span>Отзывы</span>
-            </a>
-        </li>
+{{--        <li class="nav-item">--}}
+{{--            <a class="nav-link scroll-to-id" href="#product-comments" data-id="product-comments">--}}
+{{--                <span>Отзывы</span>--}}
+{{--            </a>--}}
+{{--        </li>--}}
         <li class="nav-item">
             <a class="nav-link scroll-to-id" href="#product-analogues" data-id="product-analogues">
                 <span>Аналоги</span>

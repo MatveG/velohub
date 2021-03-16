@@ -16,14 +16,12 @@ class Cart extends Model
     protected $fillable = [
         'products'
     ];
-
-    public function getProductsAttribute()
-    {
-        return json_decode($this->attributes['products'], true);
-    }
+    protected $casts = [
+        'products' => 'array',
+    ];
 
     public function setProductsAttribute($value)
     {
-        $this->attributes['products'] = json_encode((array)($value));
+        $this->attributes['products'] = json_encode(array_values($value));
     }
 }

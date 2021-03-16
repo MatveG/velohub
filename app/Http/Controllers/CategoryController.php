@@ -26,7 +26,7 @@ class CategoryController extends Controller
             ->simplePaginate();
 
         $meta = (object)[
-            'title' => $category->name,
+            'title' => $category->title,
             'description' => $category->description,
             'keywords' => $category->keywords,
         ];

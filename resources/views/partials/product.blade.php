@@ -5,9 +5,9 @@
         @else
             <div></div>
         @endif
-        <button class="btn btn-sm btn-light compare-toggle" role="button" data-id="{{ $product->id }}">
-            сравнить
-        </button>
+{{--        <button class="btn btn-sm btn-light compare-toggle" role="button" data-id="{{ $product->id }}">--}}
+{{--            сравнить--}}
+{{--        </button>--}}
     </div>
 
     <a href="{{ $product->link }}">
