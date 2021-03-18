@@ -119,14 +119,14 @@ export default {
         })
         .catch(e => {
           this.isLoading = false
-          this.$buefy.toast.open({
+          this.$buefy.toasts.open({
             message: `Error: ${e.message}`,
             type: 'is-danger'
           })
         })
     },
     loadMore () {
-      this.$buefy.toast.open({
+      this.$buefy.toasts.open({
         message: 'Some action happened',
         type: 'is-info',
         queue: false

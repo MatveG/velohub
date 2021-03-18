@@ -32,7 +32,7 @@ class ParseFilterRequest
 
             if (count($keyValue) === 2) {
                 [$key, $value] = $keyValue;
-                $valuesArr = explode('-or-', $value);
+                $valuesArr = preg_split('(-(or|to)-)', $value);
                 $params[$key] = count($valuesArr) ? $valuesArr : $value;
             }
         }

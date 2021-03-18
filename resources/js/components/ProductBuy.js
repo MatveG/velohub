@@ -47,8 +47,10 @@ const ProductBuy = (props) => {
 
             {isStock() ? (
                 existInCart() ? (
-                    <button className="btn btn-gray w-50" role="button"
-                        data-target="#modal-cartReducer" data-toggle="modal"
+                    <button className="btn btn-gray w-50"
+                        role="button"
+                        data-bs-target="#modal-shopping-cart"
+                        data-bs-toggle="modal"
                     >уже в корзине</button>
                 ) : (
                     <button className="btn btn-bright w-50" role="button"

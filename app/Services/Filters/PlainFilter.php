@@ -2,7 +2,7 @@
 
 namespace App\Services\Filters;
 
-class Filter extends AFilter
+class PlainFilter extends AFilter
 {
     public function applyFilter(object $query): object
     {

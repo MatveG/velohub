@@ -2,20 +2,21 @@
 
 namespace App\Services\Filters;
 
+use InvalidArgumentException;
+
 abstract class AFilter
 {
-    protected $type = 'filter';
-    protected $title;
-    protected $column;
-    protected $slug;
-    protected $units;
-    private $values = [];
-    private $params = [];
+    protected string $title;
+    protected string $column;
+    protected string $slug;
+    protected ?string $units;
+    private array $values = [];
+    private array $params = [];
 
     public function __construct(string $column, string $slug, string $title, string $units = null)
     {
         if (!str_contains($column, '.')) {
-            throw new \InvalidArgumentException('Column property must contain table name');
+            throw new InvalidArgumentException('Column property must contain table name');
         }
 
         $this->title = $title;
@@ -29,7 +30,7 @@ abstract class AFilter
         return property_exists($this, $property) ? $this->$property : null;
     }
 
-    public static function init(...$arguments): self
+        public static function init(...$arguments): self
     {
         return new static(...$arguments);
     }
@@ -53,6 +54,11 @@ abstract class AFilter
     public function setParams(array $value): void
     {
         $this->values = $value;
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->values);
     }
 
     public function inParams($value): bool

@@ -1,7 +1,7 @@
 name: velohub
 recipe: laravel
 config:
-  php: '7.3'
+  php: '7.4'
   database: postgres
   cache: redis
   xdebug: true

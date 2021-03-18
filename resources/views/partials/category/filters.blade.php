@@ -11,16 +11,19 @@
         <a class="btn btn-light w-100" href="{{$category->link}}">сбросить</a>
     @endif
 
-    @if(($filter = $filters->get('price')))
+    @foreach($filters as $filter)
+
+    @endforeach
+    @if($filter && $filter->values)
         <div class="mt-2">
             <strong>Цена</strong>
             <div class="d-flex justify-content-between form-group">
                 <label for="prc_min">
-                    <input class="form-control category-filter" name="price-min" value="{{ $filter->getValues()[0] }}">
+                    <input class="form-control category-filter" name="price" value="{{$filter->values[0]}}">
                 </label>
                 <div class="p-2">до</div>
                 <label for="prc_min">
-                    <input class="form-control category-filter" name="price-max" value="{{ $filter->getValues()[1] }}">
+                    <input class="form-control category-filter" name="price" value="{{$filter->values[1]}}">
                 </label>
             </div>
         </div>

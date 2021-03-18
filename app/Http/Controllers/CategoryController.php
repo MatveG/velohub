@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use App\Models\Category;
-use App\Services\CategoryFilters;
-use App\Services\Filters\Filter;
-use App\Services\Filters\SliderFilter;
+use App\Services\FiltersService;
 
 class CategoryController extends Controller
 {
@@ -19,7 +16,13 @@ class CategoryController extends Controller
             ->join('variants', 'products.id', '=', 'variants.product_id')
             ->isActive();
 
-        $filters = $this->initFilters($category, $query, $request);
+        $filters = FiltersService::init($query, $request->filter)
+            ->withFilter(FiltersService::SLIDER, 'products.price', 'price', 'Price')
+            ->withFilter(FiltersService::PLAIN, 'products.brand', 'brand', 'Brand')
+            ->withFiltersArray($category->features, 'products.features')
+            ->withFiltersArray($category->features, 'variants.parameters');
+
+        dd($filters);
 
         $products = $query->select('variants.*', 'products.*')
             ->orderBy('products.' . $request->orderBy, $request->orderWay)
@@ -32,23 +35,5 @@ class CategoryController extends Controller
         ];
 
         return view('category', compact(['category', 'filters', 'products', 'meta']));
-    }
-
-    private function initFilters(Category $category, object $query, object $request): Collection
-    {
-        return collect([
-            'price' => SliderFilter::init('products.price', 'price', 'Price')
-                ->fetchValues($query)
-                ->fetchParams($request->filter),
-            'brand' => Filter::init('products.brand', 'brand', 'Brand')
-                ->fetchValues($query)
-                ->fetchParams($request->filter),
-            'features' => CategoryFilters::init($category, 'features', 'products')
-                ->fetchFilters($query, $request->filter),
-            'parameters' => CategoryFilters::init($category, 'parameters', 'variants')
-                ->fetchFilters($query, $request->filter),
-        ])->each(function ($element) use ($query) {
-            $element->applyFilter($query);
-        });
     }
 }

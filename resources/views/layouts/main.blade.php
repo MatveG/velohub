@@ -11,7 +11,7 @@
     </div>
 
     @include('layouts.footer')
-    @include('layouts.scripts')
     @include('modals.cart')
+    @include('layouts.scripts')
 </body>
 </html>

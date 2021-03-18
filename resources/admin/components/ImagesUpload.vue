@@ -94,12 +94,12 @@
             validateImage(files) {
                 files.forEach(file => {
                     if(!file.name.match(/\.(jpg|jpeg|gif|png)$/i)) {
-                        this.toast('Formats allowed: jpg, jpeg, gif, png');
+                        this.toasts('Formats allowed: jpg, jpeg, gif, png');
                         return false;
                     }
 
                     if(file.size > 1024*1024) {
-                        this.toast('The maximum supported file sizes is 1 mb');
+                        this.toasts('The maximum supported file sizes is 1 mb');
                         return false;
                     }
                 });

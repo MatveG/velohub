@@ -12,7 +12,7 @@
         @include('layouts.header.buttons')
     </nav>
 
-    @include('layouts.header.info')
+    @include('layouts.header.collapse')
 
     <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
             aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">

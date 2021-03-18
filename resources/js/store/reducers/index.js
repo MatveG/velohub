@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
-import error from './errorReducer';
+import toasts from './toastsReducer';
 import cart from './cartReducer';
 
 export default combineReducers({
-    error,
+    toasts,
     cart,
 });

@@ -1,139 +1,71 @@
 <?php
 
+// [{"id":"6qcnLu","ord":null,"title":"stringOne","latin":"stringone","type":"string","hint":null,"required":true,"filter":true,"units":null,"values":[],"sub":[]},{"id":"C4t5_8","ord":null,"title":"numberTwo","latin":"numbertwo","type":"number","hint":null,"required":false,"filter":true,"units":"sm","values":[],"sub":[]}]
+// [{"id":"wbDv9_","ord":null,"title":"paramThree","latin":"paramthree","type":"string","filter":true,"units":null,"values":[]}]
+
 namespace App\Services;
 
 class FiltersService
 {
-    private $query;
-    private $input;
-    private $filters = [];
+    public const PLAIN = 'PlainFilter';
+    public const AND = 'AndFilter';
+    public const RANGE = 'RangeFilter';
+    public const SLIDER = 'SliderFilter';
 
-    public function __construct(object $query, array $input)
+    protected object $query;
+    protected array $params;
+    protected array $filters = [];
+
+    public function __construct(object $query, array $params)
     {
         $this->query = $query;
-        $this->input = $input;
+        $this->params = $params;
     }
 
-    public function __get($property)
+    public function __get(string $property)
     {
         return property_exists($this, $property) ? $this->$property : null;
     }
 
-    public static function init(...$args): self
+    public static function init(...$arguments): self
     {
-        return new self(...$args);
+        return new static(...$arguments);
     }
 
-    public function withFilters(array $filters): self
+    public function withFilter(string $type, string $column, string $slug, string $title, string $units = null): self
     {
-        foreach ($filters as $filter) {
-            $filter->loadValues($this->query);
-            $filter->loadChecked($this->input);
-        }
-        $this->filters = $filters;
+        $className = "App\Services\Filters\\$type";
+        $filter = $className::init($column, $slug, $title, $units)
+            ->fetchValues($this->query)
+            ->fetchParams($this->params);
+        !$filter->isEmpty() && $this->filters[] = $filter;
 
         return $this;
     }
 
-
-
-
-
-
-
-    public function usePrice(object $query)
+    public function withFiltersArray($array, string $column): self
     {
-        $this->filters->prices = (object)[
-            'min' => (object)[ 'title' => 'Цена от', 'values' => [
-                $query->selectRaw("min(price)")->pluck('min')->first() => false]
-            ],
-            'max' => (object)[ 'title' => 'Цена до', 'values' => [
-                $query->selectRaw("max(price)")->pluck('max')->first() => false]
-            ],
-        ];
+        $filters = array_filter($array, fn ($el) => $el['filter'] === true);
+        usort($filters, fn ($a, $b) => $a['ord'] <=> $b['ord']);
 
-        foreach ($this->settings as $key => $setting) {
-            if ($setting && ($key === 'price-min' || $key === 'price-max')) {
-                $short = ($key === 'price-min') ? 'min' : 'max';
-                $this->filters->prices->{$short}->values = [$setting[0] => true];
-            }
-        }
+        array_walk($filters, fn ($filter) => $this->withFilter(
+            self::filterType($filter),
+            "$column->{$filter['id']}",
+            $filter['latin'],
+            $filter['title'],
+            $filter['units']
+        ));
 
         return $this;
     }
 
-    public function useJson(object $category, string $jsonName, object $query)
+    public function getFilters(): array
     {
-        $this->filters->{$jsonName} = (object) collect($category->{$jsonName})
-            ->where('filter', '1')
-            ->sortBy('order')
-            ->all();
-
-        foreach ($this->filters->{$jsonName} as $keyName => $filter) {
-            if ($filter->range) {
-                $this->intervalValues($jsonName, $keyName, $query);
-            } else {
-                $this->regularValues($jsonName, $keyName, $query);
-            }
-        }
-
-        return $this;
+        return $this->filters;
     }
 
-    public function intervalValues(string $jsonName, string $keyName, object $query)
+    private static function filterType(array $filter): string
     {
-        $fullName = $jsonName . '->' . $keyName;
-        $values = $this
-            ->clearQuery($query)
-            ->groupBy($fullName)
-            ->pluck($fullName . ' AS ' . $keyName)
-            ->toarray();
-
-        $max = max($values);
-        $min = min($values);
-        $total = round(1 + 3.322 * log10(count($values)));
-        $range = ($max - $min) / $total;
-
-        for ($i = 0; $i < $total; $i++) {
-            $value = round($min + $range * $i) . "-" . round($min + $range * ($i + 1));
-
-            $this->filters->{$jsonName}->{$keyName}->values[$value] = (
-                isset($this->settings[$keyName])
-                && in_array($value, $this->settings[$keyName])
-            );
-        }
-    }
-
-    public function regularValues(string $jsonName, string $keyName, object $query)
-    {
-        $fullName = $jsonName . '->' . $keyName;
-        $values = $this
-            ->clearQuery($query)
-            ->groupBy($fullName)
-            ->pluck($fullName . ' AS ' . $keyName)
-            ->toarray();
-
-        natsort($values);
-
-        foreach ($values as $value) {
-            if (empty($value)) {
-                continue;
-            }
-
-            $this->filters->{$jsonName}->{$keyName}->values[$value] =
-                isset($this->settings[$keyName])
-                && in_array($value, $this->settings[$keyName]);
-        }
-    }
-
-    private function clearQuery(object $query)
-    {
-        $method = (method_exists($query, 'getBaseQuery')) ? 'getBaseQuery' : 'getQuery';
-
-        $query->{$method}()->columns = null;
-        $query->{$method}()->orders = null;
-        $query->{$method}()->groups = null;
-
-        return $query;
+        return $filter['type'] === 'multiple' ? 'AndFilter' : 'PlainFilter';
     }
 }

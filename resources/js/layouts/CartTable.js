@@ -37,7 +37,9 @@ const CartTable = (props) => (
         </div>
 
         <div className="text-center">
-            <button className="btn btn-gray border" data-dismiss="modal">Продолжить покупки</button>
+            <button className="btn btn-gray border" data-bs-dismiss="modal">
+                Продолжить покупки
+            </button>
             <a href="" className="btn btn-bright border">Оформить заказ</a>
         </div>
     </div>

@@ -30,7 +30,7 @@ class RootController extends Controller
             'keywords' => $document->seo_keywords,
         ];
 
-        return view('rootReducer', compact(['document', 'saleProducts', 'newProducts', 'meta']));
+        return view('root', compact(['document', 'saleProducts', 'newProducts', 'meta']));
     }
 
 }

@@ -7,17 +7,19 @@ use Illuminate\Support\Facades\Blade;
 
 class WidgetDirectives
 {
+    private static $widgets;
+
     public static function directives()
     {
-        $widgets = Widget::all();
+        self::$widgets = Widget::all();
 
-        Blade::directive('widget', function ($key) use ($widgets) {
-            return self::render($key, $widgets);
+        Blade::directive('widget', function ($key) {
+            return self::render($key);
         });
     }
 
-    protected static function render($key, $widgets)
+    protected static function render($key)
     {
-        return $widgets->firstWhere('slug', $key)->text;
+        return self::$widgets->firstWhere('slug', $key)->text ?? null;
     }
 }

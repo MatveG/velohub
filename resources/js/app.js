@@ -1,6 +1,3 @@
-// column is_stock in variants
-// delete expired product from cart
-
 import './../sass/app.scss';
 import React from 'react';
 import {render} from 'react-dom';
@@ -8,8 +5,9 @@ import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import cartFetch from './store/actions/cartFetch';
+import {fireInfo, fireWarning, fireDanger} from './store/actions/toastsActions';
 import rootReducer from './store/reducers/';
-import ErrorMessage from './components/ErrorMessage';
+import Toasts from './components/Toasts';
 import ProductBuy from './components/ProductBuy';
 import ProductImages from './components/ProductImages';
 import ShoppingCart from './components/ShoppingCart';
@@ -17,63 +15,55 @@ import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
 
-['load', 'scroll'].forEach((eventType) => {
-    window.addEventListener(eventType, () => {
-        scrollState();
-        // Array.from(document.getElementsByClassName('navbar-info-block')).forEach((el) => {
-        //     el.classList.remove('show');
-        // });
-    });
-});
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
+['load', 'scroll'].forEach((eventType) => {
+    window.addEventListener(eventType, () => scrollState());
+});
 document.getElementById('scroll-top').addEventListener('click', () => {
     window.scrollTo({top: 0, behavior: 'smooth'});
 });
-
 Array.from(document.getElementsByClassName('category-select-sort')).forEach((el) => {
     el.addEventListener('change', () => applySorting(el));
 });
-
 Array.from(document.getElementsByClassName('category-filter')).forEach((el) => {
     el.addEventListener(el.type === 'text' ? 'change' : 'click', () => applyFilter(el));
 });
+Array.from(document.getElementsByClassName('navbar-icon-btn')).forEach((el) => {
+    el.addEventListener('click', () => {
+        Array.from(document.getElementsByClassName('navbar-info-block')).forEach((block) => {
+            block.classList.remove('show');
+        });
+    });
+});
 
-
-const store = createStore(rootReducer, applyMiddleware(thunk));
-store.dispatch(cartFetch());
-
-const productImagesEl = document.getElementById('product-images');
-productImagesEl && _PRODUCT_IMAGES && render(
+window.hasOwnProperty('_PRODUCT_IMAGES') && render(
     <Provider store={store}>
         <ProductImages images={_PRODUCT_IMAGES} />
     </Provider>,
-    productImagesEl,
+    document.getElementById('product-images'),
 );
-
-const productBuyEl = document.getElementById('product-buy');
-productBuyEl && _PRODUCT_BUY && render(
+window.hasOwnProperty('_PRODUCT_BUY') && render(
     <Provider store={store}>
         <ProductBuy product={_PRODUCT_BUY} variants={_PRODUCT_VARIANTS} />
     </Provider>,
-    productBuyEl,
+    document.getElementById('product-buy'),
 );
-
-const errorMessageEl = document.getElementById('error-message');
-errorMessageEl && render(
+render(
     <Provider store={store}>
-        <ErrorMessage />
+        <Toasts />
     </Provider>,
-    errorMessageEl,
+    document.getElementById('error-message'),
 );
-// if (backendData.error) {
-//     store.dispatch(fireError(backendData.error));
-// }
-
-
-const shoppingCartEl = document.getElementById('shopping-cart');
-shoppingCartEl && render(
+render(
     <Provider store={store}>
         <ShoppingCart />
     </Provider>,
-    shoppingCartEl,
+    document.getElementById('shopping-cart'),
 );
+
+store.dispatch(cartFetch());
+
+window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_TOAST_INFO));
+window.hasOwnProperty('_NOTICE_WARNING') && store.dispatch(fireWarning(_TOAST_WARNING));
+window.hasOwnProperty('_NOTICE_DANGER') && store.dispatch(fireDanger(_TOAST_DANGER));

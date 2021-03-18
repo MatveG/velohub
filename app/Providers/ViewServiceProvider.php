@@ -24,9 +24,8 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        App\Views\Directives\WidgetDirectives::directives();
+        App\Views\Directives\WidgetDirectives::directives();
 
-//         App\Views\Share\CartShare::share();
         App\Views\Share\CategoryShare::share();
         App\Views\Share\MenuShare::share();
     }

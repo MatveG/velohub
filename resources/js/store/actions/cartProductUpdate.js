@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {cartUpdate} from './cartActions';
-import {fireError} from './errorActions';
+import {fireDanger} from './toastsActions';
 
 export default function cartProductUpdate(product) {
     return (dispatch) => {
@@ -9,7 +9,7 @@ export default function cartProductUpdate(product) {
                 dispatch(cartUpdate(product));
             })
             .catch((err) => {
-                dispatch(fireError('Failed updating cart data'));
+                dispatch(fireDanger('Failed updating cart data'));
                 console.error(err);
             });
     };

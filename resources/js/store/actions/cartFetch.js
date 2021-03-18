@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {cartFill} from './cartActions';
-import {fireError} from './errorActions';
+import {fireDanger} from './toastsActions';
 
 export default function cartFetch() {
     return (dispatch) => {
@@ -9,7 +9,7 @@ export default function cartFetch() {
                 dispatch(cartFill(response.data));
             })
             .catch((err) => {
-                dispatch(fireError('Failed fetching cart data'));
+                dispatch(fireDanger('Failed fetching cart data'));
                 console.error(err);
             });
     };
