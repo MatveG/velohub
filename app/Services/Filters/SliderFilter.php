@@ -4,6 +4,8 @@ namespace App\Services\Filters;
 
 class SliderFilter extends AFilter
 {
+    protected string $type = 'slider';
+
     public function fetchValues(object $query): AFilter
     {
         parent::fetchValues($query);

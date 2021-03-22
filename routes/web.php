@@ -19,16 +19,19 @@ Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')
     ->name('category');
 
 // Comment
-Route::post('/comment/{product_id}/store/', 'CommentController@store')->name('comment.store');
+Route::post('/comment/{product_id}/store', 'CommentController@store');
 
 // Compare
-Route::get('/compare/{slug}/{id}', 'CompareController')->name('category.compare');
+Route::get('/compare/{slug}/{id}', 'CompareController')->name('compare');
+
+// Checkout
+Route::get('/checkout', 'CheckoutController')->name('checkout');
 
 // Order
-Route::post('/order/', 'OrderController@store')->name('order.store');
+Route::post('/order', 'OrderController@store')->name('order.store');
 
 // Product
-Route::get('/product/{slug}/{id}/', 'ProductController')->name('product.show');
+Route::get('/product/{slug}/{id}', 'ProductController')->name('product.show');
 
 // Search
 Route::get('/search/{path?}/', 'SearchController')

@@ -4,6 +4,10 @@ import cartProductUpdate from '../store/actions/cartProductUpdate';
 import cartProductDetach from '../store/actions/cartProductDetach';
 
 const ShoppingCartProduct = (props) => {
+    const sum = (Math.round(
+        props.product.amount * props.product.price * 100,
+    ) / 100).toFixed();
+
     const remove = () => {
         props.removeProduct(props.product);
     };
@@ -21,9 +25,9 @@ const ShoppingCartProduct = (props) => {
     };
 
     return (
-        <tr>
+        <tr className="disabled">
             <td className="border-0 align-middle">
-                <button className="btn btn-sm btn-gray btn-cart-remove"
+                <button className="btn btn-sm btn-bright btn-cart-remove"
                     onClick={remove}>&times;</button>
             </td>
             <th scope="row" className="border-0 text-left">
@@ -46,15 +50,15 @@ const ShoppingCartProduct = (props) => {
             <td className="border-0 align-middle">{props.product.price}</td>
             <td className="border-0 align-middle text-center">
                 <div className="nowrap">
-                    <a className="btn btn-sm btn-gray btn-cart-decrease"
+                    <a className="btn btn-sm btn-primary btn-cart-decrease"
                         onClick={decrAmount} href="#">-</a>&nbsp;
                     <span id="amount-{{ $product->id }}"
                         className="font-weight-bold">{props.product.amount}</span>&nbsp;
-                    <a className="btn btn-sm btn-gray btn-cart-increase"
+                    <a className="btn btn-sm btn-primary btn-cart-increase"
                         onClick={incrAmount} href="#">+</a>
                 </div>
             </td>
-            <td className="border-0 align-middle">{props.product.amount * props.product.price}</td>
+            <td className="border-0 align-middle">{sum}</td>
         </tr>
     );
 };

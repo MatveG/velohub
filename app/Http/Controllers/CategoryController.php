@@ -17,12 +17,12 @@ class CategoryController extends Controller
             ->isActive();
 
         $filters = FiltersService::init($query, $request->filter)
-            ->withFilter(FiltersService::SLIDER, 'products.price', 'price', 'Price')
-            ->withFilter(FiltersService::PLAIN, 'products.brand', 'brand', 'Brand')
-            ->withFiltersArray($category->features, 'products.features')
-            ->withFiltersArray($category->features, 'variants.parameters');
-
-        dd($filters);
+            ->addSliderFilter('products.price', 'price', 'Price')
+            ->addPlainFilter('products.brand', 'brand', 'Brand')
+            ->addFiltersSet($category->features, 'products.features')
+            ->addFiltersSet($category->features, 'variants.parameters')
+            ->applyFilters()
+            ->getFilters();
 
         $products = $query->select('variants.*', 'products.*')
             ->orderBy('products.' . $request->orderBy, $request->orderWay)

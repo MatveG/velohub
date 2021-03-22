@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\FiltersService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use App\Models\Product;
-use App\Services\Filters\PlainFilter;
-use App\Services\Filters\SliderFilter;
 
 class SearchController extends Controller
 {
@@ -16,11 +14,14 @@ class SearchController extends Controller
 
         $query = Product::isActive()->searchBy($request->find);
 
-        $filters = $this->initFilters($query, $request);
+        $filters = FiltersService::init($query, $request->filter)
+            ->addSliderFilter('products.price', 'price', 'Price')
+            ->addPlainFilter('products.brand', 'brand', 'Brand')
+            ->getFilters();
 
         $products = $query->orderBy('products.' . $request->orderBy, $request->orderWay)
             ->orderByRelevance($request->find)
-            ->paginate();
+            ->simplePaginate();
 
         $meta = (object)[
             'title' => 'Поиск: ' . $request->find,
@@ -29,19 +30,5 @@ class SearchController extends Controller
         ];
 
         return view('category', compact(['products', 'filters', 'meta']));
-    }
-
-    private function initFilters(object $query, object $request): Collection
-    {
-        return collect([
-            'price' => SliderFilter::init('products.price', 'price', 'Price')
-                ->fetchValues($query)
-                ->fetchParams($request->filter),
-            'brand' => PlainFilter::init('products.brand', 'brand', 'Brand')
-                ->fetchValues($query)
-                ->fetchParams($request->filter),
-        ])->each(function ($element) use ($query) {
-            $element->applyFilter($query);
-        });
     }
 }

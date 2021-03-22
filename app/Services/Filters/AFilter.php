@@ -3,6 +3,7 @@
 namespace App\Services\Filters;
 
 use InvalidArgumentException;
+use LogicException;
 
 abstract class AFilter
 {
@@ -18,6 +19,9 @@ abstract class AFilter
         if (!str_contains($column, '.')) {
             throw new InvalidArgumentException('Column property must contain table name');
         }
+        if (!isset($this->type)) {
+            throw new LogicException(get_class($this) . ' must have a type');
+        }
 
         $this->title = $title;
         $this->column = $column;
@@ -30,7 +34,7 @@ abstract class AFilter
         return property_exists($this, $property) ? $this->$property : null;
     }
 
-        public static function init(...$arguments): self
+    public static function init(...$arguments): self
     {
         return new static(...$arguments);
     }

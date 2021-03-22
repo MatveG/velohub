@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 
 const ProductImages = (props) => {
     const [active, setActive] = useState(0);
-    const [modal, setModal] = useState(false);
 
     const thumbs = props.images.map((el, idx) => (
         <div role="button" key={idx} onClick={() => setActive(idx)}>
@@ -17,22 +16,22 @@ const ProductImages = (props) => {
             <div className="product-image">
                 <img className="w-100"
                     role="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#product-image-modal"
                     src={props.images[active]}
-                    alt={props.images[active]}
-                    onClick={() => setModal(!modal)}/>
+                    alt={props.images[active]}/>
             </div>
 
             <div className="mt-2 d-flex justify-content-center">
                 {thumbs}
             </div>
 
-            <div className={`modal ${modal && 'd-block'}`} tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog modal-fullscreen modal-dialog-scrollable">
+            <div className="modal overflow-scroll" id="product-image-modal" tabIndex="-1" aria-hidden="true">
+                <div className="modal-dialog modal-fullscreen modal-dialog-scrollable w-75 m-auto">
                     <div className="modal-content">
                         <div className="modal-header px-4">
                             <h3 className="modal-title" id="exampleModalLabel">Фото</h3>
-                            <button type="button" className="btn-close"
-                                onClick={() => setModal(false)}/>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal"/>
                         </div>
                         <div className="modal-body text-center">
                             <div className="d-flex justify-content-center">

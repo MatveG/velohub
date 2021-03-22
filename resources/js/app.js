@@ -11,6 +11,7 @@ import Toasts from './components/Toasts';
 import ProductBuy from './components/ProductBuy';
 import ProductImages from './components/ProductImages';
 import ShoppingCart from './components/ShoppingCart';
+import CheckoutForm from './components/CheckoutForm';
 import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
@@ -38,9 +39,7 @@ Array.from(document.getElementsByClassName('navbar-icon-btn')).forEach((el) => {
 });
 
 window.hasOwnProperty('_PRODUCT_IMAGES') && render(
-    <Provider store={store}>
-        <ProductImages images={_PRODUCT_IMAGES} />
-    </Provider>,
+    <ProductImages images={_PRODUCT_IMAGES} />,
     document.getElementById('product-images'),
 );
 window.hasOwnProperty('_PRODUCT_BUY') && render(
@@ -60,6 +59,12 @@ render(
         <ShoppingCart />
     </Provider>,
     document.getElementById('shopping-cart'),
+);
+document.getElementById('checkout-form') && render(
+    <Provider store={store}>
+        <CheckoutForm />
+    </Provider>,
+    document.getElementById('checkout-form'),
 );
 
 store.dispatch(cartFetch());

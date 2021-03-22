@@ -4,6 +4,8 @@ namespace App\Services\Filters;
 
 class RangeFilter extends AFilter
 {
+    protected string $type = 'range';
+
     public function fetchValues(object $query): AFilter
     {
         parent::fetchValues($query);

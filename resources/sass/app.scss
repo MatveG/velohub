@@ -95,7 +95,6 @@ hr{
 /*** Buttons ***/
 .btn-bright{
     background-color: $bright;
-    text-transform: uppercase;
     letter-spacing: 1px;
     color: #fff;
 }
@@ -127,10 +126,7 @@ hr{
         border-top: #fa5600 solid 4px;
         color: #fa5600;
 
-        span {
-            display: inline-block;
-            vertical-align: middle;
-        }
+        font-size: 200%;
     }
     .dropdown-menu{
         padding: 0;
@@ -149,7 +145,7 @@ hr{
         border: 0 ;
     }
     .nav-link, .dropdown-item{
-        font-size: 115%;
+        font-size: 125%;
         color: #eee ;
     }
     .nav-link:hover, .dropdown-item:hover{
@@ -278,9 +274,6 @@ footer {
             padding-right: 0;
             width: 100%;
         }
-    }
-    .nav-link {
-        padding: 0 0 .5rem 0;
     }
 }
 /*** Misc ***/

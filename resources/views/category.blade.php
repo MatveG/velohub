@@ -4,9 +4,7 @@
     <div class="content">
         <div class="row">
             <aside class="col-md-2 pr-lg-3">
-                @if(is_countable($filters) && count($filters))
-                    @include('partials.category.filters')
-                @endif
+                @include('partials.category.filters')
             </aside>
 
             <div class="col-md-10">

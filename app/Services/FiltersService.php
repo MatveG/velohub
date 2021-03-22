@@ -7,11 +7,6 @@ namespace App\Services;
 
 class FiltersService
 {
-    public const PLAIN = 'PlainFilter';
-    public const AND = 'AndFilter';
-    public const RANGE = 'RangeFilter';
-    public const SLIDER = 'SliderFilter';
-
     protected object $query;
     protected array $params;
     protected array $filters = [];
@@ -32,8 +27,33 @@ class FiltersService
         return new static(...$arguments);
     }
 
-    public function withFilter(string $type, string $column, string $slug, string $title, string $units = null): self
+    public function addAndFilter(...$arguments): self
     {
+        return $this->addFilter('AndFilter', ...$arguments);
+    }
+
+    public function addPlainFilter(...$arguments): self
+    {
+        return $this->addFilter('PlainFilter', ...$arguments);
+    }
+
+    public function addRangeFilter(...$arguments): self
+    {
+        return $this->addFilter('RangeFilter', ...$arguments);
+    }
+
+    public function addSliderFilter(...$arguments): self
+    {
+        return $this->addFilter('SliderFilter', ...$arguments);
+    }
+
+    private function addFilter(
+        string $type,
+        string $column,
+        string $slug,
+        string $title,
+        string $units = null
+    ): self {
         $className = "App\Services\Filters\\$type";
         $filter = $className::init($column, $slug, $title, $units)
             ->fetchValues($this->query)
@@ -43,18 +63,25 @@ class FiltersService
         return $this;
     }
 
-    public function withFiltersArray($array, string $column): self
+    public function addFiltersSet(array $fieldsSet, string $column): self
     {
-        $filters = array_filter($array, fn ($el) => $el['filter'] === true);
+        $filters = array_filter($fieldsSet, fn ($el) => $el['filter'] === true);
         usort($filters, fn ($a, $b) => $a['ord'] <=> $b['ord']);
 
-        array_walk($filters, fn ($filter) => $this->withFilter(
+        array_walk($filters, fn ($filter) => $this->addFilter(
             self::filterType($filter),
             "$column->{$filter['id']}",
             $filter['latin'],
             $filter['title'],
             $filter['units']
         ));
+
+        return $this;
+    }
+
+    public function applyFilters(): self
+    {
+        array_walk($this->filters, fn ($filter) => $filter->applyFilter($this->query));
 
         return $this;
     }

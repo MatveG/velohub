@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import CartTable from '../layouts/CartTable';
+import ShoppingCartTable from '../layouts/ShoppingCartTable';
 import ShoppingCartProduct from './ShoppingCartProduct';
 
 const ShoppingCart = (props) => {
@@ -13,9 +13,18 @@ const ShoppingCart = (props) => {
     }
 
     return (
-        <CartTable total={props.total}>
+        <ShoppingCartTable total={props.total}>
             {props.products.map((el, idx) => <ShoppingCartProduct key={idx} product={el}/>)}
-        </CartTable>
+
+            <tr className="border border-left-0 border-right-0">
+                <td className="border-0 align-middle text-right text-uppercase" colSpan="4">
+                    <strong>Итого:</strong>
+                </td>
+                <td className="border-0 align-middle">
+                    <strong>{props.total}</strong>
+                </td>
+            </tr>
+        </ShoppingCartTable>
     );
 };
 

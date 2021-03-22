@@ -4,6 +4,8 @@ namespace App\Services\Filters;
 
 class AndFilter extends AFilter
 {
+    protected string $type = 'and';
+
     public function setValues(array $value): void
     {
         $result = array_unique(
