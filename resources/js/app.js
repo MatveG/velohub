@@ -4,9 +4,8 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-import cartFetch from './store/actions/cartFetch';
 import {fireInfo, fireWarning, fireDanger} from './store/actions/toastsActions';
-import rootReducer from './store/reducers/';
+import reducer from './store/reducer';
 import Toasts from './components/Toasts';
 import ProductBuy from './components/ProductBuy';
 import ProductImages from './components/ProductImages';
@@ -16,7 +15,7 @@ import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(reducer, applyMiddleware(thunk));
 
 ['load', 'scroll'].forEach((eventType) => {
     window.addEventListener(eventType, () => scrollState());
@@ -48,13 +47,13 @@ window.hasOwnProperty('_PRODUCT_BUY') && render(
     </Provider>,
     document.getElementById('product-buy'),
 );
-render(
+document.getElementById('error-message') && render(
     <Provider store={store}>
         <Toasts />
     </Provider>,
     document.getElementById('error-message'),
 );
-render(
+document.getElementById('shopping-cart') && render(
     <Provider store={store}>
         <ShoppingCart />
     </Provider>,
@@ -66,8 +65,6 @@ document.getElementById('checkout-form') && render(
     </Provider>,
     document.getElementById('checkout-form'),
 );
-
-store.dispatch(cartFetch());
 
 window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_TOAST_INFO));
 window.hasOwnProperty('_NOTICE_WARNING') && store.dispatch(fireWarning(_TOAST_WARNING));

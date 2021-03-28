@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
-import toasts from './toastsReducer';
-import cart from './cartReducer';
+import toasts from './reducers/toastsReducer';
+import cart from './reducers/cartReducer';
 
 export default combineReducers({
     toasts,

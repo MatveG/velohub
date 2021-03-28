@@ -3,32 +3,27 @@ import {connect} from 'react-redux';
 import cartProductUpdate from '../store/actions/cartProductUpdate';
 import cartProductDetach from '../store/actions/cartProductDetach';
 
+function formatAsPrice(number) {
+    return new Intl.NumberFormat('ua-UA').format(number);
+};
+
 const ShoppingCartProduct = (props) => {
-    const sum = (Math.round(
-        props.product.amount * props.product.price * 100,
-    ) / 100).toFixed();
+    const productPrice = formatAsPrice(props.product.price);
+    const productSum = formatAsPrice(props.product.amount * props.product.price);
 
-    const remove = () => {
+    const updateAmount = (mod) => {
+        props.updateProduct(props.product.amount + mod || 1);
+    };
+
+    const removeProduct = () => {
         props.removeProduct(props.product);
-    };
-
-    const incrAmount = () => {
-        props.product.amount++;
-        props.updateProduct(props.product);
-    };
-
-    const decrAmount = () => {
-        if (props.product.amount > 1) {
-            props.product.amount--;
-            props.updateProduct(props.product);
-        }
     };
 
     return (
         <tr className="disabled">
             <td className="border-0 align-middle">
-                <button className="btn btn-sm btn-bright btn-cart-remove"
-                    onClick={remove}>&times;</button>
+                {!props.readOnly && <button className="btn btn-sm btn-bright btn-cart-remove"
+                    onClick={removeProduct}>&times;</button>}
             </td>
             <th scope="row" className="border-0 text-left">
                 <div className="p-2">
@@ -47,18 +42,22 @@ const ShoppingCartProduct = (props) => {
                     </div>
                 </div>
             </th>
-            <td className="border-0 align-middle">{props.product.price}</td>
+            <td className="border-0 align-middle">
+                {productPrice}
+            </td>
             <td className="border-0 align-middle text-center">
                 <div className="nowrap">
-                    <a className="btn btn-sm btn-primary btn-cart-decrease"
-                        onClick={decrAmount} href="#">-</a>&nbsp;
+                    {!props.readOnly && <a className="btn btn-sm btn-primary btn-cart-decrease"
+                        onClick={() => updateAmount(-1)} href="#">-</a>}
+                    &nbsp;
                     <span id="amount-{{ $product->id }}"
-                        className="font-weight-bold">{props.product.amount}</span>&nbsp;
-                    <a className="btn btn-sm btn-primary btn-cart-increase"
-                        onClick={incrAmount} href="#">+</a>
+                        className="font-weight-bold">{props.product.amount}</span>
+                    &nbsp;
+                    {!props.readOnly && <a className="btn btn-sm btn-primary btn-cart-increase"
+                        onClick={() => updateAmount(1)} href="#">+</a>}
                 </div>
             </td>
-            <td className="border-0 align-middle">{sum}</td>
+            <td className="border-0 align-middle">{productSum}</td>
         </tr>
     );
 };
