@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-const ProductImages = (props) => {
+const Images = (props) => {
     const [active, setActive] = useState(0);
 
     const thumbs = props.images.map((el, idx) => (
@@ -50,4 +50,4 @@ const ProductImages = (props) => {
     );
 };
 
-export default ProductImages;
+export default Images;

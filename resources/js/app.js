@@ -4,13 +4,13 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
+import reducer from './store';
 import {fireInfo, fireWarning, fireDanger} from './store/actions/toastsActions';
-import reducer from './store/reducer';
-import Toasts from './components/Toasts';
-import ProductBuy from './components/ProductBuy';
-import ProductImages from './components/ProductImages';
-import ShoppingCart from './components/ShoppingCart';
-import CheckoutForm from './components/CheckoutForm';
+import Toasts from './components/ui/Toasts';
+import Cart from './components/cart/Cart';
+import Checkout from './components/checkout/Checkout';
+import ProductBuy from './components/product/buy/Buy';
+import ProductImages from './components/product/images/Images';
 import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
@@ -55,13 +55,13 @@ document.getElementById('error-message') && render(
 );
 document.getElementById('shopping-cart') && render(
     <Provider store={store}>
-        <ShoppingCart />
+        <Cart />
     </Provider>,
     document.getElementById('shopping-cart'),
 );
 document.getElementById('checkout-form') && render(
     <Provider store={store}>
-        <CheckoutForm />
+        <Checkout />
     </Provider>,
     document.getElementById('checkout-form'),
 );

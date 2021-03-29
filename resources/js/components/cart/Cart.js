@@ -1,14 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import ShoppingCartTable from '../layouts/ShoppingCartTable';
-import ShoppingCartProduct from './ShoppingCartProduct';
-import cartFetch from '../store/actions/cartFetch';
+import Table from './table/Table';
+import CartProduct from './product/Product';
+import cartFetch from '../../store/actions/cartFetch';
 
 function formatAsPrice(number) {
     return new Intl.NumberFormat('ua-UA').format(number);
 };
 
-class ShoppingCart extends React.Component {
+class Cart extends React.Component {
     componentDidMount() {
         this.props.cartFetch();
     }
@@ -23,9 +23,9 @@ class ShoppingCart extends React.Component {
         }
 
         return (
-            <ShoppingCartTable total={this.props.total}>
+            <Table total={this.props.total}>
                 {this.props.products.map((el, idx) => (
-                    <ShoppingCartProduct
+                    <CartProduct
                         key={idx}
                         product={el}
                         readOnly={this.props.readOnly} />
@@ -48,7 +48,7 @@ class ShoppingCart extends React.Component {
                         <strong>{formatAsPrice(this.props.total)}</strong>
                     </td>
                 </tr>
-            </ShoppingCartTable>
+            </Table>
         );
     }
 };
@@ -64,4 +64,4 @@ const mapActions = (dispatch) => ({
     cartFetch: () => dispatch(cartFetch()),
 });
 
-export default connect(mapState, mapActions)(ShoppingCart);
+export default connect(mapState, mapActions)(Cart);

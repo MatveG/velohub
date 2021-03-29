@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProductBuyVariants = (props) => (
+const Variants = (props) => (
     <select className="form-control w-50 m-auto" onChange={props.selectOption}>
         <option>Выберите</option>
 
@@ -12,4 +12,4 @@ const ProductBuyVariants = (props) => (
     </select>
 );
 
-export default ProductBuyVariants;
+export default Variants;

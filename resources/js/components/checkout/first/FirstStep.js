@@ -1,8 +1,8 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
-import Input from './ui/Input';
+import Input from '../../ui/Input';
 
-const CheckoutFirst = (props) => {
+const FirstStep = (props) => {
     const {register, errors, handleSubmit} = useForm();
 
     return (
@@ -57,4 +57,4 @@ const CheckoutFirst = (props) => {
     );
 };
 
-export default CheckoutFirst;
+export default FirstStep;

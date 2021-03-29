@@ -1,18 +1,20 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import cartProductUpdate from '../store/actions/cartProductUpdate';
-import cartProductDetach from '../store/actions/cartProductDetach';
+import cartProductUpdate from '../../../store/actions/cartProductUpdate';
+import cartProductDetach from '../../../store/actions/cartProductDetach';
 
 function formatAsPrice(number) {
     return new Intl.NumberFormat('ua-UA').format(number);
 };
 
-const ShoppingCartProduct = (props) => {
+const Product = (props) => {
     const productPrice = formatAsPrice(props.product.price);
     const productSum = formatAsPrice(props.product.amount * props.product.price);
 
     const updateAmount = (mod) => {
-        props.updateProduct(props.product.amount + mod || 1);
+        if (props.product.amount + mod > 0) {
+            props.updateProduct(props.product.amount + mod);
+        }
     };
 
     const removeProduct = () => {
@@ -67,4 +69,4 @@ const mapActions = (dispatch) => ({
     removeProduct: (product) => dispatch(cartProductDetach(product)),
 });
 
-export default connect(null, mapActions)(ShoppingCartProduct);
+export default connect(null, mapActions)(Product);

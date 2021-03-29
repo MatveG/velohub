@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import ShoppingCart from './ShoppingCart';
-import CheckoutFirst from './CheckoutFirst';
-import CheckoutSecond from './CheckoutSecond';
+import Cart from '../cart/Cart';
+import FistStep from './first/FirstStep';
+import SecondStep from './second/SecondStep';
 
-const CheckoutForm = () => {
+const Checkout = () => {
     const [step, setStep] = useState(1);
     let data = {foo: 'bar'};
 
@@ -27,7 +27,7 @@ const CheckoutForm = () => {
             <div className="col-7 px-4">
                 <div className="card shadow-sm p-2">
                     <div className="card-body">
-                        <ShoppingCart readOnly={true}/>
+                        <Cart readOnly={true}/>
                     </div>
                 </div>
             </div>
@@ -35,11 +35,11 @@ const CheckoutForm = () => {
                 <h4>
                     <span>{step === 1 ? 'Ваши данные' : 'Данные доставки'}</span>
                 </h4>
-                {step === 1 && <CheckoutFirst
+                {step === 1 && <FistStep
                     data={data}
                     submitData={submitData}/>}
 
-                {step === 2 && <CheckoutSecond
+                {step === 2 && <SecondStep
                     data={data}
                     prevStep={prevStep}
                     submitData={submitData}/>}
@@ -48,4 +48,4 @@ const CheckoutForm = () => {
     );
 };
 
-export default CheckoutForm;
+export default Checkout;

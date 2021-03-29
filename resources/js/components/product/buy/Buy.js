@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import ProductBuyVariants from './ProductBuyVariants';
-import cartProductAttach from '../store/actions/cartProductAttach';
+import Variants from './variants/Variants';
+import cartProductAttach from '../../../store/actions/cartProductAttach';
 
-const ProductBuy = (props) => {
+const Buy = (props) => {
     const product = props.product;
     const variants = props.variants;
     const [variant, setVariant] = useState({});
@@ -36,7 +36,7 @@ const ProductBuy = (props) => {
             </h4>
 
             {variants.length && <p>
-                <ProductBuyVariants variants={variants} selectOption={selectOption} />
+                <Variants variants={variants} selectOption={selectOption} />
             </p>}
 
             <p>
@@ -71,5 +71,5 @@ const mapActions = (dispatch) => ({
     addToCart: (product) => dispatch(cartProductAttach(product)),
 });
 
-export default connect(mapState, mapActions)(ProductBuy);
+export default connect(mapState, mapActions)(Buy);
 

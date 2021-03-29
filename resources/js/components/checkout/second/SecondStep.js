@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import Input from './ui/Input';
+import Input from '../../ui/Input';
 
-const CheckoutSecond = (props) => {
+const SecondStep = (props) => {
     const {register, errors, handleSubmit} = useForm();
     const [commentFlag, setCommentFlag] = useState(false);
     const [addressFlag, setAddressFlag] = useState(null);
@@ -85,4 +85,4 @@ const CheckoutSecond = (props) => {
     );
 };
 
-export default CheckoutSecond;
+export default SecondStep;

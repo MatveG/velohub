@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ShoppingCartTable = (props) => (
+const Table = (props) => (
     <table className="table text-center">
         <thead>
             <tr className="border border-left-0 border-right-0">
@@ -25,5 +25,5 @@ const ShoppingCartTable = (props) => (
     </table>
 );
 
-export default ShoppingCartTable;
+export default Table;
 
