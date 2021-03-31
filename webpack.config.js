@@ -1,11 +1,11 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     mode: 'development',
     entry: {
-        'public/assets/app.min': './resources/js/app.js',
+        'public/assets/app.min': './resources/js/index.js',
         'public/assets/admin/app.min': './resources/admin/index.js',
     },
     output: {
@@ -15,15 +15,15 @@ module.exports = {
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'resources/admin/'),
-            'vue$': 'vue/dist/vue.esm.js'
+            'vue$': 'vue/dist/vue.esm.js',
         },
-        extensions: ['.js', '.vue', '.json']
+        extensions: ['.js', '.vue', '.json'],
     },
     module: {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
             },
             {
                 test: /\.js$/,
@@ -35,31 +35,31 @@ module.exports = {
                         plugins: [
                             [
                                 '@babel/plugin-transform-runtime',
-                                {"regenerator": true}
+                                {'regenerator': true},
                             ],
                             [
                                 '@babel/plugin-proposal-class-properties',
-                                {"loose": true}
-                            ]
-                        ]
-                    }
-                }
+                                {'loose': true},
+                            ],
+                        ],
+                    },
+                },
             },
             {
                 test: /\.s?css$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    "css-loader",
-                    "sass-loader"
-                ]
-            }
-        ]
+                    'css-loader',
+                    'sass-loader',
+                ],
+            },
+        ],
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css"
+            filename: '[name].css',
+            chunkFilename: '[id].css',
         }),
-        new VueLoaderPlugin()
-    ]
+        new VueLoaderPlugin(),
+    ],
 };

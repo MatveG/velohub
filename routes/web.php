@@ -31,7 +31,7 @@ Route::get('/checkout', 'CheckoutController')->name('checkout');
 Route::post('/order', 'OrderController@store')->name('order.store');
 
 // Product
-Route::get('/product/{slug}/{id}', 'ProductController')->name('product.show');
+Route::get('/Product/{slug}/{id}', 'ProductController')->name('Product.show');
 
 // Search
 Route::get('/search/{path?}/', 'SearchController')
@@ -45,9 +45,9 @@ Route::get('/{slug}/', 'DocumentController')->name('document');
 // Root
 Route::get('/', 'RootController')->name('index');
 
-// Images routing
+// ProductImages routing
 Route::get('/media/ct/{img}')->name('img.category');
-Route::get('/media/pt/{img}')->name('img.product');
+Route::get('/media/pt/{img}')->name('img.Product');
 Route::get('/media/ul/{img}')->name('img.upload');
 
 Route::namespace('Admin')->group(function () {
@@ -67,7 +67,7 @@ Route::namespace('Admin')->group(function () {
     Route::delete('/admin/products/{id}', 'ProductController@destroy');
     Route::post('/admin/products/{id}/upload-images', 'ProductController@uploadImages');
 
-    // Variants
+    // ProductVariants
     Route::get('/admin/variants/{product_id}', 'VariantController@index');
     Route::post('/admin/variants/{product_id}', 'VariantController@store');
     Route::patch('/admin/variants/{id}', 'VariantController@update');

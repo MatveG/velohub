@@ -1,8 +1,8 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
-import Input from '../../ui/Input';
+import Input from './ui/Input';
 
-const FirstStep = (props) => {
+const CheckoutFirst = (props) => {
     const {register, errors, handleSubmit} = useForm();
 
     return (
@@ -51,10 +51,12 @@ const FirstStep = (props) => {
                     errors={errors} />
             </div>
             <div className="col-12 text-end py-2">
-                <button className="btn btn-bright border" type="submit">Оплата и доставка ❯</button>
+                <button className="btn btn-bright border" type="submit">
+                    Оплата и доставка ❯
+                </button>
             </div>
         </form>
     );
 };
 
-export default FirstStep;
+export default CheckoutFirst;

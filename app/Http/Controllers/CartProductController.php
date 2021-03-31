@@ -36,7 +36,7 @@ class CartProductController extends Controller
                 cookie('_ucart', $cart->uuid, 60 * 24 * 90)
             );
         }
-        
+
         return response()->json($this->mapCartProducts($cart->products));
     }
 

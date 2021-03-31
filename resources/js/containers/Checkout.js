@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import Cart from '../cart/Cart';
-import FistStep from './first/FirstStep';
-import SecondStep from './second/SecondStep';
+import Cart from './Cart';
+import CheckoutFirst from '../components/CheckoutFirst';
+import CheckoutSecond from '../components/CheckoutSecond';
 
 const Checkout = () => {
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(2);
     let data = {foo: 'bar'};
 
     const prevStep = () => {
@@ -35,11 +35,11 @@ const Checkout = () => {
                 <h4>
                     <span>{step === 1 ? 'Ваши данные' : 'Данные доставки'}</span>
                 </h4>
-                {step === 1 && <FistStep
+                {step === 1 && <CheckoutFirst
                     data={data}
                     submitData={submitData}/>}
 
-                {step === 2 && <SecondStep
+                {step === 2 && <CheckoutSecond
                     data={data}
                     prevStep={prevStep}
                     submitData={submitData}/>}

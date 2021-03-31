@@ -29,9 +29,9 @@
             </section>
         @endif
 
-{{--        <section id="product-comments" class="mt-3 p-3 bg-light">--}}
-{{--            <h3><span>Отзывы о {{ $product->model }}</span></h3>--}}
-{{--            @include('partials.product.comments', ['comments' => $product->comments])--}}
+{{--        <section id="Product-comments" class="mt-3 p-3 bg-light">--}}
+{{--            <h3><span>Отзывы о {{ $Product->model }}</span></h3>--}}
+{{--            @include('partials.Product.comments', ['comments' => $Product->comments])--}}
 {{--        </section>--}}
 
         <section id="product-analogues" class="mt-3">

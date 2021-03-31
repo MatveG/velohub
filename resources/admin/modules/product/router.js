@@ -4,17 +4,17 @@ import ProductEdit from './views/ProductEdit'
 
 export default [
     {
-        path: '/product',
+        path: '/Product',
         name: 'product',
         component: ProductIndex
     },
     {
-        path: '/product-create',
+        path: '/Product-create',
         name: 'product-create',
         component: ProductEdit
     },
     {
-        path: '/product-edit/:propId',
+        path: '/Product-edit/:propId',
         name: 'product-edit',
         component: ProductEdit,
         props: true

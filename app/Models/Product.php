@@ -12,8 +12,8 @@ class Product extends Model
     use Traits\Relations\HasMany\Variants;
     use Traits\Relations\HasMany\Comments;
 
-    protected $name = 'product';
-    protected $imagesFolder = '/media/product';
+    protected $name = 'Product';
+    protected $imagesFolder = '/media/Product';
     protected $dates = [
         'created_at',
         'updated_at'
@@ -76,7 +76,7 @@ class Product extends Model
 
     public function getLinkAttribute()
     {
-        return route('product.show', ['slug' => $this->slug, 'id' => $this->id]);
+        return route('Product.show', ['slug' => $this->slug, 'id' => $this->id]);
     }
 
     public function scopeSearchBy($query, $string)

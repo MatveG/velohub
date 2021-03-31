@@ -25,14 +25,14 @@ class VariantObserver
 
     //    protected function syncProducts(int $productId)
 //    {
-//        $product = Product::find($productId);
-//        $product->is_stock = Variant::where('product_id', $productId)->where('stock', '>', 0)->exists();
-//        $product->save();
+//        $Product = Product::find($productId);
+//        $Product->is_stock = Variant::where('product_id', $productId)->where('stock', '>', 0)->exists();
+//        $Product->save();
 //    }
 
     // deleted:
     // delete all images
-    // update product stocks
+    // update Product stocks
 
 }
 

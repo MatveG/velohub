@@ -20,7 +20,7 @@ class ProductController extends Controller
             'keywords' => $product->name . ',' . $product->firm . ',' . $product->model,
         ];
 
-        return view('product', compact(['product', 'seo', 'meta']));
+        return view('Product', compact(['product', 'seo', 'meta']));
     }
 
 }

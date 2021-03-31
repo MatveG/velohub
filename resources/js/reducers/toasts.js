@@ -3,7 +3,7 @@ import {
     TOAST_WARNING,
     TOAST_DANGER,
     TOAST_CLEAR,
-} from '../actions/toastsActions';
+} from '../types/toasts';
 
 const initial = {
     active: false,
@@ -11,7 +11,7 @@ const initial = {
     message: null,
 };
 
-const toastsReducer = (state = initial, action = {}) => {
+const toasts = (state = initial, action = {}) => {
     const {type, payload} = action;
 
     switch (type) {
@@ -51,4 +51,4 @@ const toastsReducer = (state = initial, action = {}) => {
     }
 };
 
-export default toastsReducer;
+export default toasts;

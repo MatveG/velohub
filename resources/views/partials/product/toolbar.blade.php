@@ -22,7 +22,7 @@
             </a>
         </li>
 {{--        <li class="nav-item">--}}
-{{--            <a class="nav-link scroll-to-id" href="#product-comments" data-id="product-comments">--}}
+{{--            <a class="nav-link scroll-to-id" href="#Product-comments" data-id="Product-comments">--}}
 {{--                <span>Отзывы</span>--}}
 {{--            </a>--}}
 {{--        </li>--}}

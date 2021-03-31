@@ -6,7 +6,7 @@ import {
     CART_REMOVE,
     CART_UPDATE,
     CART_ERROR,
-} from '../actions/cartActions';
+} from '../types/cart';
 
 const initial = {
     pending: false,
@@ -14,7 +14,7 @@ const initial = {
     products: [],
 };
 
-const cartReducer = (state = initial, action = {}) => {
+const cart = (state = initial, action = {}) => {
     const {type, payload} = action;
 
     switch (type) {
@@ -81,4 +81,4 @@ const cartReducer = (state = initial, action = {}) => {
     }
 };
 
-export default cartReducer;
+export default cart;

@@ -4,18 +4,18 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-import reducer from './store';
-import {fireInfo, fireWarning, fireDanger} from './store/actions/toastsActions';
+import state from './state';
+import {fireInfo, fireWarning, fireDanger} from './actions/toasts';
 import Toasts from './components/ui/Toasts';
-import Cart from './components/cart/Cart';
-import Checkout from './components/checkout/Checkout';
-import ProductBuy from './components/product/buy/Buy';
-import ProductImages from './components/product/images/Images';
+import Cart from './containers/Cart';
+import Checkout from './containers/Checkout';
+import ProductBuy from './containers/ProductBuy';
+import ProductImages from './components/ProductImages';
 import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
 
-const store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(state, applyMiddleware(thunk));
 
 ['load', 'scroll'].forEach((eventType) => {
     window.addEventListener(eventType, () => scrollState());
@@ -37,33 +37,42 @@ Array.from(document.getElementsByClassName('navbar-icon-btn')).forEach((el) => {
     });
 });
 
-window.hasOwnProperty('_PRODUCT_IMAGES') && render(
+const productImages = document.getElementById('product-images');
+productImages && render(
     <ProductImages images={_PRODUCT_IMAGES} />,
-    document.getElementById('product-images'),
+    productImages,
 );
-window.hasOwnProperty('_PRODUCT_BUY') && render(
+
+const productBuy = document.getElementById('product-buy');
+productBuy && render(
     <Provider store={store}>
         <ProductBuy product={_PRODUCT_BUY} variants={_PRODUCT_VARIANTS} />
     </Provider>,
-    document.getElementById('product-buy'),
+    productBuy,
 );
-document.getElementById('error-message') && render(
+
+const errorMessage = document.getElementById('error-message');
+errorMessage && render(
     <Provider store={store}>
         <Toasts />
     </Provider>,
-    document.getElementById('error-message'),
+    errorMessage,
 );
-document.getElementById('shopping-cart') && render(
+
+const shoppingCart = document.getElementById('shopping-cart');
+shoppingCart && render(
     <Provider store={store}>
         <Cart />
     </Provider>,
-    document.getElementById('shopping-cart'),
+    shoppingCart,
 );
-document.getElementById('checkout-form') && render(
+
+const checkoutForm = document.getElementById('checkout-form');
+checkoutForm && render(
     <Provider store={store}>
         <Checkout />
     </Provider>,
-    document.getElementById('checkout-form'),
+    checkoutForm,
 );
 
 window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_TOAST_INFO));

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import Input from '../../ui/Input';
+import Input from './ui/Input';
 
-const SecondStep = (props) => {
+const CheckoutSecond = (props) => {
     const {register, errors, handleSubmit} = useForm();
     const [commentFlag, setCommentFlag] = useState(false);
     const [addressFlag, setAddressFlag] = useState(null);
@@ -55,7 +55,10 @@ const SecondStep = (props) => {
         <form className="row" onSubmit={handleSubmit(props.submitData)} noValidate>
             <div className="col-12 py-2">
                 <label className="form-label">Способ доставки</label>
-                <select className="form-select" name="shipping" onClick={handleSelect}>
+                <select className={'form-select ' + (errors.shipping && 'is-invalid')}
+                    name="shipping"
+                    onChange={handleSelect}>
+                    {/* ref={register({required: 'foo'})}>*/}
                     <option value={null}>---Выберите---</option>
                     <option value="1">Курьером по Киеву и области</option>
                     <option value="2">Новой Почтой</option>
@@ -70,8 +73,7 @@ const SecondStep = (props) => {
                 <a className="pointer-event" role="button" onClick={toggleComment}>
                     Добавить комментарий
                 </a>
-                { commentFlag &&
-                <div className="my-2">
+                { commentFlag && <div className="my-2">
                     <textarea className="form-control" rows="3" />
                 </div> }
             </div>
@@ -85,4 +87,4 @@ const SecondStep = (props) => {
     );
 };
 
-export default SecondStep;
+export default CheckoutSecond;

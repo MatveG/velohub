@@ -27,7 +27,7 @@ trait Shop
     public function getThumbAttribute()
     {
         return (isset($this->images[0]))
-            ? route('img.product', ['img' => str_replace('.jpg', '-md.jpg', $this->images[0])])
+            ? route('img.Product', ['img' => str_replace('.jpg', '-md.jpg', $this->images[0])])
             : null;
     }
 
@@ -38,13 +38,13 @@ trait Shop
         }
 
         return array_map(function ($item) {
-            return route('img.product', ['img' => str_replace('.jpg', '-md.jpg', $item)]);
+            return route('img.Product', ['img' => str_replace('.jpg', '-md.jpg', $item)]);
         }, $this->images);
     }
 
     public function getImageAttribute()
     {
-        return (isset($this->images[0])) ? route('img.product', ['img' => $this->images[0]]) : null;
+        return (isset($this->images[0])) ? route('img.Product', ['img' => $this->images[0]]) : null;
     }
 
 

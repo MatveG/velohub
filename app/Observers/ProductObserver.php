@@ -12,7 +12,7 @@ class ProductObserver
 {
     public function saving(Product $product)
     {
-        //$this->clearUnusedFeatures($product);
+        //$this->clearUnusedFeatures($Product);
 
         if ($product->isDirty('brand') || $product->isDirty('model')) {
             $product->latin = latinize($product->brand . ' ' . $product->model);

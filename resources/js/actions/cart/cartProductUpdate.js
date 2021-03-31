@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {cartUpdate} from './cartActions';
-import {fireDanger} from './toastsActions';
+import {cartUpdate} from './index';
+import {fireDanger} from '../toasts';
 
 export default function cartProductUpdate(product) {
     return (dispatch) => {
