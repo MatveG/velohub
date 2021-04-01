@@ -6,7 +6,9 @@ const CheckoutFirst = (props) => {
     const {register, errors, handleSubmit} = useForm();
 
     return (
-        <form className="row" onSubmit={handleSubmit(props.submitData)} noValidate>
+        <form className="row" onSubmit={handleSubmit(props.submitCheckout)} noValidate>
+            <h4><span>Ваши данные</span></h4>
+
             <div className="col-6 py-2">
                 <Input
                     name="name"

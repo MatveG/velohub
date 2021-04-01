@@ -43,6 +43,8 @@ const Buy = (props) => {
             {id: props.product.id, variant_id: null, amount: 1};
 
         dispatch(cartProductAttach(product));
+
+        new bootstrap.Modal(document.getElementById('modal-shopping-cart'), {}).show();
     };
 
     return (

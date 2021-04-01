@@ -17,10 +17,13 @@ const Checkout = () => {
         }
     };
 
-    const submitData = (formData) => {
+    const submitCheckout = (formData) => {
         data = {...data, ...formData};
+        console.log('submitData', data);
         nextStep();
     };
+
+    const CheckoutStage = step === 1 ? CheckoutFirst : CheckoutSecond;
 
     return (
         <div className="row">
@@ -32,17 +35,10 @@ const Checkout = () => {
                 </div>
             </div>
             <div className="col-5 px-4">
-                <h4>
-                    <span>{step === 1 ? 'Ваши данные' : 'Данные доставки'}</span>
-                </h4>
-                {step === 1 && <CheckoutFirst
-                    data={data}
-                    submitData={submitData}/>}
-
-                {step === 2 && <CheckoutSecond
+                {<CheckoutStage
                     data={data}
                     prevStep={prevStep}
-                    submitData={submitData}/>}
+                    submitCheckout={submitCheckout}/>}
             </div>
         </div>
     );

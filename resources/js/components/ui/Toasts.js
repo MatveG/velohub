@@ -10,9 +10,9 @@ const toasts = (props) => {
     const title = props.type.charAt(0).toUpperCase() + props.type.substr(1);
 
     return (
-        <div>
+        <div className={`${props.active ? 'd-block' : 'd-none'}`}>
             <div className="toast-container position-fixed p-3 bottom-0 end-0" style={{zIndex: 99}}>
-                <div className={`toast ${props.active ? 'show' : ''}`} role="alert">
+                <div className="toast show" role="alert">
                     <div className="toast-header">
                         <strong className={`me-auto text-${props.type}`} style={{opacity: 0.75}}>
                             {props.type === 'info' && 'ⓘ'}

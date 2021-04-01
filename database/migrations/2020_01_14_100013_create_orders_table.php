@@ -23,10 +23,11 @@ class CreateOrdersTable extends Migration
             $table->float('shipping')->default(0);
             $table->float('sum')->default(0);
             $table->json('products')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('name')->nullable();
-            $table->string('address')->nullable();
-            $table->string('email')->nullable();
+//            $table->string('phone')->nullable();
+//            $table->string('name')->nullable();
+//            $table->string('address')->nullable();
+//            $table->string('email')->nullable();
+            $table->json('address')->nullable();
             $table->text('text')->nullable();
             $table->timestamps();
         });

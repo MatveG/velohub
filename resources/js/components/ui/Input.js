@@ -24,7 +24,7 @@ const Input = (props) => {
             />
 
             {error.type === 'required' && <div
-                className="text-danger small text-end">Обязательно поле</div>}
+                className="text-danger small text-end">Обязательное</div>}
         </React.Fragment>
     );
 };
