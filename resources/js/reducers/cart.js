@@ -1,18 +1,20 @@
-export const CART_EMPTY = 'CART::EMPTY';
-export const CART_FILL = 'CART::FILL';
-export const CART_PENDING = 'CART::PENDING';
-export const CART_PUSH = 'CART::PUSH';
-export const CART_REMOVE = 'CART::REMOVE';
-export const CART_UPDATE = 'CART::UPDATE';
-export const CART_ERROR = 'CART::ERROR';
+import {
+    CART_EMPTY,
+    CART_FILL,
+    CART_PENDING,
+    CART_PUSH,
+    CART_REMOVE,
+    CART_UPDATE,
+    CART_ERROR,
+} from '../types/cart';
 
-const initialState = {
+const initial = {
     pending: false,
     error: false,
     products: [],
 };
 
-const cart = (state = initialState, action = {}) => {
+const cart = (state = initial, action = {}) => {
     const {type, payload} = action;
 
     switch (type) {
@@ -21,7 +23,7 @@ const cart = (state = initialState, action = {}) => {
             ...state,
             pending: false,
             error: null,
-            products: initialState.products,
+            products: initial.products,
         };
 
     case CART_FILL:
@@ -29,7 +31,7 @@ const cart = (state = initialState, action = {}) => {
             ...state,
             pending: false,
             error: true,
-            products: payload || initialState.products,
+            products: payload || initial.products,
         };
 
     case CART_PENDING:

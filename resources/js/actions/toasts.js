@@ -3,7 +3,7 @@ import {
     TOAST_WARNING,
     TOAST_DANGER,
     TOAST_CLEAR,
-} from '../reducers/toasts';
+} from '../types/toasts';
 
 export const fireInfo = (message) => ({
     type: TOAST_INFO,

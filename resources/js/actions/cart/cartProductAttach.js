@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {cartPush} from '../cart';
+import {cartPush} from './index';
 import {fireDanger} from '../toasts';
 
-export function cartProductAttach(product) {
+export default function cartProductAttach(product) {
     return (dispatch) => {
         return axios.patch(`/api/carts/products/attach`, product)
             .then((response) => {

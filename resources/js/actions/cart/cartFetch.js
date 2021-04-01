@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {cartFill} from '../cart';
+import {cartFill} from './index';
 import {fireDanger} from '../toasts';
 
-export function cartFetch() {
+export default function cartFetch() {
     return (dispatch) => {
         axios.get(`/api/carts/products`)
             .then((response) => {

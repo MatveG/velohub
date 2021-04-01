@@ -19,7 +19,6 @@ class VariantsTableSeeder extends Seeder
                 'product_id' => $i,
                 'category_id' => $faker->numberBetween(1, 3),
                 'is_active' => true,
-                'is_stock' => true,
                 'price' => 100,
                 'surcharge' => 0,
                 'stock' =>  $faker->numberBetween(0, 3),

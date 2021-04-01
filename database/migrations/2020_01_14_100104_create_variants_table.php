@@ -19,7 +19,6 @@ class CreateVariantsTable extends Migration
             $table->bigInteger('category_id')->unsigned();
 
             $table->boolean('is_active')->default(false)->index();
-            $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
 
             $table->integer('stock')->default(0);

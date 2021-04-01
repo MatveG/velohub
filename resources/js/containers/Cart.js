@@ -2,31 +2,25 @@ import React from 'react';
 import {connect} from 'react-redux';
 import CartTable from '../components/CartTable';
 import CartProduct from '../components/CartProduct';
-import {cartFetch, cartProductUpdate, cartProductDetach} from '../actions/cart';
+import cartFetch from '../actions/cart/cartFetch';
+import cartProductUpdate from '../actions/cart/cartProductUpdate';
+import cartProductDetach from '../actions/cart/cartProductDetach';
 import {formatAsPrice} from '../utils/formatAs';
 
 class Cart extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.updateAmount = this.updateAmount.bind(this);
-        this.removeProduct = this.removeProduct.bind(this);
-    }
-
     componentDidMount() {
-        if (!this.props.pending) {
-            this.props.cartFetch();
-        }
+        this.props.cartFetch();
     }
 
-    updateAmount(product, mod) {
-        if (product.amount + mod > 0) {
-            this.props.updateProduct({...product, amount: product.amount + mod});
+    updateAmount(mod) {
+        if (this.props.product.amount + mod > 0) {
+            this.props.product.amount += mod;
+            dispatch(cartProductUpdate(this.props.product));
         }
     };
 
-    removeProduct(product) {
-        this.props.removeProduct(product);
+    removeProduct() {
+        dispatch(cartProductDetach(this.props.product));
     };
 
     render() {
@@ -71,10 +65,9 @@ class Cart extends React.Component {
             </CartTable>
         );
     }
-}
+};
 
 const mapState = ({cart}) => ({
-    pending: cart.pending,
     products: cart.products,
     total: cart.products.reduce((total, el) => total + el.amount * el.price, 0),
 });

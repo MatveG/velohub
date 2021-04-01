@@ -6,11 +6,11 @@ import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import state from './state';
 import {fireInfo, fireWarning, fireDanger} from './actions/toasts';
-import ProductImages from './components/ProductImages';
 import Toasts from './components/ui/Toasts';
-import Buy from './containers/Buy';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
+import ProductBuy from './containers/ProductBuy';
+import ProductImages from './components/ProductImages';
 import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
@@ -37,10 +37,16 @@ Array.from(document.getElementsByClassName('navbar-icon-btn')).forEach((el) => {
     });
 });
 
+const productImages = document.getElementById('product-images');
+productImages && render(
+    <ProductImages images={_PRODUCT_IMAGES} />,
+    productImages,
+);
+
 const productBuy = document.getElementById('product-buy');
 productBuy && render(
     <Provider store={store}>
-        <Buy currency={_CURRENCY} product={_PRODUCT} variants={_PRODUCT_VARIANTS} />
+        <ProductBuy product={_PRODUCT_BUY} variants={_PRODUCT_VARIANTS} />
     </Provider>,
     productBuy,
 );
@@ -67,12 +73,6 @@ checkoutForm && render(
         <Checkout />
     </Provider>,
     checkoutForm,
-);
-
-const productImages = document.getElementById('product-images');
-productImages && render(
-    <ProductImages images={_PRODUCT_IMAGES} />,
-    productImages,
 );
 
 window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_TOAST_INFO));
