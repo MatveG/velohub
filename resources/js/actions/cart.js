@@ -6,7 +6,12 @@ import {
     CART_REMOVE,
     CART_UPDATE,
     CART_ERROR,
-} from '../../types/cart';
+} from '../reducers/cart';
+
+export * from './cart/cartFetch';
+export * from './cart/cartProductAttach';
+export * from './cart/cartProductDetach';
+export * from './cart/cartProductUpdate';
 
 export const cartEmpty = () => ({
     type: CART_EMPTY,
@@ -40,3 +45,4 @@ export const cartError = (error) => ({
     type: CART_ERROR,
     payload: error,
 });
+

@@ -5,11 +5,23 @@ const CartProduct = (props) => {
     const productPrice = formatAsPrice(props.product.price);
     const productSum = formatAsPrice(props.product.amount * props.product.price);
 
+    const removeProduct = () => {
+        props.removeProduct(props.product);
+    };
+
+    const incrementAmount = () => {
+        props.updateAmount(props.product, 1);
+    };
+
+    const decrementAmount = () => {
+        props.updateAmount(props.product, -1);
+    };
+
     return (
         <tr>
             <td className="border-0 align-middle">
                 {!props.readOnly && <button className="btn btn-sm btn-bright btn-cart-remove"
-                    onClick={props.removeProduct}>&times;</button>}
+                    onClick={removeProduct}>&times;</button>}
             </td>
 
             <td className="border-0 text-left p-2">
@@ -35,13 +47,13 @@ const CartProduct = (props) => {
             <td className="border-0 align-middle text-center">
                 <div className="nowrap">
                     {!props.readOnly && <a className="btn btn-sm btn-primary btn-cart-decrease"
-                        onClick={() => props.updateAmount(-1)} href="#">-</a>}
+                        onClick={decrementAmount} href="#">-</a>}
                     &nbsp;
                     <span id="amount-{{ $product->id }}"
                         className="font-weight-bold">{props.product.amount}</span>
                     &nbsp;
                     {!props.readOnly && <a className="btn btn-sm btn-primary btn-cart-increase"
-                        onClick={() => props.updateAmount(1)} href="#">+</a>}
+                        onClick={incrementAmount} href="#">+</a>}
                 </div>
             </td>
 
