@@ -17,7 +17,7 @@ abstract class AFilter
     public function __construct(string $column, string $slug, string $title, string $units = null)
     {
         if (!str_contains($column, '.')) {
-            throw new InvalidArgumentException('Column property must contain CartProduct name');
+            throw new InvalidArgumentException('Column property must contain table name');
         }
         if (!isset($this->type)) {
             throw new LogicException(get_class($this) . ' must have a type');

@@ -76,16 +76,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session Database CartProduct
+    | Session Database Table
     |--------------------------------------------------------------------------
     |
-    | When using the "database" session driver, you may specify the CartProduct we
+    | When using the "database" session driver, you may specify the Table we
     | should use to manage the sessions. Of course, a sensible default is
     | provided for you; however, you are free to change this as needed.
     |
     */
 
-    'CartProduct' => 'sessions',
+    'table' => 'sessions',
 
     /*
     |--------------------------------------------------------------------------

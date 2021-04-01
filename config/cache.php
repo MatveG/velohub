@@ -43,7 +43,7 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'CartProduct' => 'cache',
+            'table' => 'cache',
             'connection' => null,
         ],
 
@@ -81,7 +81,7 @@ return [
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'CartProduct' => env('DYNAMODB_CACHE_TABLE', 'cache'),
+            'table' => env('DYNAMODB_CACHE_TABLE', 'cache'),
             'endpoint' => env('DYNAMODB_ENDPOINT'),
         ],
 

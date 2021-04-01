@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Product;
+use App\Models\product;
 use App\Models\Variant;
 use App\Services\Admin\ShopImages;
 use Illuminate\Support\Facades\DB;
@@ -25,14 +25,14 @@ class VariantObserver
 
     //    protected function syncProducts(int $productId)
 //    {
-//        $Product = Product::find($productId);
-//        $Product->is_stock = Variant::where('product_id', $productId)->where('stock', '>', 0)->exists();
-//        $Product->save();
+//        $product = product::find($productId);
+//        $product->is_stock = Variant::where('product_id', $productId)->where('stock', '>', 0)->exists();
+//        $product->save();
 //    }
 
     // deleted:
     // delete all images
-    // update Product stocks
+    // update product stocks
 
 }
 

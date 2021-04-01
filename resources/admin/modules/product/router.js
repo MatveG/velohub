@@ -1,20 +1,20 @@
 
-import ProductIndex from './views/ProductIndex'
-import ProductEdit from './views/ProductEdit'
+import ProductIndex from './views/ProductIndex';
+import ProductEdit from './views/ProductEdit';
 
 export default [
     {
-        path: '/Product',
+        path: '/product',
         name: 'product',
         component: ProductIndex
     },
     {
-        path: '/Product-create',
+        path: '/product-create',
         name: 'product-create',
         component: ProductEdit
     },
     {
-        path: '/Product-edit/:propId',
+        path: '/product-edit/:propId',
         name: 'product-edit',
         component: ProductEdit,
         props: true
