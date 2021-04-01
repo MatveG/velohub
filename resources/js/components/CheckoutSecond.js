@@ -3,9 +3,9 @@ import {useForm} from 'react-hook-form';
 import Input from './ui/Input';
 
 const CheckoutSecond = (props) => {
-    const {register, errors, handleSubmit} = useForm();
     const [commentFlag, setCommentFlag] = useState(false);
     const [addressFlag, setAddressFlag] = useState(null);
+    const {register, errors, handleSubmit} = useForm();
 
     const handleSelect = ({target}) => {
         setAddressFlag(+target.value);

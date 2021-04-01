@@ -1,14 +1,15 @@
 import axios from 'axios';
-import {cartRemove} from './index';
+import {cartRemove} from '../cart';
+import {fireDanger} from '../toasts';
 
-export default function cartProductDetach(product) {
+export function cartProductDetach(product) {
     return (dispatch) => {
         return axios.patch(`/api/carts/products/detach`, product)
             .then(() => {
                 dispatch(cartRemove(product));
             })
             .catch((err) => {
-                dispatch(toastsActions('Failed updating cart data'));
+                dispatch(fireDanger('Failed fetching cart data'));
                 console.error(err);
             });
     };
