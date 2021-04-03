@@ -1,4 +1,4 @@
-<div id="loader" class="loader"><div class="bar"></div></div>
+{{--<div id="loader" class="loader"><div class="bar"></div></div>--}}
 <div id="scroll-top" class="icon-scroll-top" role="button"></div>
 
 <div id="error-message" />

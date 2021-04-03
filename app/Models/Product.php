@@ -76,7 +76,7 @@ class Product extends Model
 
     public function getLinkAttribute()
     {
-        return route('product.show', ['slug' => $this->slug, 'id' => $this->id]);
+        return route('product', ['slug' => $this->slug, 'id' => $this->id]);
     }
 
     public function scopeSearchBy($query, $string)

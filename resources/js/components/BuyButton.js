@@ -1,6 +1,10 @@
 import React from 'react';
 
 const BuyButton = (props) => {
+    if (!props.isStock) {
+        return <b>нет в наличии</b>;
+    }
+
     return props.isInCart ? (
         <button className="btn btn-gray w-50"
             role="button"

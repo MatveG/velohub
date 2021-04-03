@@ -29,7 +29,7 @@ const cart = (state = initialState, action = {}) => {
             ...state,
             pending: false,
             error: true,
-            products: payload || initialState.products,
+            products: payload,
         };
 
     case CART_PENDING:

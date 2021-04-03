@@ -6,7 +6,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"/>
             </div>
             <div class="modal-body text-center">
-                <div id="shopping-cart" class="p-2"></div>
+                <div id="shopping-cart" class="p-2">
+                    <div className="text-center">
+                        <i>Здесь пока еще пусто</i>
+                    </div>
+                </div>
 
                 <button class="btn btn-gray border" type="button" data-bs-dismiss="modal">Продолжить покупки</button>
                 <a href="{{ route('checkout') }}" class="btn btn-bright border" role="button">Оформить заказ</a>

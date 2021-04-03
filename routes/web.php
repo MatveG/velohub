@@ -6,11 +6,14 @@ Route::patch('/api/carts/products/attach', 'CartProductController@attach');
 Route::patch('/api/carts/products/detach', 'CartProductController@detach');
 Route::patch('/api/carts/products/update', 'CartProductController@update');
 
+// Order
+Route::post('/api/orders', 'OrderController');
+
 // Admin
 Route::view('/admin/', 'Admin::index');
 
-// Cart
-Route::get('/cart/form/', 'CartController@form')->name('cart.form');
+//// Cart
+//Route::get('/cart/form/', 'CartController')->name('cart');
 
 // Category
 Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')
@@ -27,11 +30,8 @@ Route::get('/compare/{slug}/{id}', 'CompareController')->name('compare');
 // Checkout
 Route::get('/checkout', 'CheckoutController')->name('checkout');
 
-// Order
-Route::post('/order', 'OrderController@store')->name('order.store');
-
 // Product
-Route::get('/product/{slug}/{id}', 'ProductController')->name('product.show');
+Route::get('/product/{slug}/{id}', 'ProductController')->name('product');
 
 // Search
 Route::get('/search/{path?}/', 'SearchController')

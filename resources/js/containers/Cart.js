@@ -1,9 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import CartTable from '../components/CartTable';
-import CartProduct from '../components/CartProduct';
+import CartProducts from '../components/CartProducts';
 import {cartFetch, cartProductUpdate, cartProductDetach} from '../actions/cart';
-import {formatAsPrice} from '../utils/formatAs';
 
 class Cart extends React.Component {
     constructor(props) {
@@ -30,44 +29,12 @@ class Cart extends React.Component {
     };
 
     render() {
-        if (!this.props.products.length) {
-            return (
-                <div className="text-center">
-                    <i>Здесь пока еще пусто</i>
-                </div>
-            );
-        }
-
-        const cartProducts = this.props.products.map((el, idx) => (
-            <CartProduct
-                key={idx}
-                product={el}
-                updateAmount={this.updateAmount}
-                removeProduct={this.removeProduct}
-                readOnly={this.props.readOnly} />
-        ));
-
         return (
-            <CartTable>
-                {cartProducts}
-
-                <tr className="border border-left-0 border-right-0">
-                    <td className="border-0 align-middle text-right" colSpan="4">
-                        Доставка:
-                    </td>
-                    <td className="border-0 align-middle">
-                        {formatAsPrice(this.props.total)}
-                    </td>
-                </tr>
-
-                <tr className="border border-left-0 border-right-0">
-                    <td className="border-0 align-middle text-right text-uppercase" colSpan="4">
-                        <strong>Итого:</strong>
-                    </td>
-                    <td className="border-0 align-middle">
-                        <strong>{formatAsPrice(this.props.total)}</strong>
-                    </td>
-                </tr>
+            <CartTable shipping={0} total={this.props.total}>
+                <CartProducts products={this.props.products}
+                    updateAmount={this.updateAmount}
+                    removeProduct={this.removeProduct}
+                    readOnly={this.props.readOnly} />
             </CartTable>
         );
     }

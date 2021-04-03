@@ -1,72 +1,22 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import Input from './ui/Input';
 
 const CheckoutSecond = (props) => {
-    const [shipping, setShipping] = useState('');
+    const [shipping, setShipping] = useState(1);
     const [commentFlag, setCommentFlag] = useState(false);
-    const formRef = useRef();
     const {register, errors, handleSubmit} = useForm();
 
     const handleSelect = ({target}) => {
         setShipping(+target.value);
-        formRef.current.reset();
     };
 
     const toggleComment = () => {
         setCommentFlag(!commentFlag);
     };
 
-    const cityShipping = (
-        <React.Fragment>
-            <div className="col-7 py-2">
-                <Input
-                    name="addressStreet"
-                    label="Улица"
-                    placeholder="Адрес доставки"
-                    register={register.bind(register, {required: true})}
-                    errors={errors} />
-            </div>
-            <div className="col-3 py-2">
-                <Input
-                    name="addressHouse"
-                    label="Дом"
-                    placeholder="Номер"
-                    register={register.bind(register, {required: true})}
-                    errors={errors} />
-            </div>
-            <div className="col-2 py-2">
-                <Input name="addressEntrance" label="Подъезд" />
-            </div>
-        </React.Fragment>
-    );
-
-    const carrierShipping = (
-        <React.Fragment>
-            <div className="col-8 py-2">
-                <Input
-                    name="addressCity"
-                    label="Город"
-                    placeholder="Город доставки"
-                    register={register.bind(register, {required: true})}
-                    errors={errors} />
-            </div>
-            <div className="col-4 py-2">
-                <Input
-                    name="addressBranch"
-                    label="Отделение"
-                    placeholder="Номер отделения"
-                    register={register.bind(register, {required: true})}
-                    errors={errors} />
-            </div>
-        </React.Fragment>
-    );
-
     return (
-        <form className="row"
-            onSubmit={handleSubmit(props.submitCheckout)}
-            ref={formRef}
-            noValidate>
+        <form className="row" noValidate onSubmit={handleSubmit(props.finalStep)}>
             <h4><span>Данные доставки</span></h4>
 
             <div className="col-12 py-2">
@@ -75,16 +25,57 @@ const CheckoutSecond = (props) => {
                     name="shipping"
                     value={shipping}
                     onChange={handleSelect}
-                    ref={register({required: true})}>
+                    ref={register({
+                        required: true,
+                        min: 1,
+                    })}>
 
-                    <option value="">---Выберите---</option>
-                    <option value="1">Курьером по Киеву и области</option>
-                    <option value="2">Новой Почтой</option>
-                    <option value="3">Деливери</option>
+                    <option value={0}>---Выберите---</option>
+                    <option value={1}>Курьером по Киеву и области</option>
+                    <option value={2}>Новой Почтой</option>
+                    <option value={3}>Деливери</option>
                 </select>
             </div>
 
-            {!!shipping && (shipping === '1' ? cityShipping : carrierShipping)}
+            <div className={shipping === 1 ? 'row p-0 m-0' : 'd-none'}>
+                <div className="col-8 py-2">
+                    <Input
+                        name="addressStreet"
+                        label="Улица"
+                        placeholder="Адрес доставки"
+                        register={shipping === 1 && register.bind(register, {required: true})}
+                        errors={errors} />
+                </div>
+
+                <div className="col-4 py-2">
+                    <Input
+                        name="addressHouse"
+                        label="Дом"
+                        placeholder="Номер"
+                        register={shipping === 1 && register.bind(register, {required: true})}
+                        errors={errors} />
+                </div>
+            </div>
+
+            <div className={shipping >= 2 ? 'row' : 'd-none'}>
+                <div className="col-8 py-2">
+                    <Input
+                        name="addressCity"
+                        label="Город"
+                        placeholder="Город доставки"
+                        register={shipping => 2 && register.bind(register, {required: true})}
+                        errors={errors} />
+                </div>
+
+                <div className="col-4 py-2">
+                    <Input
+                        name="addressBranch"
+                        label="Отделение"
+                        placeholder="Номер отделения"
+                        register={shipping => 2 && register.bind(register, {required: true})}
+                        errors={errors} />
+                </div>
+            </div>
 
             <div className="col-12 py-2">
                 <a className="pointer-event" role="button" onClick={toggleComment}>

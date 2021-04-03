@@ -14,7 +14,7 @@
                 ref="upload" class="upload-new-image">
                 <b-field class="file">
                     <b-upload v-model="upload" multiple drag-drop>
-                        <div class="flex-centered"><i class="fa fa-upload is-size-3 has-text-primary"></i></div>
+                        <div class="flex-centered"><span class="fa fa-upload is-size-3 has-text-primary"></span></div>
                     </b-upload>
                 </b-field>
             </li>
@@ -145,7 +145,7 @@
         width: 100%;
         height: 100%;
     }
-    .upload-new-image i {
+    .upload-new-image span {
         width: auto;
         height: auto;
         margin: auto;

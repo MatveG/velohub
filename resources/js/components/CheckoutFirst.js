@@ -6,7 +6,7 @@ const CheckoutFirst = (props) => {
     const {register, errors, handleSubmit} = useForm();
 
     return (
-        <form className="row" onSubmit={handleSubmit(props.submitCheckout)} noValidate>
+        <form className="row" onSubmit={handleSubmit(props.nextStep)} noValidate>
             <h4><span>Ваши данные</span></h4>
 
             <div className="col-6 py-2">
@@ -14,6 +14,7 @@ const CheckoutFirst = (props) => {
                     name="name"
                     label="Имя"
                     placeholder="Ваше имя"
+                    defaultValue={props.userData.name}
                     register={register.bind(register, {
                         required: true,
                         minLength: 3,
@@ -24,7 +25,8 @@ const CheckoutFirst = (props) => {
                 <Input
                     name="surname"
                     label="Фамилия"
-                    placeholder="Ваша фамилия" />
+                    placeholder="Ваша фамилия"
+                    defaultValue={props.userData.surname} />
             </div>
             <div className="col-6 py-2">
                 <Input
@@ -36,7 +38,8 @@ const CheckoutFirst = (props) => {
                         minLength: 10,
 
                     })}
-                    errors={errors} />
+                    errors={errors}
+                    defaultValue={props.userData.phone} />
             </div>
             <div className="col-6 py-2">
                 <Input
@@ -50,7 +53,8 @@ const CheckoutFirst = (props) => {
                             message: 'invalid email address',
                         },
                     })}
-                    errors={errors} />
+                    errors={errors}
+                    defaultValue={props.userData.email} />
             </div>
             <div className="col-12 text-end py-2">
                 <button className="btn btn-bright border" type="submit">

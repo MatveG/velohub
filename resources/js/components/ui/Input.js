@@ -16,8 +16,9 @@ const Input = (props) => {
             <input className={classes.join(' ')}
                 id={id}
                 type={type}
-                value={props.value}
                 name={props.name}
+                value={props.value}
+                defaultValue={props.defaultValue}
                 placeholder={props.placeholder}
                 onChange={props.handleChange}
                 ref={props.register && props.register()}

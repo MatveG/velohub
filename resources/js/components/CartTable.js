@@ -1,4 +1,5 @@
 import React from 'react';
+import {formatAsPrice} from '../utils/formatAs';
 
 const CartTable = (props) => {
     return (
@@ -22,6 +23,24 @@ const CartTable = (props) => {
             </thead>
             <tbody>
                 {props.children}
+
+                <tr className="border border-left-0 border-right-0">
+                    <td className="border-0 align-middle text-right" colSpan="4">
+                        Доставка:
+                    </td>
+                    <td className="border-0 align-middle">
+                        {formatAsPrice(props.shipping)}
+                    </td>
+                </tr>
+
+                <tr className="border border-left-0 border-right-0">
+                    <td className="border-0 align-middle text-right text-uppercase" colSpan="4">
+                        <strong>Итого:</strong>
+                    </td>
+                    <td className="border-0 align-middle">
+                        <strong>{formatAsPrice(props.total)}</strong>
+                    </td>
+                </tr>
             </tbody>
         </table>
     );

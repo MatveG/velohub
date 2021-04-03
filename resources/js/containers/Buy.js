@@ -2,9 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {cartFetch, cartProductAttach} from '../actions/cart';
 import BuyButton from '../components/BuyButton';
-import VariantSelect from '../components/VariantSelect';
-
-let isStock; let isInCart;
+import BuyPrice from '../components/BuyPrice';
+import BuyVariants from '../components/BuyVariants';
 
 const Buy = (props) => {
     const dispatch = useDispatch();
@@ -12,6 +11,7 @@ const Buy = (props) => {
     const cartProducts = useSelector((state) => state.cart.products);
     const [variant, setVariant] = useState({});
     const [isValid, setIsValid] = useState(true);
+    let isStock; let isInCart;
 
     useEffect(() => {
         if (!cartPending) {
@@ -51,19 +51,17 @@ const Buy = (props) => {
         <div className="mt-2">
             <h4><span>Купить</span></h4>
 
-            {!!props.variants.length && <VariantSelect
-                variants={props.variants}
+            <BuyVariants variants={props.variants}
                 handleSelect={handleVariantSelect}
-                isInvalid={!isValid}/>}
+                isInvalid={!isValid}/>
 
-            <p className="py-2 pt-3">
-                <span className="product-price">{variant.price || props.product.price}</span>&nbsp;
-                <span>{props.currency.sign}</span>
-            </p>
+            <BuyPrice currency={props.currency}
+                product={props.product}
+                variant={variant}/>
 
-            {isStock ?
-                <BuyButton isInCart={isInCart} addToCart={handleAddToCart} /> :
-                <b>нет в наличии</b>}
+            <BuyButton isStock={isStock}
+                isInCart={isInCart}
+                addToCart={handleAddToCart} />
         </div>
     );
 };
