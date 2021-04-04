@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {cartFill} from '../cart';
-import {fireDanger} from '../toasts';
+import {cartFill} from '../../state/actions/cart';
+import {fireDanger} from '../../state/actions/toasts';
 
 export function cartFetch() {
     return (dispatch) => {

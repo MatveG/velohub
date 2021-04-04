@@ -1,55 +1,39 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import CartTable from '../components/CartTable';
 import CartProducts from '../components/CartProducts';
-import {cartFetch, cartProductUpdate, cartProductDetach} from '../actions/cart';
+import {cartFetch, cartProductUpdate, cartProductDetach} from '../api/cart';
 
-class Cart extends React.Component {
-    constructor(props) {
-        super(props);
+const Cart = (props) => {
+    const dispatch = useDispatch();
+    const pending = useSelector((state) => state.cart.pending);
+    const products = useSelector((state) => state.cart.products);
+    const total = products.reduce((total, el) => total + el.amount * el.price, 0);
 
-        this.updateAmount = this.updateAmount.bind(this);
-        this.removeProduct = this.removeProduct.bind(this);
-    }
-
-    componentDidMount() {
-        if (!this.props.pending) {
-            this.props.cartFetch();
+    useEffect(() => {
+        if (!pending) {
+            dispatch(cartFetch());
         }
-    }
+    }, []);
 
-    updateAmount(product, mod) {
+    const updateAmount = (product, mod) => {
         if (product.amount + mod > 0) {
-            this.props.updateProduct({...product, amount: product.amount + mod});
+            dispatch(cartProductUpdate({...product, amount: product.amount + mod}));
         }
     };
 
-    removeProduct(product) {
-        this.props.removeProduct(product);
+    const removeProduct = (product) => {
+        dispatch(cartProductDetach(product));
     };
 
-    render() {
-        return (
-            <CartTable shipping={0} total={this.props.total}>
-                <CartProducts products={this.props.products}
-                    updateAmount={this.updateAmount}
-                    removeProduct={this.removeProduct}
-                    readOnly={this.props.readOnly} />
-            </CartTable>
-        );
-    }
-}
+    return (
+        <CartTable total={total}>
+            <CartProducts products={products}
+                updateAmount={updateAmount}
+                removeProduct={removeProduct}
+                readOnly={props.readOnly} />
+        </CartTable>
+    );
+};
 
-const mapState = ({cart}) => ({
-    pending: cart.pending,
-    products: cart.products,
-    total: cart.products.reduce((total, el) => total + el.amount * el.price, 0),
-});
-
-const mapActions = (dispatch) => ({
-    cartFetch: () => dispatch(cartFetch()),
-    updateProduct: (product) => dispatch(cartProductUpdate(product)),
-    removeProduct: (product) => dispatch(cartProductDetach(product)),
-});
-
-export default connect(mapState, mapActions)(Cart);
+export default Cart;

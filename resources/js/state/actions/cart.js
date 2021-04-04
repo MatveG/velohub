@@ -8,11 +8,6 @@ import {
     CART_ERROR,
 } from '../reducers/cart';
 
-export * from './cart/cartFetch';
-export * from './cart/cartProductAttach';
-export * from './cart/cartProductDetach';
-export * from './cart/cartProductUpdate';
-
 export const cartEmpty = () => ({
     type: CART_EMPTY,
 });

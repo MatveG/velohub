@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {cartFetch, cartProductAttach} from '../actions/cart';
+import {cartFetch, cartProductAttach} from '../api/cart';
 import BuyButton from '../components/BuyButton';
 import BuyPrice from '../components/BuyPrice';
 import BuyVariants from '../components/BuyVariants';

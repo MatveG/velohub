@@ -6,8 +6,13 @@ const Input = (props) => {
     const error = props.errors && props.errors[props.name] || {};
     const classes = ['form-control'];
 
-    error.type && classes.push('is-invalid');
-    props.classes && classes.push(...props.classes);
+    if (error.type) {
+        classes.push('is-invalid');
+    }
+
+    if (props.classes) {
+        classes.push(...props.classes);
+    }
 
     return (
         <React.Fragment>
@@ -21,7 +26,7 @@ const Input = (props) => {
                 defaultValue={props.defaultValue}
                 placeholder={props.placeholder}
                 onChange={props.handleChange}
-                ref={props.register && props.register()}
+                ref={props.register ? props.register() : null}
             />
 
             {error.type === 'required' && <div

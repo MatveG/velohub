@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {clearToast} from '../../actions/toasts';
+import {clearToast} from '../../state/actions/toasts';
 
 const toasts = (props) => {
     setTimeout(() => {

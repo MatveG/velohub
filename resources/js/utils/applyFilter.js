@@ -30,8 +30,13 @@ export default ({name, value, type, checked}) => {
                 newValues.push(el);
             });
 
-            type === 'checkbox' && checked && newValues.push(value);
-            type === 'text' && value && newValues.push(value);
+            if (type === 'checkbox' && checked) {
+                newValues.push(value);
+            }
+
+            if (type === 'text' && value) {
+                newValues.push(value);
+            }
 
             if (newValues.length > 0) {
                 newQuery.push(urlKey + '-is-' + newValues.join('-or-'));

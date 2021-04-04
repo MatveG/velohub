@@ -3,11 +3,11 @@
         <div class="modal-content">
             <div class="modal-header px-4">
                 <h3 class="modal-title" id="exampleModalLabel">Корзина покупок</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"/>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
-                <div id="shopping-cart" class="p-2">
-                    <div className="text-center">
+                <div id="shop-cart" class="p-2">
+                    <div class="text-center">
                         <i>Здесь пока еще пусто</i>
                     </div>
                 </div>

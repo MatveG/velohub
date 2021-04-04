@@ -4,9 +4,9 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-import state from './state';
-import {fireInfo, fireWarning, fireDanger} from './actions/toasts';
-import ProductImages from './components/ProductImages';
+import state from './state/';
+import {fireInfo, fireWarning, fireDanger} from './state/actions/toasts';
+import ProductImage from './components/ProductImage';
 import Toasts from './components/ui/Toasts';
 import Buy from './containers/Buy';
 import Cart from './containers/Cart';
@@ -37,12 +37,42 @@ Array.from(document.getElementsByClassName('navbar-icon-btn')).forEach((el) => {
     });
 });
 
+const productImage = document.getElementById('product-image');
+productImage && render(
+    <ProductImage images={_PRODUCT_IMAGES} />,
+    productImage,
+);
+
 const productBuy = document.getElementById('product-buy');
 productBuy && render(
     <Provider store={store}>
-        <Buy currency={_CURRENCY} product={_PRODUCT} variants={_PRODUCT_VARIANTS} />
+        <Buy currency={_CONFIG.currency} product={_PRODUCT} variants={_PRODUCT_VARIANTS} />
     </Provider>,
     productBuy,
+);
+
+const shopCart = document.getElementById('shop-cart');
+shopCart && render(
+    <Provider store={store}>
+        <Cart />
+    </Provider>,
+    shopCart,
+);
+
+const checkoutCart = document.getElementById('checkout-cart');
+checkoutCart && render(
+    <Provider store={store}>
+        <Cart readOnly={true} />
+    </Provider>,
+    checkoutCart,
+);
+
+const checkoutForm = document.getElementById('checkout-form');
+checkoutForm && render(
+    <Provider store={store}>
+        <Checkout currency={_CONFIG.currency} couriers={_CONFIG.couriers} />
+    </Provider>,
+    checkoutForm,
 );
 
 const errorMessage = document.getElementById('error-message');
@@ -51,28 +81,6 @@ errorMessage && render(
         <Toasts />
     </Provider>,
     errorMessage,
-);
-
-const shoppingCart = document.getElementById('shopping-cart');
-shoppingCart && render(
-    <Provider store={store}>
-        <Cart />
-    </Provider>,
-    shoppingCart,
-);
-
-const checkoutForm = document.getElementById('checkout-form');
-checkoutForm && render(
-    <Provider store={store}>
-        <Checkout />
-    </Provider>,
-    checkoutForm,
-);
-
-const productImages = document.getElementById('product-images');
-productImages && render(
-    <ProductImages images={_PRODUCT_IMAGES} />,
-    productImages,
 );
 
 window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_TOAST_INFO));

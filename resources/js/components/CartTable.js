@@ -26,15 +26,6 @@ const CartTable = (props) => {
 
                 <tr className="border border-left-0 border-right-0">
                     <td className="border-0 align-middle text-right" colSpan="4">
-                        Доставка:
-                    </td>
-                    <td className="border-0 align-middle">
-                        {formatAsPrice(props.shipping)}
-                    </td>
-                </tr>
-
-                <tr className="border border-left-0 border-right-0">
-                    <td className="border-0 align-middle text-right text-uppercase" colSpan="4">
                         <strong>Итого:</strong>
                     </td>
                     <td className="border-0 align-middle">

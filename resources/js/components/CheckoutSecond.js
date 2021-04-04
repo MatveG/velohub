@@ -1,92 +1,43 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import Input from './ui/Input';
+import CheckoutCouriers from './CheckoutCouriers';
+import CheckoutInfo from './CheckoutInfo';
+import CheckoutCityForm from './CheckoutCityFrom';
+import CheckoutCourierForm from './CheckoutCourierForm';
 
 const CheckoutSecond = (props) => {
-    const [shipping, setShipping] = useState(1);
-    const [commentFlag, setCommentFlag] = useState(false);
+    const [delivery, setDelivery] = useState(1);
     const {register, errors, handleSubmit} = useForm();
 
-    const handleSelect = ({target}) => {
-        setShipping(+target.value);
-    };
-
-    const toggleComment = () => {
-        setCommentFlag(!commentFlag);
+    const handleCourierChange = ({target}) => {
+        setDelivery(+target.value);
     };
 
     return (
-        <form className="row" noValidate onSubmit={handleSubmit(props.finalStep)}>
+        <form noValidate onSubmit={handleSubmit(props.nextStep)}>
             <h4><span>Данные доставки</span></h4>
 
-            <div className="col-12 py-2">
-                <label className="form-label">Способ доставки</label>
-                <select className={'form-select ' + (errors.shipping && 'is-invalid')}
-                    name="shipping"
-                    value={shipping}
-                    onChange={handleSelect}
-                    ref={register({
-                        required: true,
-                        min: 1,
-                    })}>
+            <label className="form-label">Способ доставки</label>
 
-                    <option value={0}>---Выберите---</option>
-                    <option value={1}>Курьером по Киеву и области</option>
-                    <option value={2}>Новой Почтой</option>
-                    <option value={3}>Деливери</option>
-                </select>
+            <CheckoutCouriers couriers={props.couriers}
+                delivery={delivery}
+                handleChange={handleCourierChange}
+                register={register.bind(register, {required: true, min: 1})}
+                isInvalid={errors.delivery} />
+
+            <div className="mt-2">
+                {!!delivery && <CheckoutInfo delivery={props.couriers[delivery]}
+                    currency={props.currency}/>}
             </div>
 
-            <div className={shipping === 1 ? 'row p-0 m-0' : 'd-none'}>
-                <div className="col-8 py-2">
-                    <Input
-                        name="addressStreet"
-                        label="Улица"
-                        placeholder="Адрес доставки"
-                        register={shipping === 1 && register.bind(register, {required: true})}
-                        errors={errors} />
-                </div>
-
-                <div className="col-4 py-2">
-                    <Input
-                        name="addressHouse"
-                        label="Дом"
-                        placeholder="Номер"
-                        register={shipping === 1 && register.bind(register, {required: true})}
-                        errors={errors} />
-                </div>
+            <div className="row">
+                {delivery === 1 ?
+                    <CheckoutCityForm delivery={delivery} errors={errors} register={register} /> :
+                    <CheckoutCourierForm delivery={delivery} errors={errors} register={register} />
+                }
             </div>
 
-            <div className={shipping >= 2 ? 'row' : 'd-none'}>
-                <div className="col-8 py-2">
-                    <Input
-                        name="addressCity"
-                        label="Город"
-                        placeholder="Город доставки"
-                        register={shipping => 2 && register.bind(register, {required: true})}
-                        errors={errors} />
-                </div>
-
-                <div className="col-4 py-2">
-                    <Input
-                        name="addressBranch"
-                        label="Отделение"
-                        placeholder="Номер отделения"
-                        register={shipping => 2 && register.bind(register, {required: true})}
-                        errors={errors} />
-                </div>
-            </div>
-
-            <div className="col-12 py-2">
-                <a className="pointer-event" role="button" onClick={toggleComment}>
-                    Добавить комментарий
-                </a>
-                { commentFlag && <div className="my-2">
-                    <textarea className="form-control" rows="3" />
-                </div> }
-            </div>
-
-            <div className="col-12 py-2 d-flex justify-content-between">
+            <div className="py-2 d-flex justify-content-between">
                 <button className="btn btn-bright border"
                     type="button" onClick={props.prevStep}>❮ Ваши данные</button>
                 <button className="btn btn-bright border" type="submit">Подтвердить</button>

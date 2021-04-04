@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {cartRemove} from '../cart';
-import {fireDanger} from '../toasts';
+import {cartRemove} from '../../state/actions/cart';
+import {fireDanger} from '../../state/actions/toasts';
 
 export function cartProductDetach(product) {
     return (dispatch) => {
