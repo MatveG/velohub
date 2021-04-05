@@ -2,7 +2,6 @@
 <div id="error-message"></div>
 
 <script>
-    window._CURRENCY = {!!json_encode(settings('shop', 'currency'))!!}
     window._CONFIG = {
         currency: {!!json_encode(settings('shop', 'currency'))!!},
         couriers: [
@@ -29,16 +28,16 @@
         ]
     }
 
-    @if(session('info'))
-        window._TOAST_INFO = {{session('info')}};
+    @if(session('notice-info'))
+        window._NOTICE_INFO = {{session('info')}};
     @endif
 
-    @if(session('warning'))
+    @if(session('notice-warning'))
         window._NOTICE_WARNING = {{session('warning')}};
     @endif
 
-    @if(session('danger'))
-        window._TOAST_DANGER = {{session('danger')}};
+    @if(session('notice-danger'))
+        window._NOTICE_DANGER = {{session('danger')}};
     @endif
 </script>
 

@@ -1,30 +1,18 @@
 import React from 'react';
+import config from 'react-global-configuration';
 import {formatAsPrice} from '../utils/formatAs';
 
+const productSum = (product) => formatAsPrice(product.amount * product.price);
+
 const CartProduct = (props) => {
-    const productPrice = formatAsPrice(props.product.price);
-    const productSum = formatAsPrice(props.product.amount * props.product.price);
-
-    const removeProduct = () => {
-        props.removeProduct(props.product);
-    };
-
-    const incrementAmount = () => {
-        props.updateAmount(props.product, 1);
-    };
-
-    const decrementAmount = () => {
-        props.updateAmount(props.product, -1);
-    };
-
     return (
-        <tr>
-            <td className="border-0 align-middle">
-                {!props.readOnly && <button className="btn btn-sm btn-bright btn-cart-remove"
-                    onClick={removeProduct}>&times;</button>}
+        <tr style={{padding: '15rem'}}>
+            <td className="align-middle">
+                {props.removeProduct && <button className="btn btn-sm btn-bright btn-cart-remove"
+                    onClick={() => props.removeProduct(props.product)}>&times;</button>}
             </td>
 
-            <td className="border-0 text-left p-2">
+            <td className="text-left p-2">
                 <img src={props.product.image}
                     alt="" width="70" className="img-fluid rounded shadow-sm"/>
                 <div className="ml-3 d-inline-block align-middle">
@@ -40,24 +28,26 @@ const CartProduct = (props) => {
                 </div>
             </td>
 
-            <td className="border-0 align-middle">
-                {productPrice}
+            <td className="align-middle">
+                {formatAsPrice(props.product.price)} {config.get('currency').sign}
             </td>
 
-            <td className="border-0 align-middle text-center">
+            <td className="align-middle text-center">
                 <div className="nowrap">
-                    {!props.readOnly && <a className="btn btn-sm btn-primary btn-cart-decrease"
-                        onClick={decrementAmount} href="#">-</a>}
+                    {props.updateAmount && <a className="btn btn-sm btn-primary btn-cart-decrease"
+                        onClick={() => props.updateAmount(props.product, -1)} href="#">-</a>}
                     &nbsp;
                     <span id="amount-{{ $product->id }}"
                         className="font-weight-bold">{props.product.amount}</span>
                     &nbsp;
-                    {!props.readOnly && <a className="btn btn-sm btn-primary btn-cart-increase"
-                        onClick={incrementAmount} href="#">+</a>}
+                    {props.updateAmount && <a className="btn btn-sm btn-primary btn-cart-increase"
+                        onClick={() => props.updateAmount(props.product, 1)} href="#">+</a>}
                 </div>
             </td>
 
-            <td className="border-0 align-middle">{productSum}</td>
+            <td className="align-middle">
+                {productSum(props.product)} {config.get('currency').sign}
+            </td>
         </tr>
     );
 };

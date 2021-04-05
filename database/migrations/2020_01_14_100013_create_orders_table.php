@@ -15,16 +15,20 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('user_id')->unsigned()->default(null)->index();
-            $table->integer('status')->default(1)->index();
-            $table->integer('payment')->default(1)->index();
-            $table->integer('delivery')->default(1)->index();
-            $table->float('discount')->default(0);
-            $table->float('shipping')->default(0);
-            $table->float('sum')->nullable();
-            $table->json('requisites')->nullable();
-            $table->json('products')->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable()->index();
+            $table->integer('status')->nullable()->index();
+            $table->integer('payment')->nullable()->index();
+            $table->integer('delivery')->nullable()->index();
+            $table->float('discount')->nullable();
+            $table->float('shipping')->nullable();
+            $table->float('total')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('name')->nullable();
+            $table->string('surname')->nullable();
             $table->text('text')->nullable();
+            $table->json('address')->nullable('{}');
+            $table->json('products')->nullable('{}');
             $table->timestamps();
         });
     }

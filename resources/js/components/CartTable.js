@@ -1,22 +1,23 @@
 import React from 'react';
+import config from 'react-global-configuration';
 import {formatAsPrice} from '../utils/formatAs';
 
 const CartTable = (props) => {
     return (
-        <table className="table text-center">
-            <thead>
-                <tr className="border border-left-0 border-right-0">
-                    <th scope="col" className="border-0"/>
-                    <th scope="col" className="border-0">
+        <table className="table table-hover text-center">
+            <thead className="thead-light">
+                <tr>
+                    <th scope="col"/>
+                    <th scope="col">
                         <span className="p-2">Наименование</span>
                     </th>
-                    <th scope="col" className="border-0">
+                    <th scope="col">
                         <span className="py-2">Цена</span>
                     </th>
-                    <th scope="col" className="border-0">
+                    <th scope="col">
                         <span className="py-2">Шт</span>
                     </th>
-                    <th scope="col" className="border-0">
+                    <th scope="col">
                         <span className="py-2">Сумма</span>
                     </th>
                 </tr>
@@ -24,12 +25,12 @@ const CartTable = (props) => {
             <tbody>
                 {props.children}
 
-                <tr className="border border-left-0 border-right-0">
-                    <td className="border-0 align-middle text-right" colSpan="4">
+                <tr>
+                    <td className="align-middle text-right" colSpan="4">
                         <strong>Итого:</strong>
                     </td>
-                    <td className="border-0 align-middle">
-                        <strong>{formatAsPrice(props.total)}</strong>
+                    <td className="align-middle fw-bold">
+                        {formatAsPrice(props.totalCost)} {config.get('currency').sign}
                     </td>
                 </tr>
             </tbody>

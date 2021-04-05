@@ -9,7 +9,7 @@ const CheckoutCouriers = (props) => {
                 onChange={props.handleChange}
                 ref={props.register ? props.register() : null}>
 
-                <option value={0}>---Выберите---</option>
+                <option value={0}>[ Выберите способ доставки ]</option>
                 {props.couriers.map((el, idx) => (
                     <option key={idx} value={idx+1}>{el.title}</option>
                 ))}

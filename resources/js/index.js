@@ -4,6 +4,7 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
+import config from 'react-global-configuration';
 import state from './state/';
 import {fireInfo, fireWarning, fireDanger} from './state/actions/toasts';
 import ProductImage from './components/ProductImage';
@@ -15,7 +16,7 @@ import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
 
-const store = createStore(state, applyMiddleware(thunk));
+config.set(_CONFIG);
 
 ['load', 'scroll'].forEach((eventType) => {
     window.addEventListener(eventType, () => scrollState());
@@ -36,6 +37,8 @@ Array.from(document.getElementsByClassName('navbar-icon-btn')).forEach((el) => {
         });
     });
 });
+
+const store = createStore(state, applyMiddleware(thunk));
 
 const productImage = document.getElementById('product-image');
 productImage && render(
@@ -59,18 +62,10 @@ shopCart && render(
     shopCart,
 );
 
-const checkoutCart = document.getElementById('checkout-cart');
-checkoutCart && render(
-    <Provider store={store}>
-        <Cart readOnly={true} />
-    </Provider>,
-    checkoutCart,
-);
-
 const checkoutForm = document.getElementById('checkout-form');
 checkoutForm && render(
     <Provider store={store}>
-        <Checkout currency={_CONFIG.currency} couriers={_CONFIG.couriers} />
+        <Checkout couriers={_CONFIG.couriers} />
     </Provider>,
     checkoutForm,
 );
@@ -83,6 +78,6 @@ errorMessage && render(
     errorMessage,
 );
 
-window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_TOAST_INFO));
-window.hasOwnProperty('_NOTICE_WARNING') && store.dispatch(fireWarning(_TOAST_WARNING));
-window.hasOwnProperty('_NOTICE_DANGER') && store.dispatch(fireDanger(_TOAST_DANGER));
+window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_NOTICE_INFO));
+window.hasOwnProperty('_NOTICE_WARNING') && store.dispatch(fireWarning(_NOTICE_WARNING));
+window.hasOwnProperty('_NOTICE_DANGER') && store.dispatch(fireDanger(_NOTICE_DANGER));

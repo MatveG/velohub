@@ -7,7 +7,7 @@ const CheckoutFirst = (props) => {
 
     return (
         <form className="row" onSubmit={handleSubmit(props.nextStep)} noValidate>
-            <h4><span>Ваши данные</span></h4>
+            <h4><span>Получатель</span></h4>
 
             <div className="col-6 py-2">
                 <Input
@@ -58,7 +58,7 @@ const CheckoutFirst = (props) => {
             </div>
             <div className="col-12 text-end py-2">
                 <button className="btn btn-bright border" type="submit">
-                    Оплата и доставка ❯
+                    Доставка ❯
                 </button>
             </div>
         </form>

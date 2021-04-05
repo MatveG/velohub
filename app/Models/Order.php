@@ -12,14 +12,17 @@ class Order extends Model
     protected $name = 'order';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
+        'payment',
+        'delivery',
+        'email',
         'phone',
         'name',
-        'address',
-        'email',
-        'comment',
+        'surname',
+        'text',
     ];
     protected $casts = [
-        'common' => 'array'
+        'address' => 'object',
+        'products' => 'object'
     ];
 
 }

@@ -6,7 +6,7 @@ const CheckoutCityForm = (props) => {
         <React.Fragment>
             <div className="col-8 py-2">
                 <Input
-                    name="addressStreet"
+                    name="address[street]"
                     label="Улица"
                     placeholder="Адрес доставки"
                     register={props.register.bind(props.register, {required: true})}
@@ -15,7 +15,7 @@ const CheckoutCityForm = (props) => {
 
             <div className="col-4 py-2">
                 <Input
-                    name="addressHouse"
+                    name="address[house]"
                     label="Дом"
                     placeholder="Номер"
                     register={props.delivery === 2 && props.register.bind(
