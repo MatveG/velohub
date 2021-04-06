@@ -1,0 +1,33 @@
+import React from 'react';
+
+const Select = (props) => {
+    const id = `input-${Math.random() * 10 ** 16}`;
+    const classes = ['form-select'];
+    let error = {};
+
+    if (props.errors && props.errors[props.name]) {
+        error = props.errors[props.name];
+
+        if (error.type) {
+            classes.push('is-invalid');
+        }
+    }
+
+    return (
+        <select className={classes.join(' ')}
+            id={id}
+            name={props.name}
+            value={props.value}
+            onChange={props.handleChange}
+            ref={props.register ? props.register() : null}>
+
+            <option value="">{props.placeholder}</option>
+
+            {props.options.map((el, idx) => (
+                <option key={idx} value={idx}>{el.title}</option>
+            ))}
+        </select>
+    );
+};
+
+export default Select;

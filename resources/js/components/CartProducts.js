@@ -8,9 +8,9 @@ const CartProducts = (props) => {
                 <CartProduct
                     key={idx}
                     product={el}
+                    currency={props.currency}
                     updateAmount={props.updateAmount}
-                    removeProduct={props.removeProduct}
-                    readOnly={props.readOnly} />))}
+                    removeProduct={props.removeProduct} />))}
         </React.Fragment>
     );
 };

@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import config from 'react-global-configuration';
 import CartTable from '../components/CartTable';
 import CartProducts from '../components/CartProducts';
 import {cartFetch, cartProductUpdate, cartProductDetach} from '../api/cart';
@@ -28,9 +29,10 @@ const Cart = (props) => {
     };
 
     return (
-        <CartTable totalCost={computeTotal(products)}>
+        <CartTable totalCost={computeTotal(products)} currency={config.get('currency')}>
             <CartProducts
                 products={products}
+                currency={config.get('currency')}
                 updateAmount={updateAmount}
                 removeProduct={removeProduct} />
         </CartTable>

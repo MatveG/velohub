@@ -49,7 +49,7 @@ productImage && render(
 const productBuy = document.getElementById('product-buy');
 productBuy && render(
     <Provider store={store}>
-        <Buy currency={_CONFIG.currency} product={_PRODUCT} variants={_PRODUCT_VARIANTS} />
+        <Buy product={_PRODUCT} variants={_PRODUCT_VARIANTS} />
     </Provider>,
     productBuy,
 );
@@ -65,7 +65,7 @@ shopCart && render(
 const checkoutForm = document.getElementById('checkout-form');
 checkoutForm && render(
     <Provider store={store}>
-        <Checkout couriers={_CONFIG.couriers} />
+        <Checkout />
     </Provider>,
     checkoutForm,
 );

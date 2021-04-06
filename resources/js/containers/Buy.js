@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import config from 'react-global-configuration';
 import {cartFetch, cartProductAttach} from '../api/cart';
 import BuyButton from '../components/BuyButton';
 import BuyPrice from '../components/BuyPrice';
 import BuyVariants from '../components/BuyVariants';
+import NostockButton from '../components/NostockButton';
 
 const Buy = (props) => {
     const dispatch = useDispatch();
@@ -51,17 +53,19 @@ const Buy = (props) => {
         <div className="mt-2">
             <h4><span>Купить</span></h4>
 
-            <BuyVariants variants={props.variants}
+            {props.variants.length && <BuyVariants variants={props.variants}
                 handleSelect={handleVariantSelect}
-                isInvalid={!isValid}/>
+                isInvalid={!isValid}/>}
 
-            <BuyPrice currency={props.currency}
+            <BuyPrice currency={config.get('currency')}
                 product={props.product}
                 variant={variant}/>
 
-            <BuyButton isStock={isStock}
-                isInCart={isInCart}
-                addToCart={handleAddToCart} />
+            {!isStock ?
+                <BuyButton isInCart={isInCart} addToCart={handleAddToCart} /> :
+                <NostockButton />
+            }
+
         </div>
     );
 };

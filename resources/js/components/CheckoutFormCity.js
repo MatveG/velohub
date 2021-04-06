@@ -18,9 +18,7 @@ const CheckoutCityForm = (props) => {
                     name="address[house]"
                     label="Дом"
                     placeholder="Номер"
-                    register={props.delivery === 2 && props.register.bind(
-                        props.register, {required: true},
-                    )}
+                    register={props.register.bind(props.register, {required: true})}
                     errors={props.errors} />
             </div>
         </React.Fragment>

@@ -4,6 +4,12 @@
 <script>
     window._CONFIG = {
         currency: {!!json_encode(settings('shop', 'currency'))!!},
+        payments: [
+            {
+                title: 'Наличными',
+                multiplier: 1,
+            },
+        ],
         couriers: [
             {
                 title: 'Самовывоз с магазинов',

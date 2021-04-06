@@ -3,11 +3,23 @@ import React from 'react';
 const Input = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
     const type = props.type || 'text';
-    const error = props.errors && props.errors[props.name] || {};
     const classes = ['form-control'];
+    let error = {};
 
-    if (error.type) {
-        classes.push('is-invalid');
+    if (Object.keys(props.errors).length) {
+        const match = props.name.match(/\[(.*?)\]/);
+
+        if (match) {
+            const parent = props.name.substr(0, match.index);
+            const child = match[1];
+            error = props.errors[parent][child] || {};
+        } else {
+            error = props.errors[props.name] || {};
+        }
+
+        if (error.type) {
+            classes.push('is-invalid');
+        }
     }
 
     if (props.classes) {
@@ -16,7 +28,7 @@ const Input = (props) => {
 
     return (
         <React.Fragment>
-            <label className="form-label" htmlFor={id}>{props.label}</label>
+            {!!props.label && <label className="form-label" htmlFor={id}>{props.label}</label>}
 
             <input className={classes.join(' ')}
                 id={id}

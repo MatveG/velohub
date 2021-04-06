@@ -21,7 +21,7 @@ const CheckoutInfo = (props) => {
                     Всего к оплате
                 </div>
                 <div className="text-center fw-bold">
-                    {props.courier.total} {config.get('currency').sign}
+                    {(+props.courier.total).toLocaleString()} {config.get('currency').sign}
                 </div>
             </div>
         </CardShadow>

@@ -1,6 +1,5 @@
 import React from 'react';
 import config from 'react-global-configuration';
-import {formatAsPrice} from '../utils/formatAs';
 
 const CartTable = (props) => {
     return (
@@ -30,7 +29,7 @@ const CartTable = (props) => {
                         <strong>Итого:</strong>
                     </td>
                     <td className="align-middle fw-bold">
-                        {formatAsPrice(props.totalCost)} {config.get('currency').sign}
+                        {(+props.totalCost).toLocaleString()} {config.get('currency').sign}
                     </td>
                 </tr>
             </tbody>

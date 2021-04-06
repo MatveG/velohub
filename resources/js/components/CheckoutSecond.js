@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import CheckoutCouriers from './CheckoutCouriers';
 import CheckoutInfo from './CheckoutInfo';
-import CheckoutCityForm from './CheckoutCityFrom';
-import CheckoutCourierForm from './CheckoutCourierForm';
+import CheckoutFormCity from './CheckoutFormCity';
+import CheckoutFormCourier from './CheckoutFormCourier';
+import Select from './ui/Select';
 
 const CheckoutSecond = (props) => {
-    const [delivery, setDelivery] = useState(0);
+    const [payment, setPayment] = useState('');
+    const [delivery, setDelivery] = useState('');
     const [commentFlag, setCommentFlag] = useState(false);
     const {register, errors, handleSubmit} = useForm();
 
@@ -14,32 +15,53 @@ const CheckoutSecond = (props) => {
         setCommentFlag(!commentFlag);
     };
 
+    const handlePaymentChange = ({target}) => {
+        setPayment(target.value);
+    };
+
     const handleCourierChange = ({target}) => {
-        setDelivery(+target.value);
+        setDelivery(target.value);
     };
 
     return (
         <form noValidate onSubmit={handleSubmit(props.nextStep)}>
             <h4><span>Доставка</span></h4>
 
-            <CheckoutCouriers couriers={props.couriers}
-                delivery={delivery}
-                handleChange={handleCourierChange}
-                register={register.bind(register, {required: true, min: 1})}
-                isInvalid={errors.delivery} />
-
-            <div className="mt-2">
-                {!!delivery && <div className="my-2">
-                    <CheckoutInfo courier={props.couriers[delivery-1]} currency={props.currency}/>
-                </div>}
+            <div className="my-2">
+                <Select
+                    name="payment"
+                    value={payment}
+                    options={props.payments}
+                    placeholder="[ Выберите способ оплаты ]"
+                    handleChange={handlePaymentChange}
+                    register={register.bind(register, {required: true})}
+                    errors={errors} />
             </div>
 
+            <div className="my-2">
+                <Select
+                    name="delivery"
+                    value={delivery}
+                    options={props.couriers}
+                    placeholder="[ Выберите способ доставки ]"
+                    handleChange={handleCourierChange}
+                    register={register.bind(register, {required: true})}
+                    errors={errors} />
+            </div>
+
+            {delivery && <div className="my-2">
+                <CheckoutInfo
+                    courier={props.couriers[+delivery]}
+                    currency={props.currency}/>
+            </div>}
+
             <div className="row">
-                {delivery === 2 && <CheckoutCityForm
+                {+delivery === 2 && <CheckoutFormCity
                     delivery={delivery}
                     errors={errors}
                     register={register} />}
-                {delivery >= 3 && <CheckoutCourierForm
+
+                {+delivery >= 3 && <CheckoutFormCourier
                     delivery={delivery}
                     errors={errors}
                     register={register} />}

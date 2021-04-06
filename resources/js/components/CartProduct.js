@@ -1,8 +1,4 @@
 import React from 'react';
-import config from 'react-global-configuration';
-import {formatAsPrice} from '../utils/formatAs';
-
-const productSum = (product) => formatAsPrice(product.amount * product.price);
 
 const CartProduct = (props) => {
     return (
@@ -29,7 +25,8 @@ const CartProduct = (props) => {
             </td>
 
             <td className="align-middle">
-                {formatAsPrice(props.product.price)} {config.get('currency').sign}
+                {(+props.product.price).toLocaleString()}&nbsp;
+                {props.currency.sign}
             </td>
 
             <td className="align-middle text-center">
@@ -46,7 +43,8 @@ const CartProduct = (props) => {
             </td>
 
             <td className="align-middle">
-                {productSum(props.product)} {config.get('currency').sign}
+                {(props.product.amount * props.product.price).toLocaleString()}&nbsp;
+                {props.currency.sign}
             </td>
         </tr>
     );
