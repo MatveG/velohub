@@ -6,6 +6,7 @@ import BuyButton from '../components/BuyButton';
 import BuyPrice from '../components/BuyPrice';
 import BuyVariants from '../components/BuyVariants';
 import NostockButton from '../components/NostockButton';
+import {cartClose, cartOpen} from '../state/actions/cart';
 
 const Buy = (props) => {
     const dispatch = useDispatch();
@@ -13,7 +14,15 @@ const Buy = (props) => {
     const cartProducts = useSelector((state) => state.cart.products);
     const [variant, setVariant] = useState({});
     const [isValid, setIsValid] = useState(true);
-    let isStock; let isInCart;
+    let isInStock; let isInCart;
+
+    if (variant.id) {
+        isInStock = !!variant.is_stock;
+        isInCart = !!cartProducts.find((el) => el.variant_id === variant.id);
+    } else {
+        isInStock = !!props.product.is_stock;
+        isInCart = !!cartProducts.find((el) => el.id === props.product.id);
+    }
 
     useEffect(() => {
         if (!cartPending) {
@@ -21,13 +30,7 @@ const Buy = (props) => {
         }
     }, []);
 
-    if (variant.id) {
-        isStock = !!variant.is_stock;
-        isInCart = !!cartProducts.find((el) => el.variant_id === variant.id);
-    } else {
-        isStock = !!props.product.is_stock;
-        isInCart = !!cartProducts.find((el) => el.id === props.product.id);
-    }
+    const showCart = () => dispatch(cartOpen());
 
     const handleVariantSelect = (event) => {
         const idx = Number.isInteger(+event.target.value) ? +event.target.value : null;
@@ -45,15 +48,11 @@ const Buy = (props) => {
             {id: props.product.id, variant_id: null, amount: 1};
 
         dispatch(cartProductAttach(product));
-
-        new bootstrap.Modal(document.getElementById('modal-shopping-cart'), {}).show();
     };
 
     return (
-        <div className="mt-2">
-            <h4><span>Купить</span></h4>
-
-            {props.variants.length && <BuyVariants variants={props.variants}
+        <React.Fragment>
+            {!!props.variants.length && <BuyVariants variants={props.variants}
                 handleSelect={handleVariantSelect}
                 isInvalid={!isValid}/>}
 
@@ -61,12 +60,13 @@ const Buy = (props) => {
                 product={props.product}
                 variant={variant}/>
 
-            {!isStock ?
-                <BuyButton isInCart={isInCart} addToCart={handleAddToCart} /> :
-                <NostockButton />
+            {!props.variants.length || !!Object.keys(variant).length && (isInStock ?
+                <BuyButton isInCart={isInCart} addToCart={handleAddToCart}
+                    showCart={showCart}/> :
+                <NostockButton/>
+            )
             }
-
-        </div>
+        </React.Fragment>
     );
 };
 

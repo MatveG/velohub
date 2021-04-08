@@ -1,4 +1,6 @@
 import {
+    CART_OPEN,
+    CART_CLOSE,
     CART_EMPTY,
     CART_FILL,
     CART_PENDING,
@@ -7,6 +9,14 @@ import {
     CART_UPDATE,
     CART_ERROR,
 } from '../reducers/cart';
+
+export const cartOpen = () => ({
+    type: CART_OPEN,
+});
+
+export const cartClose = () => ({
+    type: CART_CLOSE,
+});
 
 export const cartEmpty = () => ({
     type: CART_EMPTY,

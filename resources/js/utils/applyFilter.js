@@ -1,4 +1,5 @@
-export default ({name, value, type, checked}) => {
+export default ({target}) => {
+    const {name, value, type, checked} = target;
     const shards = window.location.pathname.split('/').filter((el) => el);
     const newQuery = [];
     const firsIn = [];
@@ -33,11 +34,9 @@ export default ({name, value, type, checked}) => {
             if (type === 'checkbox' && checked) {
                 newValues.push(value);
             }
-
             if (type === 'text' && value) {
                 newValues.push(value);
             }
-
             if (newValues.length > 0) {
                 newQuery.push(urlKey + '-is-' + newValues.join('-or-'));
                 flag = false;

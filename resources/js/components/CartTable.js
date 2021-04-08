@@ -23,16 +23,17 @@ const CartTable = (props) => {
             </thead>
             <tbody>
                 {props.children}
-
-                <tr>
-                    <td className="align-middle text-right" colSpan="4">
-                        <strong>Итого:</strong>
-                    </td>
-                    <td className="align-middle fw-bold">
-                        {(+props.totalCost).toLocaleString()} {config.get('currency').sign}
-                    </td>
-                </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <th className="align-middle text-right" colSpan="4">
+                        <strong>Итого:</strong>
+                    </th>
+                    <th className="align-middle fw-bold">
+                        {(+props.totalCost).toLocaleString()} {config.get('currency').sign}
+                    </th>
+                </tr>
+            </tfoot>
         </table>
     );
 };

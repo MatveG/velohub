@@ -21,6 +21,7 @@ const CheckoutFirst = (props) => {
                     })}
                     errors={errors} />
             </div>
+
             <div className="col-6 py-2">
                 <Input
                     name="surname"
@@ -28,6 +29,7 @@ const CheckoutFirst = (props) => {
                     placeholder="Ваша фамилия"
                     defaultValue={props.userData.surname} />
             </div>
+
             <div className="col-6 py-2">
                 <Input
                     name="phone"
@@ -41,6 +43,7 @@ const CheckoutFirst = (props) => {
                     errors={errors}
                     defaultValue={props.userData.phone} />
             </div>
+
             <div className="col-6 py-2">
                 <Input
                     name="email"
@@ -56,6 +59,7 @@ const CheckoutFirst = (props) => {
                     errors={errors}
                     defaultValue={props.userData.email} />
             </div>
+
             <div className="col-12 text-end py-2">
                 <button className="btn btn-bright border" type="submit">
                     Доставка ❯

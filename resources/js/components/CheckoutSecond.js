@@ -4,56 +4,44 @@ import CheckoutInfo from './CheckoutInfo';
 import CheckoutFormCity from './CheckoutFormCity';
 import CheckoutFormCourier from './CheckoutFormCourier';
 import Select from './ui/Select';
+import CheckoutComment from './CheckoutComment';
 
 const CheckoutSecond = (props) => {
     const [payment, setPayment] = useState('');
     const [delivery, setDelivery] = useState('');
-    const [commentFlag, setCommentFlag] = useState(false);
     const {register, errors, handleSubmit} = useForm();
 
-    const toggleComment = () => {
-        setCommentFlag(!commentFlag);
-    };
-
-    const handlePaymentChange = ({target}) => {
-        setPayment(target.value);
-    };
-
-    const handleCourierChange = ({target}) => {
-        setDelivery(target.value);
-    };
+    const handlePaymentSelect = ({target}) => setPayment(target.value);
+    const handleDeliverySelect = ({target}) => setDelivery(target.value);
 
     return (
         <form noValidate onSubmit={handleSubmit(props.nextStep)}>
             <h4><span>Доставка</span></h4>
 
-            <div className="my-2">
-                <Select
-                    name="payment"
-                    value={payment}
-                    options={props.payments}
-                    placeholder="[ Выберите способ оплаты ]"
-                    handleChange={handlePaymentChange}
-                    register={register.bind(register, {required: true})}
-                    errors={errors} />
-            </div>
+            <Select
+                classes={['my-2']}
+                name="payment"
+                value={payment}
+                options={props.payments}
+                placeholder="[ Выбор способа оплаты ]"
+                handleChange={handlePaymentSelect}
+                register={register.bind(register, {required: true})}
+                errors={errors} />
 
-            <div className="my-2">
-                <Select
-                    name="delivery"
-                    value={delivery}
-                    options={props.couriers}
-                    placeholder="[ Выберите способ доставки ]"
-                    handleChange={handleCourierChange}
-                    register={register.bind(register, {required: true})}
-                    errors={errors} />
-            </div>
+            <Select
+                classes={['my-2']}
+                name="delivery"
+                value={delivery}
+                options={props.couriers}
+                placeholder="[ Выбор способа доставки ]"
+                handleChange={handleDeliverySelect}
+                register={register.bind(register, {required: true})}
+                errors={errors} />
 
-            {delivery && <div className="my-2">
-                <CheckoutInfo
-                    courier={props.couriers[+delivery]}
-                    currency={props.currency}/>
-            </div>}
+            {delivery && <CheckoutInfo
+                classes={['my-2']}
+                courier={props.couriers[+delivery]}
+                currency={props.currency}/>}
 
             <div className="row">
                 {+delivery === 2 && <CheckoutFormCity
@@ -66,20 +54,16 @@ const CheckoutSecond = (props) => {
                     errors={errors}
                     register={register} />}
 
-                <div className="col-12 py-2">
-                    <a className="pointer-event" role="button" onClick={toggleComment}>
-                        Добавить комментарий
-                    </a>
-                    { commentFlag && <div className="my-2">
-                        <textarea name="text" className="form-control" rows="3" />
-                    </div> }
-                </div>
+                <CheckoutComment />
             </div>
 
             <div className="py-2 d-flex justify-content-between">
-                <button className="btn btn-bright border"
-                    type="button" onClick={props.prevStep}>❮ Получатель</button>
-                <button className="btn btn-bright border" type="submit">Подтвердить</button>
+                <button className="btn btn-bright border" type="button" onClick={props.prevStep}>
+                    ❮ Получатель
+                </button>
+                <button className="btn btn-bright border" type="submit">
+                    Подтвердить
+                </button>
             </div>
         </form>
     );

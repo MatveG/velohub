@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {cartPush} from '../../state/actions/cart';
+import {cartOpen, cartPush} from '../../state/actions/cart';
 import {fireDanger} from '../../state/actions/toasts';
 
 export function cartProductAttach(product) {
@@ -7,6 +7,7 @@ export function cartProductAttach(product) {
         return axios.patch(`/api/carts/products/attach`, product)
             .then((response) => {
                 dispatch(cartPush(response.data));
+                dispatch(cartOpen());
             })
             .catch((err) => {
                 dispatch(fireDanger('Failed updating cart data'));

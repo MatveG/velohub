@@ -3,7 +3,7 @@ import React from 'react';
 const Input = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
     const type = props.type || 'text';
-    const classes = ['form-control'];
+    const classes = ['form-control', ...props.classes || []];
     let error = {};
 
     if (Object.keys(props.errors).length) {
@@ -20,10 +20,6 @@ const Input = (props) => {
         if (error.type) {
             classes.push('is-invalid');
         }
-    }
-
-    if (props.classes) {
-        classes.push(...props.classes);
     }
 
     return (

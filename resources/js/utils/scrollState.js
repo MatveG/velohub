@@ -4,7 +4,13 @@ export default () => {
     const navbarInfo = document.getElementById('navbar-info');
     const scrollTop = document.getElementById('scroll-top');
 
-    navbarMain && navbarMain.classList[action]('navbar-main-scroll');
-    navbarInfo && navbarInfo.classList[action]('navbar-info-scroll');
-    scrollTop && scrollTop.classList[action]('d-block');
+    if (navbarMain) {
+        navbarMain.classList[action]('navbar-main-scroll');
+    }
+    if (navbarInfo) {
+        navbarInfo.classList[action]('navbar-info-scroll');
+    }
+    if (scrollTop) {
+        scrollTop.classList[action]('d-block');
+    }
 };

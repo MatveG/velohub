@@ -2,7 +2,7 @@ import React from 'react';
 
 const Select = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
-    const classes = ['form-select'];
+    const classes = ['form-control', ...props.classes || []];
     let error = {};
 
     if (props.errors && props.errors[props.name]) {

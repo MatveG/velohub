@@ -1,3 +1,5 @@
+export const CART_OPEN = 'CART::OPEN';
+export const CART_CLOSE = 'CART::CLOSE';
 export const CART_EMPTY = 'CART::EMPTY';
 export const CART_FILL = 'CART::FILL';
 export const CART_PENDING = 'CART::PENDING';
@@ -7,6 +9,7 @@ export const CART_UPDATE = 'CART::UPDATE';
 export const CART_ERROR = 'CART::ERROR';
 
 const initialState = {
+    open: false,
     pending: false,
     error: false,
     products: [],
@@ -16,6 +19,18 @@ const cart = (state = initialState, action = {}) => {
     const {type, payload} = action;
 
     switch (type) {
+    case CART_OPEN:
+        return {
+            ...state,
+            open: true,
+        };
+
+    case CART_CLOSE:
+        return {
+            ...state,
+            open: false,
+        };
+
     case CART_EMPTY:
         return {
             ...state,

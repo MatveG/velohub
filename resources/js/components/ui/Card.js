@@ -1,8 +1,8 @@
 import React from 'react';
 
-const CardShadow = (props) => {
+const Card = (props) => {
     return (
-        <div className="card shadow-sm">
+        <div className={`card ${props.classes.join(' ')}`}>
             <div className="card-body">
                 {props.children}
             </div>
@@ -10,4 +10,4 @@ const CardShadow = (props) => {
     );
 };
 
-export default CardShadow;
+export default Card;

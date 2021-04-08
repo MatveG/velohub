@@ -1,5 +1,10 @@
 <div id="scroll-top" class="icon-scroll-top" role="button"></div>
 <div id="error-message"></div>
+<div id="shop-cart">
+    <script>
+        window._CHECKOUT_ROUTE = '{!! route('checkout') !!}';
+    </script>
+</div>
 
 <script>
     window._CONFIG = {

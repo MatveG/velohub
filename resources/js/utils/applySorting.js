@@ -1,15 +1,13 @@
-export default function applySorting({name, value}) {
-    const shards = window.location.search.substring(1).split('&');
-    let append = true;
+export default function applySorting({target}) {
+    const {name, value} = target;
+    const urlParams = location.search.split('?').join('');
+    const paramPieces = urlParams.includes('&') ? urlParams.split('&') : [];
+    const sortingIndex = paramPieces.findIndex((el) => el.startsWith(`${name}=`));
 
-    const result = shards.map((el) => {
-        if (el.startsWith(`${name}=`)) {
-            el = `${name}=${value}`;
-            append = false;
-        }
-        return el;
-    });
-    append && result.push(`${name}=${value}`);
-
-    window.location = '?' + result.join('&');
+    if (sortingIndex >= 0) {
+        paramPieces[sortingIndex] = `${name}=${value}`;
+    } else {
+        paramPieces.push(`${name}=${value}`);
+    }
+    window.location = '?' + paramPieces.join('&');
 }

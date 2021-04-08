@@ -12,6 +12,7 @@ module.exports = {
         path: path.resolve(__dirname, './'),
         filename: '[name].js',
     },
+    devtool: 'source-map',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'resources/admin/'),
