@@ -6,7 +6,7 @@
 
     <nav class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <ul class="navbar-nav px-3">
-            @include('layouts.header.catalog')
+            @include('layouts.header.catalog-parent')
         </ul>
 
         @include('layouts.header.buttons')

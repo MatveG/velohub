@@ -13,27 +13,34 @@ class OrderController extends Controller
     public function __invoke(Request $request, CartService $service): JsonResponse
     {
         $this->validate($request, [
-            'payment' => 'required|min:1',
-            'delivery' => 'required|min:1',
+            'payment' => 'required',
+            'delivery' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
             'name' => 'required',
-            'address' => 'required|json',
-            'products' => 'required|json',
         ]);
+
+        $result = [];
+        foreach ($request->all() as $key => $value) {
+            if (substr($key, 0, 7) === 'address') {
+                preg_match("/\[(.*?)\]/", $key, $matches);
+                $result[$matches[1]] = $value;
+            }
+        }
 
         $cart = Cart::where('uuid', $request->cookie('_ucart'))->firstOrFail();
 
         $order = new Order();
+        $order->fill(request()->all());
         $order->status = 1;
         $order->discount = 0;
         $order->shipping = 0;
         $order->total = 0;
-        $order->address = $request->address;
         $order->products = $cart->products;
-        $order->fill(request()->all())->save();
+        $order->address = $result;
 
-//        $cart->delete();
+        $order->save();
+        $cart->delete();
 
         return response()->json($order);
     }

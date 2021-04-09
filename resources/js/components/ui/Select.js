@@ -14,19 +14,24 @@ const Select = (props) => {
     }
 
     return (
-        <select className={classes.join(' ')}
-            id={id}
-            name={props.name}
-            value={props.value}
-            onChange={props.handleChange}
-            ref={props.register ? props.register() : null}>
+        <React.Fragment>
+            <select className={classes.join(' ')}
+                id={id}
+                name={props.name}
+                value={props.value}
+                onChange={props.handleChange}
+                ref={props.register ? props.register() : null}>
 
-            <option value="">{props.placeholder}</option>
+                <option value="">{props.placeholder}</option>
 
-            {props.options.map((el, idx) => (
-                <option key={idx} value={idx}>{el.title}</option>
-            ))}
-        </select>
+                {props.options.map((el, idx) => (
+                    <option key={idx} value={idx}>{el.title}</option>
+                ))}
+            </select>
+
+            {error.type === 'required' && <div
+                className="text-danger small text-end">Обязательное</div>}
+        </React.Fragment>
     );
 };
 

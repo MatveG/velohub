@@ -17,9 +17,9 @@ import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
 
-const store = createStore(state, applyMiddleware(thunk));
-
 config.set(_CONFIG);
+
+const store = createStore(state, applyMiddleware(thunk));
 
 const productImage = document.getElementById('product-image');
 productImage && render(
@@ -65,7 +65,7 @@ window.hasOwnProperty('_NOTICE_DANGER') && store.dispatch(fireDanger(_NOTICE_DAN
 
 const cartStatus = document.getElementById('cart-status');
 if (cartStatus) {
-    cartStatus.onclick = () => store.dispatch(cartOpen());
+    cartStatus.addEventListener('click', () => store.dispatch(cartOpen()));
 }
 const scrollTop = document.getElementById('scroll-top');
 if (scrollTop) {
@@ -73,7 +73,7 @@ if (scrollTop) {
 }
 
 ['load', 'scroll'].forEach((eventType) => {
-    window.addEventListener(eventType, scrollState);
+    addEventListener(eventType, scrollState);
 });
 Array.from(document.getElementsByClassName('category-select-sort')).forEach((el) => {
     el.addEventListener('change', applySorting);

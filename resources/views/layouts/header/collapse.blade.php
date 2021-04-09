@@ -12,7 +12,7 @@
     <div id="navbar-info-search" class="row collapse navbar-info-block" data-parent="#navbar-info">
         <div class="col-1"></div>
         <div class="col-10 navbar-info-body">
-            @include('partials.category.search')
+            @include('category.search')
         </div>
         <div class="col-1 align-self-center">
             <button class="btn-close" data-bs-toggle="collapse" data-bs-target="#navbar-info-search" />

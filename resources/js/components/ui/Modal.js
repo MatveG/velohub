@@ -1,8 +1,20 @@
 import React from 'react';
 
 const Modal = (props) => {
+    const outEl = React.createRef();
+
+    const outClick = ({target}) => {
+        if (target === outEl.current) {
+            props.handleClose();
+        }
+    };
+
     return (
-        <div className={`modal overflow-scroll ${props.active ? 'd-block' : ''}`} tabIndex="-1">
+        <div
+            className={`modal overflow-scroll ${props.active ? 'd-block' : ''}`}
+            tabIndex="-1"
+            ref={outEl}
+            onClick={outClick}>
             <div className={`modal-dialog modal-dialog-scrollable m-auto
                 ${props.classes.join(' ')}`}>
                 <div className="modal-content">

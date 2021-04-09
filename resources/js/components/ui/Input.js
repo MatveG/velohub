@@ -6,7 +6,7 @@ const Input = (props) => {
     const classes = ['form-control', ...props.classes || []];
     let error = {};
 
-    if (Object.keys(props.errors).length) {
+    if (props.errors && props.errors[props.name]) {
         const match = props.name.match(/\[(.*?)\]/);
 
         if (match) {

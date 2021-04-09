@@ -2,11 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import config from 'react-global-configuration';
 import {cartFetch, cartProductAttach} from '../api/cart';
+import {cartOpen} from '../state/actions/cart';
 import BuyButton from '../components/BuyButton';
 import BuyPrice from '../components/BuyPrice';
 import BuyVariants from '../components/BuyVariants';
 import NostockButton from '../components/NostockButton';
-import {cartClose, cartOpen} from '../state/actions/cart';
 
 const Buy = (props) => {
     const dispatch = useDispatch();
@@ -18,10 +18,14 @@ const Buy = (props) => {
 
     if (variant.id) {
         isInStock = !!variant.is_stock;
-        isInCart = !!cartProducts.find((el) => el.variant_id === variant.id);
+        isInCart = !!cartProducts.find((el) => {
+            return el.variant_id === variant.id;
+        });
     } else {
         isInStock = !!props.product.is_stock;
-        isInCart = !!cartProducts.find((el) => el.id === props.product.id);
+        isInCart = !!cartProducts.find((el) => {
+            return el.id === props.product.id && el.variant_id === 0;
+        });
     }
 
     useEffect(() => {
@@ -60,11 +64,10 @@ const Buy = (props) => {
                 product={props.product}
                 variant={variant}/>
 
-            {!props.variants.length || !!Object.keys(variant).length && (isInStock ?
+            {isInStock ?
                 <BuyButton isInCart={isInCart} addToCart={handleAddToCart}
                     showCart={showCart}/> :
                 <NostockButton/>
-            )
             }
         </React.Fragment>
     );

@@ -5,16 +5,16 @@
         <div class="row">
             <aside class="col-md-2 pr-lg-3">
                 @if(is_countable($filters) && count($filters))
-                    @include('partials.category.filters')
+                    @include('category.filters')
                 @endif
             </aside>
 
             <div class="col-md-10">
                 <div class="text-center">
-                    <div class="w-50 m-auto">@include('partials.category.search')</div>
+                    <div class="w-50 m-auto">@include('category.search')</div>
                 </div>
 
-                @include('partials.category.toolbar')
+                @include('category.toolbar')
 
                 @if(!$products)
                     <main class="col-12 mt-3 text-center">
@@ -25,12 +25,12 @@
                 <main class="mt-3 mb-3">
                     <div class="row text-center">
                         @foreach($products as $product)
-                            @include('partials.product')
+                            @include('category.product')
                         @endforeach
                     </div>
                 </main>
 
-                @include('partials.category.toolbar')
+                @include('category.toolbar')
             </div>
         </div>
     </div>

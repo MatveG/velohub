@@ -5,7 +5,7 @@
     </li>
     @if(!empty($menu->children))
         @foreach ($menu->children as $child)
-            @include('partials.menu-child')
+            @include('layouts.footer.menu-child')
         @endforeach
     @endif
   @endforeach

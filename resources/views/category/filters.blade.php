@@ -16,10 +16,10 @@
     @foreach($filters as $filter)
         <div class="mt-2">
         @if($filter->type === 'slider')
-            @include('partials.category.filters.slider')
+            @include('category.filters.slider')
         @else
             <span class="fw-bold">{{ $filter->title }}</span>
-            @include('partials.category.filters.plain')
+            @include('category.filters.plain')
         @endif
         </div>
     @endforeach

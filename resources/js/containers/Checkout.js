@@ -22,13 +22,11 @@ const mapShippingCost = (couriers, total) => couriers.map((el) => {
 });
 
 const Checkout = () => {
-    const [step, setStep] = useState(2);
+    const [step, setStep] = useState(1);
     const [userData, setUserData] = useState({
-        'payment': 1,
-        'delivery': 1,
         'name': 'Serg',
         'surname': 'Matv',
-        'phone': '12345',
+        'phone': '1234567890',
         'email': 'mail@mail.foo',
         'address[street]': 'Zamkov',
         'address[house]': '104',
@@ -60,7 +58,8 @@ const Checkout = () => {
 
         // call api function
         axios.post('/api/orders', finalData)
-            .then(() => {
+            .then(({data}) => {
+                setUserData({...userData, ...data});
                 setStep(step + 1);
             })
             .catch((error) => {
@@ -73,11 +72,7 @@ const Checkout = () => {
     };
 
     if (step === 3) {
-        return <CheckoutFinal
-            payments={config.get('payments')}
-            couriers={couriers}
-            userData={userData}
-            prevStep={prevStep}/>;
+        return <CheckoutFinal userData={userData} />;
     }
 
     return (
@@ -86,9 +81,10 @@ const Checkout = () => {
                 <h4><span>Заказ</span></h4>
 
                 <Card classes={['shadow-sm', 'p-3']}>
+                    {!!products.length &&
                     <CartTable totalCost={totalCost} currency={config.get('currency')}>
                         <CartProducts products={products} currency={config.get('currency')} />
-                    </CartTable>
+                    </CartTable>}
                 </Card>
             </div>
 

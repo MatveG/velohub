@@ -2,7 +2,7 @@
     <li class='vmenu-child'><a href="{{ $child->link }}">{{ $child->name }}</a>
     @if($menu->children)
         @foreach ($child->children as $child)
-            @include('partials.menu-child')
+            @include('layouts.footer.menu-child')
         @endforeach
     @endif
 @endforeach

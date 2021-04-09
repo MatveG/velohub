@@ -1,14 +1,14 @@
 @extends('layouts.main')
 
 @section('content')
-    @include('partials.product.toolbar')
+    @include('product.toolbar')
 
     <main class="content">
         <div class="row">
             <section class="col-12 col-lg-9 col-xl-9">
                 <div class="row">
                     <div class="col-12 col-lg-6 col-xl-6">
-                        @include('partials.product.general')
+                        @include('product.general')
                     </div>
                     <div class="col-12 col-lg-6 col-xl-6">
                         <div id="product-image">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
 
-                @include('partials.product.terms')
+                @include('product.terms')
             </section>
         </div>
 
@@ -53,7 +53,7 @@
             <h3><span>Аналоги</span></h3>
             <div class="row w-100 text-center">
                 @foreach($product->analogs->take(6) as $product)
-                    @include('partials.product')
+                    @include('category.product')
                 @endforeach
             </div>
         </section>

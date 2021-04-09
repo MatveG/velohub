@@ -7,8 +7,8 @@ import Select from './ui/Select';
 import CheckoutComment from './CheckoutComment';
 
 const CheckoutSecond = (props) => {
-    const [payment, setPayment] = useState('');
-    const [delivery, setDelivery] = useState('');
+    const [payment, setPayment] = useState('0');
+    const [delivery, setDelivery] = useState('0');
     const {register, errors, handleSubmit} = useForm();
 
     const handlePaymentSelect = ({target}) => setPayment(target.value);
