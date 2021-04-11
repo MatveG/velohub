@@ -10,10 +10,10 @@ import NostockButton from '../components/NostockButton';
 
 const Buy = (props) => {
     const dispatch = useDispatch();
-    const cartPending = useSelector((state) => state.cart.pending);
-    const cartProducts = useSelector((state) => state.cart.products);
-    const [variant, setVariant] = useState({});
+    const cartProducts = useSelector(({cart}) => cart.products);
+    const [keyId, setKeyId] = useState(undefined);
     const [isValid, setIsValid] = useState(true);
+    const variant = keyId !== undefined ? props.variants[keyId] : {is_stock: false};
     let isInStock; let isInCart;
 
     if (variant.id) {
@@ -29,16 +29,13 @@ const Buy = (props) => {
     }
 
     useEffect(() => {
-        if (!cartPending) {
-            dispatch(cartFetch());
-        }
+        dispatch(cartFetch());
     }, []);
 
     const showCart = () => dispatch(cartOpen());
 
     const handleVariantSelect = (event) => {
-        const idx = Number.isInteger(+event.target.value) ? +event.target.value : null;
-        setVariant(props.variants[idx] || {});
+        setKeyId(Number.isInteger(+event.target.value) ? +event.target.value : undefined);
         setIsValid(true);
     };
 
@@ -56,18 +53,23 @@ const Buy = (props) => {
 
     return (
         <React.Fragment>
-            {!!props.variants.length && <BuyVariants variants={props.variants}
-                handleSelect={handleVariantSelect}
-                isInvalid={!isValid}/>}
+            {!!props.variants.length && <BuyVariants
+                variants={props.variants}
+                isInvalid={!isValid}
+                value={keyId}
+                handleSelect={handleVariantSelect} />}
 
-            <BuyPrice currency={config.get('currency')}
+            <BuyPrice
+                currency={config.get('currency')}
                 product={props.product}
-                variant={variant}/>
+                variant={variant} />
 
-            {isInStock ?
-                <BuyButton isInCart={isInCart} addToCart={handleAddToCart}
-                    showCart={showCart}/> :
-                <NostockButton/>
+            {isInStock
+                ? <BuyButton
+                    isInCart={isInCart}
+                    showCart={showCart}
+                    addToCart={handleAddToCart} />
+                : <NostockButton/>
             }
         </React.Fragment>
     );

@@ -7,7 +7,6 @@ import {
     CART_PUSH,
     CART_REMOVE,
     CART_UPDATE,
-    CART_ERROR,
 } from '../reducers/cart';
 
 export const cartOpen = () => ({
@@ -45,9 +44,3 @@ export const cartUpdate = (product) => ({
     type: CART_UPDATE,
     payload: product,
 });
-
-export const cartError = (error) => ({
-    type: CART_ERROR,
-    payload: error,
-});
-

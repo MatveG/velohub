@@ -7,20 +7,18 @@ import CartProducts from '../components/CartProducts';
 import Modal from '../components/ui/Modal';
 import {cartClose} from '../state/actions/cart';
 import CartControls from '../components/CartControls';
+import Card from '../components/ui/Card';
 
 const computeTotal = (products) => products.reduce((total, el) => total + el.amount * el.price, 0);
 
 const Cart = (props) => {
     const dispatch = useDispatch();
-    const open = useSelector((state) => state.cart.open);
-    const pending = useSelector((state) => state.cart.pending);
-    const products = useSelector((state) => state.cart.products);
+    const open = useSelector(({cart}) => cart.open);
+    const products = useSelector(({cart}) => cart.products);
     const totalCost = computeTotal(products);
 
     useEffect(() => {
-        if (!pending) {
-            dispatch(cartFetch());
-        }
+        dispatch(cartFetch());
     }, []);
 
     const hideCart = () => dispatch(cartClose());

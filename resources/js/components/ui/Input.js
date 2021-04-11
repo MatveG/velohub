@@ -4,7 +4,14 @@ const Input = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
     const type = props.type || 'text';
     const classes = ['form-control', ...props.classes || []];
+    const values = {};
     let error = {};
+
+    props.value ? values.value = props.value : null;
+    props.defaultValue ? values.defaultValue = props.defaultValue : null;
+    // if (props.defaultValue) {
+    //     foo.defaultValue = props.defaultValue;
+    // }
 
     if (props.errors && props.errors[props.name]) {
         const match = props.name.match(/\[(.*?)\]/);
@@ -26,13 +33,13 @@ const Input = (props) => {
         <React.Fragment>
             {!!props.label && <label className="form-label" htmlFor={id}>{props.label}</label>}
 
-            <input className={classes.join(' ')}
+            <input
+                className={classes.join(' ')}
                 id={id}
                 type={type}
                 name={props.name}
-                value={props.value}
-                defaultValue={props.defaultValue}
                 placeholder={props.placeholder}
+                {...values}
                 onChange={props.handleChange}
                 ref={props.register ? props.register() : null}
             />

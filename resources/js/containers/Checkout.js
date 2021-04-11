@@ -12,6 +12,8 @@ import Loader from '../components/ui/Loader';
 import Card from '../components/ui/Card';
 import {fireDanger} from '../state/actions/toasts';
 
+const localData = localStorage.getItem('_udata') ? JSON.parse(localStorage.getItem('_udata')) : {};
+
 const computeTotal = (products) => products.reduce((total, el) => {
     return total + el.amount * el.price;
 }, 0);
@@ -23,31 +25,25 @@ const mapShippingCost = (couriers, total) => couriers.map((el) => {
 
 const Checkout = () => {
     const [step, setStep] = useState(1);
-    const [userData, setUserData] = useState({
-        'name': 'Serg',
-        'surname': 'Matv',
-        'phone': '1234567890',
-        'email': 'mail@mail.foo',
-        'address[street]': 'Zamkov',
-        'address[house]': '104',
-    });
+    const [userData, setUserData] = useState({...localData});
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const pending = useSelector((state) => state.cart.pending);
-    const products = useSelector((state) => state.cart.products);
+    const pending = useSelector(({cart}) => cart.pending);
+    const products = useSelector(({cart}) => cart.products);
     const totalCost = computeTotal(products);
     const couriers = mapShippingCost(config.get('couriers'), totalCost);
 
     useEffect(() => {
-        if (!pending) {
-            dispatch(cartFetch());
-        }
+        dispatch(cartFetch());
     }, []);
 
     const prevStep = () => setStep(step - 1);
 
     const nextStep = (formData) => {
-        setUserData({...userData, ...formData});
+        const newData = {...userData, ...formData};
+
+        localStorage.setItem('_udata', JSON.stringify(newData));
+        setUserData(newData);
         setStep(step + 1);
     };
 
@@ -56,14 +52,16 @@ const Checkout = () => {
 
         setLoading(true);
 
-        // call api function
         axios.post('/api/orders', finalData)
             .then(({data}) => {
+                if (!data.id) {
+                    throw new Error;
+                }
                 setUserData({...userData, ...data});
                 setStep(step + 1);
             })
             .catch((error) => {
-                fireDanger('Возникла ошибка при сохранении заказа');
+                dispatch(fireDanger('Возникла ошибка при сохранении заказа'));
                 console.error(error);
             })
             .finally(() => {
@@ -81,23 +79,30 @@ const Checkout = () => {
                 <h4><span>Заказ</span></h4>
 
                 <Card classes={['shadow-sm', 'p-3']}>
-                    {!!products.length &&
-                    <CartTable totalCost={totalCost} currency={config.get('currency')}>
-                        <CartProducts products={products} currency={config.get('currency')} />
-                    </CartTable>}
+                    {products.length
+                        ? <CartTable totalCost={totalCost} currency={config.get('currency')}>
+                            <CartProducts products={products} currency={config.get('currency')} />
+                        </CartTable>
+                        : <div className="text-center fst-italic">Загружается...</div>
+                    }
                 </Card>
             </div>
 
             <div className="col-5 px-4">
-                {step === 1 && <CheckoutFirst
-                    userData={userData}
-                    nextStep={nextStep} />}
+                {step === 1 &&
+                    <CheckoutFirst
+                        userData={userData}
+                        nextStep={nextStep} />
+                }
 
-                {step === 2 && <CheckoutSecond
-                    payments={config.get('payments')}
-                    couriers={couriers}
-                    prevStep={prevStep}
-                    nextStep={finalStep} />}
+                {step === 2 &&
+                    <CheckoutSecond
+                        userData={userData}
+                        payments={config.get('payments')}
+                        couriers={couriers}
+                        prevStep={prevStep}
+                        nextStep={finalStep} />
+                }
             </div>
 
             <Loader active={loading || pending}/>

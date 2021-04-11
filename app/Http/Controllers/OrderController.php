@@ -16,8 +16,8 @@ class OrderController extends Controller
             'payment' => 'required',
             'delivery' => 'required',
             'email' => 'required|email',
-            'phone' => 'required',
             'name' => 'required',
+            'phone' => 'required',
         ]);
 
         $result = [];
@@ -39,8 +39,8 @@ class OrderController extends Controller
         $order->products = $cart->products;
         $order->address = $result;
 
-        $order->save();
-        $cart->delete();
+//        $order->save();
+//        $cart->delete();
 
         return response()->json($order);
     }

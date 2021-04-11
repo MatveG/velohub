@@ -23,6 +23,7 @@ const CheckoutSecond = (props) => {
                 name="payment"
                 value={payment}
                 options={props.payments}
+                property="title"
                 placeholder="[ Выбор способа оплаты ]"
                 handleChange={handlePaymentSelect}
                 register={register.bind(register, {required: true})}
@@ -33,6 +34,7 @@ const CheckoutSecond = (props) => {
                 name="delivery"
                 value={delivery}
                 options={props.couriers}
+                property="title"
                 placeholder="[ Выбор способа доставки ]"
                 handleChange={handleDeliverySelect}
                 register={register.bind(register, {required: true})}

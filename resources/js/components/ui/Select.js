@@ -25,7 +25,9 @@ const Select = (props) => {
                 <option value="">{props.placeholder}</option>
 
                 {props.options.map((el, idx) => (
-                    <option key={idx} value={idx}>{el.title}</option>
+                    <option key={idx} value={idx}>
+                        {typeof el === 'object' ? el[props.property] : el}
+                    </option>
                 ))}
             </select>
 

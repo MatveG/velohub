@@ -6,12 +6,10 @@ export const CART_PENDING = 'CART::PENDING';
 export const CART_PUSH = 'CART::PUSH';
 export const CART_REMOVE = 'CART::REMOVE';
 export const CART_UPDATE = 'CART::UPDATE';
-export const CART_ERROR = 'CART::ERROR';
 
 const initialState = {
     open: false,
     pending: false,
-    error: false,
     products: [],
 };
 
@@ -35,7 +33,6 @@ const cart = (state = initialState, action = {}) => {
         return {
             ...state,
             pending: false,
-            error: null,
             products: initialState.products,
         };
 
@@ -43,7 +40,6 @@ const cart = (state = initialState, action = {}) => {
         return {
             ...state,
             pending: false,
-            error: true,
             products: payload,
         };
 
@@ -51,14 +47,12 @@ const cart = (state = initialState, action = {}) => {
         return {
             ...state,
             pending: true,
-            error: null,
         };
 
     case CART_PUSH:
         return {
             ...state,
             pending: false,
-            error: null,
             products: [...state.products, payload],
         };
 
@@ -66,7 +60,6 @@ const cart = (state = initialState, action = {}) => {
         return {
             ...state,
             pending: false,
-            error: null,
             products: state.products.filter((el) => payload.variant_id ?
                 el.id !== payload.id && el.variant_id !== payload.variant_id :
                 el.id !== payload.id,
@@ -77,17 +70,9 @@ const cart = (state = initialState, action = {}) => {
         return {
             ...state,
             pending: false,
-            error: null,
             products: state.products.map((el) => {
                 return {...(el.id === payload.id ? payload : el)};
             }),
-        };
-
-    case CART_ERROR:
-        return {
-            ...state,
-            error: payload,
-            pending: false,
         };
 
     default: return state;
