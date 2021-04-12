@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Select = (props) => {
+const CheckoutSelect = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
     const classes = ['form-control', ...props.classes || []];
     let error = {};
@@ -22,11 +22,13 @@ const Select = (props) => {
                 onChange={props.handleChange}
                 ref={props.register ? props.register() : null}>
 
-                <option value="">{props.placeholder}</option>
+                <option value="">
+                    {props.placeholder}
+                </option>
 
                 {props.options.map((el, idx) => (
-                    <option key={idx} value={idx}>
-                        {typeof el === 'object' ? el[props.property] : el}
+                    <option key={idx} value={el.id}>
+                        {el.title}
                     </option>
                 ))}
             </select>
@@ -37,4 +39,4 @@ const Select = (props) => {
     );
 };
 
-export default Select;
+export default CheckoutSelect;

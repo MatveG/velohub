@@ -19,6 +19,7 @@ class Order extends Model
         'name',
         'surname',
         'text',
+        'address',
     ];
     protected $casts = [
         'address' => 'object',

@@ -12,7 +12,7 @@ const CheckoutForm = (props) => {
                     register={props.delivery > 2 && props.register.bind(
                         props.register, {required: true},
                     )}
-                    errors={props.errors} />
+                    error={!!props.errors.address && props.errors.address.city} />
             </div>
 
             <div className="col-4 py-2">
@@ -23,7 +23,7 @@ const CheckoutForm = (props) => {
                     register={props.delivery > 2 && props.register.bind(
                         props.register, {required: true},
                     )}
-                    errors={props.errors} />
+                    error={!!props.errors.address && props.errors.address.branch} />
             </div>
         </React.Fragment>
     );

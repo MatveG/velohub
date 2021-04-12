@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from './ui/Card';
 
-const CheckoutFinal = (props) => {
+const CheckoutOrder = (props) => {
     return (
         <div className="w-50 m-auto text-center">
             <Card classes={['shadow']}>
@@ -17,4 +17,4 @@ const CheckoutFinal = (props) => {
     );
 };
 
-export default CheckoutFinal;
+export default CheckoutOrder;

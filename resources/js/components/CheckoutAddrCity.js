@@ -10,7 +10,7 @@ const CheckoutCityForm = (props) => {
                     label="Улица"
                     placeholder="Адрес доставки"
                     register={props.register.bind(props.register, {required: true})}
-                    errors={props.errors} />
+                    error={!!props.errors.address && props.errors.address.street} />
             </div>
 
             <div className="col-4 py-2">
@@ -19,7 +19,7 @@ const CheckoutCityForm = (props) => {
                     label="Дом"
                     placeholder="Номер"
                     register={props.register.bind(props.register, {required: true})}
-                    errors={props.errors} />
+                    error={!!props.errors.address && props.errors.address.house} />
             </div>
         </React.Fragment>
     );

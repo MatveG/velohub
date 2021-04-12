@@ -2,7 +2,7 @@ import React from 'react';
 import {useForm} from 'react-hook-form';
 import Input from './ui/Input';
 
-const CheckoutFirst = (props) => {
+const CheckoutBuyer = (props) => {
     const {register, errors, handleSubmit} = useForm();
 
     return (
@@ -27,7 +27,8 @@ const CheckoutFirst = (props) => {
                     name="surname"
                     label="Фамилия"
                     placeholder="Ваша фамилия"
-                    defaultValue={props.userData.surname} />
+                    defaultValue={props.userData.surname}
+                    register={register.bind(register, {})} />
             </div>
 
             <div className="col-6 py-2">
@@ -69,4 +70,4 @@ const CheckoutFirst = (props) => {
     );
 };
 
-export default CheckoutFirst;
+export default CheckoutBuyer;

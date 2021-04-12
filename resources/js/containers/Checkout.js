@@ -5,33 +5,30 @@ import config from 'react-global-configuration';
 import {cartFetch} from '../api/cart';
 import CartTable from '../components/CartTable';
 import CartProducts from '../components/CartProducts';
-import CheckoutFirst from '../components/CheckoutFirst';
-import CheckoutSecond from '../components/CheckoutSecond';
-import CheckoutFinal from '../components/CheckoutFinal';
+import CheckoutBuyer from '../components/CheckoutBuyer';
+import CheckoutAddr from '../components/CheckoutAddr';
+import CheckoutOrder from '../components/CheckoutOrder';
 import Loader from '../components/ui/Loader';
 import Card from '../components/ui/Card';
 import {fireDanger} from '../state/actions/toasts';
 
 const localData = localStorage.getItem('_udata') ? JSON.parse(localStorage.getItem('_udata')) : {};
-
 const computeTotal = (products) => products.reduce((total, el) => {
     return total + el.amount * el.price;
 }, 0);
-
 const mapShippingCost = (couriers, total) => couriers.map((el) => {
     const rate = total < el.free ? el.cost : 0;
     return {...el, rate, total: total + rate};
 });
 
 const Checkout = () => {
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(2);
     const [userData, setUserData] = useState({...localData});
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const pending = useSelector(({cart}) => cart.pending);
     const products = useSelector(({cart}) => cart.products);
     const totalCost = computeTotal(products);
-    const couriers = mapShippingCost(config.get('couriers'), totalCost);
 
     useEffect(() => {
         dispatch(cartFetch());
@@ -50,27 +47,29 @@ const Checkout = () => {
     const finalStep = (formData) => {
         const finalData = {...userData, ...formData};
 
-        setLoading(true);
+        console.log(finalData);
 
-        axios.post('/api/orders', finalData)
-            .then(({data}) => {
-                if (!data.id) {
-                    throw new Error;
-                }
-                setUserData({...userData, ...data});
-                setStep(step + 1);
-            })
-            .catch((error) => {
-                dispatch(fireDanger('Возникла ошибка при сохранении заказа'));
-                console.error(error);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        // setLoading(true);
+        //
+        // axios.post('/api/orders', finalData)
+        //     .then(({data}) => {
+        //         if (!data.id) {
+        //             throw new Error;
+        //         }
+        //         setUserData({...userData, ...data});
+        //         setStep(step + 1);
+        //     })
+        //     .catch((error) => {
+        //         dispatch(fireDanger('Возникла ошибка при сохранении заказа'));
+        //         console.error(error);
+        //     })
+        //     .finally(() => {
+        //         setLoading(false);
+        //     });
     };
 
     if (step === 3) {
-        return <CheckoutFinal userData={userData} />;
+        return <CheckoutOrder userData={userData} />;
     }
 
     return (
@@ -90,16 +89,16 @@ const Checkout = () => {
 
             <div className="col-5 px-4">
                 {step === 1 &&
-                    <CheckoutFirst
+                    <CheckoutBuyer
                         userData={userData}
                         nextStep={nextStep} />
                 }
 
                 {step === 2 &&
-                    <CheckoutSecond
+                    <CheckoutAddr
                         userData={userData}
                         payments={config.get('payments')}
-                        couriers={couriers}
+                        couriers={mapShippingCost(config.get('couriers'), totalCost)}
                         prevStep={prevStep}
                         nextStep={finalStep} />
                 }

@@ -11,27 +11,32 @@
         currency: {!!json_encode(settings('shop', 'currency'))!!},
         payments: [
             {
+                id: 1,
                 title: 'Наличными',
                 multiplier: 1,
             },
         ],
         couriers: [
             {
+                id: 1,
                 title: 'Самовывоз с магазинов',
                 cost: 0,
                 free: 0,
             },
             {
+                id: 2,
                 title: 'Курьером по Киеву и области',
                 cost: 50,
                 free: 20000,
             },
             {
+                id: 3,
                 title: 'Новой Почтой',
                 cost: 90,
                 free: 3000,
             },
             {
+                id: 4,
                 title: 'Деливери',
                 cost: 50,
                 free: 2000,
