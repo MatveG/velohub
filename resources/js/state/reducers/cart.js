@@ -8,8 +8,8 @@ export const CART_REMOVE = 'CART::REMOVE';
 export const CART_UPDATE = 'CART::UPDATE';
 
 const initialState = {
-    open: false,
-    pending: false,
+    isOpen: false,
+    isPending: false,
     products: [],
 };
 
@@ -20,46 +20,46 @@ const cart = (state = initialState, action = {}) => {
     case CART_OPEN:
         return {
             ...state,
-            open: true,
+            isOpen: true,
         };
 
     case CART_CLOSE:
         return {
             ...state,
-            open: false,
+            isOpen: false,
         };
 
     case CART_EMPTY:
         return {
             ...state,
-            pending: false,
+            isPending: false,
             products: initialState.products,
         };
 
     case CART_FILL:
         return {
             ...state,
-            pending: false,
+            isPending: false,
             products: payload,
         };
 
     case CART_PENDING:
         return {
             ...state,
-            pending: true,
+            isPending: true,
         };
 
     case CART_PUSH:
         return {
             ...state,
-            pending: false,
+            isPending: false,
             products: [...state.products, payload],
         };
 
     case CART_REMOVE:
         return {
             ...state,
-            pending: false,
+            isPending: false,
             products: state.products.filter((el) => payload.variant_id ?
                 el.id !== payload.id && el.variant_id !== payload.variant_id :
                 el.id !== payload.id,
@@ -69,7 +69,7 @@ const cart = (state = initialState, action = {}) => {
     case CART_UPDATE:
         return {
             ...state,
-            pending: false,
+            isPending: false,
             products: state.products.map((el) => {
                 return {...(el.id === payload.id ? payload : el)};
             }),

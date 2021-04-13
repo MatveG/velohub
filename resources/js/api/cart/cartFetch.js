@@ -3,10 +3,7 @@ import {cartPending, cartFill} from '../../state/actions/cart';
 import {fireDanger} from '../../state/actions/toasts';
 
 export function cartFetch() {
-    return (dispatch, getState) => {
-        if (getState().cart.pending) {
-            return null;
-        }
+    return (dispatch) => {
         dispatch(cartPending());
 
         axios.get('/api/carts/products')

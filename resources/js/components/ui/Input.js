@@ -4,11 +4,11 @@ const Input = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
     const type = props.type || 'text';
     const classes = ['form-control', ...props.classes || []];
-    const values = {};
     const error = props.error || {};
-
-    props.value ? values.value = props.value : null;
-    props.defaultValue ? values.defaultValue = props.defaultValue : null;
+    const values = {
+        ...(!!props.value && {value: props.value}),
+        ...(!!props.defaultValue && {defaultValue: props.defaultValue}),
+    };
 
     if (error.type) {
         classes.push('is-invalid');

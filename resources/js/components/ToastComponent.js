@@ -1,17 +1,14 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {clearToast} from '../../state/actions/toasts';
 
-const toasts = (props) => {
-    setTimeout(() => {
-        props.clearToast();
-    }, 10000);
-
+const ToastComponent = (props) => {
     const title = props.type.charAt(0).toUpperCase() + props.type.substr(1);
+
+    // setTimeout(() => props.close(props.keyId), 1000 * (props.keyId + 1));
 
     return (
         <div className={`${props.active ? 'd-block' : 'd-none'}`}>
-            <div className="toast-container position-fixed p-3 bottom-0 end-0" style={{zIndex: 99}}>
+            <div className="toast-container position-fixed p-3 bottom-0 end-0"
+                style={{zIndex: 9999, marginBottom: `${props.keyId*100}px`}}>
                 <div className="toast show" role="alert">
                     <div className="toast-header">
                         <strong className={`me-auto text-${props.type}`} style={{opacity: 0.75}}>
@@ -21,7 +18,7 @@ const toasts = (props) => {
                             &nbsp;{title}
                         </strong>
                         <button type="button" className="btn-close" aria-label="Close"
-                            onClick={props.clearToast}/>
+                            onClick={() => props.close(props.keyId)}/>
                     </div>
                     <div className="toast-body">{props.message}</div>
                 </div>
@@ -30,14 +27,4 @@ const toasts = (props) => {
     );
 };
 
-const mapState = ({toasts}) => ({
-    active: toasts.active,
-    type: toasts.type,
-    message: toasts.message,
-});
-
-const mapActions = (dispatch) => ({
-    clearToast: () => dispatch(clearToast()),
-});
-
-export default connect(mapState, mapActions)(toasts);
+export default ToastComponent;

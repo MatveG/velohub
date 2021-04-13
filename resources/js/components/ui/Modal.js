@@ -16,14 +16,15 @@ const Modal = (props) => {
             ref={outEl}
             onClick={outClick}>
             <div className={`modal-dialog modal-dialog-scrollable m-auto
-                ${props.classes.join(' ')}`}>
+                ${!!props.classes && props.classes.join(' ')}`}>
                 <div className="modal-content">
                     <div className="modal-header px-4">
                         <h3 className="modal-title">{props.title}</h3>
 
                         <button type="button" className="btn-close" onClick={props.handleClose} />
                     </div>
-                    <div className="modal-body text-center">
+                    <div className={`modal-body text-center
+                    ${!!props.bodyClasses && props.bodyClasses.join(' ')}`}>
                         {props.children}
                     </div>
                 </div>
