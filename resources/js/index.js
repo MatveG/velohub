@@ -9,28 +9,31 @@ import ProductImage from './components/ProductImage';
 import Buy from './containers/Buy';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
-import Toasts from './containers/Toasts';
+import Toast from './containers/Toast';
 import state from './state/';
 import {cartOpen} from './state/actions/cart';
-import {fireInfo, fireWarning, fireDanger} from './state/actions/toasts';
 import applyFilter from './utils/applyFilter';
 import applySorting from './utils/applySorting';
 import scrollState from './utils/scrollState';
 
 config.set(_CONFIG);
 
-const store = createStore(state, applyMiddleware(thunk));
+const store = createStore(
+    state,
+    window.hasOwnProperty('_STATE') ? _STATE : {},
+    applyMiddleware(thunk),
+);
 
 const productImage = document.getElementById('product-image');
 productImage && render(
-    <ProductImage images={_PRODUCT_IMAGES} />,
+    <ProductImage images={_PRODUCT_IMAGES}/>,
     productImage,
 );
 
 const productBuy = document.getElementById('product-buy');
 productBuy && render(
     <Provider store={store}>
-        <Buy product={_PRODUCT} variants={_PRODUCT_VARIANTS} />
+        <Buy product={_PRODUCT} variants={_PRODUCT_VARIANTS}/>
     </Provider>,
     productBuy,
 );
@@ -38,7 +41,7 @@ productBuy && render(
 const shopCart = document.getElementById('shop-cart');
 shopCart && render(
     <Provider store={store}>
-        <Cart checkoutRoute={_CHECKOUT_ROUTE} />
+        <Cart checkoutRoute={_CHECKOUT_ROUTE}/>
     </Provider>,
     shopCart,
 );
@@ -46,7 +49,7 @@ shopCart && render(
 const checkoutForm = document.getElementById('shop-checkout');
 checkoutForm && render(
     <Provider store={store}>
-        <Checkout />
+        <Checkout/>
     </Provider>,
     checkoutForm,
 );
@@ -54,14 +57,10 @@ checkoutForm && render(
 const errorMessage = document.getElementById('error-message');
 errorMessage && render(
     <Provider store={store}>
-        <Toasts />
+        <Toast/>
     </Provider>,
     errorMessage,
 );
-
-window.hasOwnProperty('_NOTICE_INFO') && store.dispatch(fireInfo(_NOTICE_INFO));
-window.hasOwnProperty('_NOTICE_WARNING') && store.dispatch(fireWarning(_NOTICE_WARNING));
-window.hasOwnProperty('_NOTICE_DANGER') && store.dispatch(fireDanger(_NOTICE_DANGER));
 
 const cartStatus = document.getElementById('cart-status');
 if (cartStatus) {
