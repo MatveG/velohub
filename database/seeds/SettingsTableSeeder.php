@@ -14,6 +14,12 @@ class SettingsTableSeeder extends Seeder
     {
         DB::table('settings')->insert([
             'group' => 'shop',
+            'key' => 'images_format',
+            'value' => 'jpg',
+        ]);
+
+        DB::table('settings')->insert([
+            'group' => 'shop',
             'key' => 'items_per_page',
             'value' => '18',
         ]);
@@ -50,22 +56,6 @@ class SettingsTableSeeder extends Seeder
                 ]
             ]),
         ]);
-
-//        DB::table('settings')->insert([
-//            'group' => 'shop',
-//            'key' => 'prices',
-//            'value' => json_encode([
-//                'retail' => [
-//                    'title' => 'retail',
-//                ],
-//                'old' => [
-//                    'title' => 'wholesale',
-//                ],
-//                'promo' => [
-//                    'title' => 'wholesale',
-//                ]
-//            ]),
-//        ]);
 
         DB::table('settings')->insert([
             'group' => 'shop',

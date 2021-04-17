@@ -26,7 +26,7 @@
                             </b-tab-item>
                             <b-tab-item label="SEO">
                                 <b-field label="URL" horizontal>
-                                    <b-input v-model="category.latin" custom-class="is-static" readonly />
+                                    <b-input v-model="category.slug" custom-class="is-static" readonly />
                                 </b-field>
                                 <b-field label="Заголовок" message="Тег title" horizontal>
                                     <b-input v-model="category.seo_title" />

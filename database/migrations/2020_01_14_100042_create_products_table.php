@@ -15,38 +15,37 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('category_id')->unsigned()->index();
+            $table->bigIncrements('id');
+            $table->bigInteger('category_id')->index();
 
             $table->boolean('is_active')->default(false)->index();
             $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
 
-            $table->integer('stock')->nullable();
             $table->float('price')->nullable();
-            $table->float('price_sale')->nullable();
+            $table->float('price_old')->nullable();
             $table->float('weight')->nullable();
 
-            $table->string('sale_text')->nullable();
-            $table->string('code')->nullable();
+            $table->string('code');
             $table->string('barcode')->nullable();
+            $table->string('slug');
             $table->string('title')->nullable();
             $table->string('brand')->nullable();
-            $table->string('model')->nullable();
-            $table->string('slug')->nullable();
+            $table->string('model');
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
+            $table->string('sale_text')->nullable();
 
             $table->text('summary')->nullable();
             $table->text('description')->nullable();
 
-            $table->text('images')->default('[]');
-            $table->text('videos')->default('[]');
-            $table->text('files')->default('[]');
-            $table->text('settings')->default('{}');
-
             $table->json('features')->default('{}');
+            $table->json('images')->default('[]');
+            $table->json('videos')->default('[]');
+            $table->json('files')->default('[]');
+            $table->json('settings')->default('{}');
+            $table->json('stocks')->default('{}');
 
             $table->timestamps();
         });

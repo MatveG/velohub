@@ -17,28 +17,17 @@ class ProductsTableSeeder extends Seeder
         for($i = 1; $i < 1000; $i++) {
             DB::table('products')->insert([
                 'category_id' => $faker->numberBetween(1, 3),
+                'code' => $faker->uuid,
                 'is_stock' => '1',
                 'is_active' => '1',
                 'is_sale' => $faker->numberBetween(0, 1),
                 'slug' => $faker->slug(),
                 'title' => $faker->name,
-                'brand' => $faker->randomElement(['Asus', 'Intel', 'Apple', 'Acer', 'HP', 'Razer']),
+                'brand' => $faker->randomElement(['Asus', 'Intel', 'Apple', 'Acer', 'HP']),
                 'model' => $faker->name,
                 'summary' => $faker->text,
                 'description' => $faker->realText,
-                'features' => json_encode([
-                    'year' => $faker->randomElement([2018, 2019, 2020]),
-                    'processor' => $faker->randomElement(['Intel', 'AMD']),
-                    'ram' => $faker->randomElement([3, 6, 12, 24, 48]),
-                    'ssd' => $faker->randomElement([16, 32, 64, 128, 258, 512, 1024, 2048, 4096]),
-                    'os' =>  $faker->randomElement(['Windows', 'Linux', 'DOS']),
-                    'options' => ['Wi-Fi', 'BT', 'scaner', 'more1', 'more2', 'more3'],
-                ]),
                 'price' => $faker->numberBetween(1000, 5000),
-                'images' => json_encode([
-                    '0' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-1.jpg',
-                    '1' => '/1-velosipedi/Pride/10000-super-motion-drive/super-motion-400-2.jpg',
-                ]),
                 'created_at' => NOW(),
                 'updated_at' => NOW(),
             ]);

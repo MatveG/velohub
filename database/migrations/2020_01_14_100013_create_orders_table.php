@@ -14,21 +14,21 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('user_id')->unsigned()->nullable()->index();
-            $table->integer('status')->nullable()->index();
-            $table->integer('payment')->nullable()->index();
-            $table->integer('delivery')->nullable()->index();
-            $table->float('discount')->nullable();
-            $table->float('shipping')->nullable();
-            $table->float('total')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('name')->nullable();
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->nullable()->index();
+            $table->integer('status')->index();
+            $table->integer('payment')->index();
+            $table->integer('delivery')->index();
+            $table->float('discount')->default(0);
+            $table->float('shipping')->default(0);
+            $table->float('total');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('name');
             $table->string('surname')->nullable();
             $table->text('text')->nullable();
-            $table->json('address')->nullable('{}');
-            $table->json('products')->nullable('{}');
+            $table->json('address')->default('{}');
+            $table->json('products')->default('{}');
             $table->timestamps();
         });
     }

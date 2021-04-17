@@ -14,10 +14,10 @@ class CreateDocumentsTable extends Migration
     public function up()
     {
         Schema::create('documents', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned();
+            $table->bigIncrements('id');
             $table->boolean('is_active')->default(false)->index();
-            $table->string('slug')->nullable();
-            $table->string('name')->nullable();
+            $table->string('slug');
+            $table->string('title');
             $table->text('text')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();

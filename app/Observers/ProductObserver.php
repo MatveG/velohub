@@ -15,7 +15,7 @@ class ProductObserver
         //$this->clearUnusedFeatures($Product);
 
         if ($product->isDirty('brand') || $product->isDirty('model')) {
-            $product->latin = latinize($product->brand . ' ' . $product->model);
+            $product->slug = latinize($product->brand . ' ' . $product->model);
         }
 
         if ($product->isDirty('images')) {
@@ -26,14 +26,17 @@ class ProductObserver
             }
         }
 
-        if ($product->isDirty('latin')) {
-            $product->images = ShopImages::renameImages($product->images, $product->imagesName);
-        }
-
         if ($product->variants()->count()) {
             $this->clearStockPropeties($product);
             $this->syncVariantProperties($product);
             $this->syncVariantPrices($product);
+        }
+    }
+
+    public function updating(Product $product)
+    {
+        if ($product->isDirty('slug') && count($product->images)) {
+            $product->images = ShopImages::renameImages($product->images, $product->imagesName);
         }
     }
 
@@ -47,7 +50,7 @@ class ProductObserver
         $categoryFeatures = $product->category->features;
 
         foreach ($productFeatures as $key => $feature) {
-            if(empty($categoryFeatures->{$key})) {
+            if (empty($categoryFeatures->{$key})) {
                 unset($productFeatures->{$key});
             }
         }
@@ -59,7 +62,7 @@ class ProductObserver
     {
         $product->code = null;
         $product->barcode = null;
-        $product->stock = null;
+//        $product->stocks = null;
         $product->weight = null;
     }
 

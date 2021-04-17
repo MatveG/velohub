@@ -14,10 +14,10 @@ class CreateCartsTable extends Migration
     public function up()
     {
         Schema::create('carts', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->string('uuid')->nullable();
-            $table->json('products')->default(json_encode([]));
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->nullable();
+            $table->string('uuid')->nullable()->unique();
+            $table->json('products')->default('[]');
             $table->timestamps();
         });
     }

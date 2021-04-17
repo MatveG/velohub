@@ -17,27 +17,27 @@ class DocumentsTableSeeder extends Seeder
         DB::table('documents')->insert([
             'is_active' => '1',
             'slug' => 'index',
-            'name' => 'Главная',
+            'title' => 'Главная',
         ]);
         DB::table('documents')->insert([
             'is_active' => '1',
             'slug' => 'dostavka',
-            'name' => 'Доставка',
+            'title' => 'Доставка',
         ]);
         DB::table('documents')->insert([
             'is_active' => '1',
             'slug' => 'garantija',
-            'name' => 'Гарантия',
+            'title' => 'Гарантия',
         ]);
         DB::table('documents')->insert([
             'is_active' => '1',
             'slug' => 'servis',
-            'name' => 'Сервис',
+            'title' => 'Сервис',
         ]);
         DB::table('documents')->insert([
             'is_active' => '1',
             'slug' => 'kontakti',
-            'name' => 'Контакты',
+            'title' => 'Контакты',
         ]);
     }
 }

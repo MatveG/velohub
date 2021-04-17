@@ -22,15 +22,15 @@ class CategoryObserver
     public function saving(Category $category)
     {
         if ($category->isDirty('title')) {
-            $category->latin = latinize($category->title);
+            $category->slug = latinize($category->title);
         }
 
         if ($category->isDirty('features')) {
-            $category->features = self::mapLatinProperty($category->features);
+            $category->features = self::mapSlugProperty($category->features);
         }
 
         if ($category->isDirty('parameters')) {
-            $category->parameters = self::mapLatinProperty($category->parameters);
+            $category->parameters = self::mapSlugProperty($category->parameters);
         }
     }
 
@@ -47,7 +47,7 @@ class CategoryObserver
         return Category::where('parent_id', $parentId)->where('ord', '>', $initialValue)->decrement('ord');
     }
 
-    private static function mapLatinProperty(array $array, ?string $prefix = null)
+    private static function mapSlugProperty(array $array, ?string $prefix = null)
     {
         return array_map(static function ($element) use ($prefix) {
             if ($element['filter']) {
@@ -57,7 +57,7 @@ class CategoryObserver
             }
 
             if (!empty($element['sub'])) {
-                $element['sub'] = self::mapLatinProperty($element['sub'], $element['title']);
+                $element['sub'] = self::mapSlugProperty($element['sub'], $element['title']);
             }
 
             return $element;

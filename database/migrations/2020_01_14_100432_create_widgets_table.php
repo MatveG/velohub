@@ -14,12 +14,12 @@ class CreateWidgetsTable extends Migration
     public function up()
     {
         Schema::create('widgets', function (Blueprint $table) {
-          $table->bigIncrements('id');
-          $table->boolean('is_active')->default(false)->index();
-          $table->string('slug')->nullable();
-          $table->string('name')->nullable();
-          $table->text('text')->nullable();
-          $table->timestamps();
+            $table->bigIncrements('id');
+            $table->boolean('is_active')->default(false)->index();
+            $table->string('slug');
+            $table->string('name');
+            $table->text('text')->nullable();
+            $table->timestamps();
         });
     }
 

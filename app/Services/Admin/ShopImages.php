@@ -16,6 +16,10 @@ class ShopImages
 
     public static function uploadAnImage($file, string $folderName, string $fileName)
     {
+        if (!File::exists($file)) {
+            return null;
+        }
+
         $folderPath = self::getHashPath($file, $folderName);
         $fullPath = $folderPath . $fileName;
 

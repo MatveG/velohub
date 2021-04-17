@@ -14,24 +14,24 @@ class CreateVariantsTable extends Migration
     public function up()
     {
         Schema::create('variants', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('product_id')->unsigned();
-            $table->bigInteger('category_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('product_id')->index();
+            $table->bigInteger('category_id')->index();
 
             $table->boolean('is_active')->default(false)->index();
             $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
 
-            $table->integer('stock')->default(0);
             $table->float('price')->nullable();
             $table->float('surcharge')->default(0);
             $table->float('weight')->nullable();
 
-            $table->string('code')->nullable();
+            $table->string('code');
             $table->string('barcode')->nullable();
 
-            $table->text('images')->nullable();
-            $table->json('parameters')->nullable();
+            $table->json('images')->default('[]');
+            $table->json('parameters')->default('{}');
+            $table->json('stocks')->default('{}');
         });
     }
 

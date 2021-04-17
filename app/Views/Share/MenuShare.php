@@ -17,7 +17,7 @@ class MenuShare
         return Menu
             ::where('parent_id', 0)
             ->active()
-            ->orderBy('sorting')
+            ->orderBy('ord')
             ->get();
     }
 }
