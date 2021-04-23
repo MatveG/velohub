@@ -5,7 +5,7 @@
 
     <main class="content">
         <div class="row">
-            <section class="col-12 col-lg-9 col-xl-9">
+            <section class="col-12 col-lg-9 col-xl-9" id="product-description">
                 <div class="row">
                     <div class="col-12 col-lg-6 col-xl-6">
                         @include('product.general')
@@ -36,7 +36,7 @@
         </div>
 
         @if($product->text)
-            <section id="product-description" class="mt-3">
+            <section class="mt-3">
                 <h3><span>Описание</span></h3>
                 {!! $product->text !!}
             </section>

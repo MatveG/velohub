@@ -1,0 +1,47 @@
+@import 'vars';
+
+@keyframes loader-animation {
+    0% {
+        left: -100%;
+    }
+    49% {
+        left: 100%;
+    }
+    50% {
+        left: 100%;
+    }
+    100% {
+        left: -100%;
+    }
+}
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    background-color: rgba(0, 0, 0, 0.3);
+
+    .line {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 4px;
+        width: 100%;
+        overflow: hidden;
+        background-color: $bright;
+        z-index: 9999;
+    }
+
+    .bar {
+        position: relative;
+        height: 4px;
+        width: 100%;
+        background-color: #fff;
+        animation-name: loader-animation;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+    }
+}

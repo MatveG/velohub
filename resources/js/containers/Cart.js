@@ -37,7 +37,7 @@ const Cart = (props) => {
                         checkoutRoute={props.checkoutRoute}
                         hideCart={hideCart} />
                 </div>
-                : <p className="font-italic">
+                : <p className="py-3 fst-italic">
                     Здесь пока пусто
                 </p>
             }

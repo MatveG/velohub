@@ -1,6 +1,8 @@
 @extends('layouts.main')
 
 @section('content')
+    @include('category.toolbar')
+
     <div class="content">
         <div class="row">
             <aside class="col-md-2 pr-lg-3">
@@ -9,8 +11,6 @@
 
             <div class="col-md-10">
                 <h2><span>{{ $meta->title }}</span></h2>
-
-                @include('category.toolbar')
 
                 <main class="mt-3 mb-3">
                     <div class="row text-center">
@@ -24,9 +24,11 @@
                             @include('category.product')
                         @endforeach
                     </div>
-                </main>
 
-                @include('category.toolbar')
+                    <div class="pagination-lg flex-wrap my-4">
+                        {{ $products->appends(request()->query())->onEachSide(1)->links() }}
+                    </div>
+                </main>
             </div>
         </div>
     </div>

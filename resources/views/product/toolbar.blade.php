@@ -1,24 +1,32 @@
-<nav class="navbar navbar-expand px-3 justify-content-md-between navbar-light bg-light">
-    <ul class="navbar-nav d-none d-md-inline-flex">
+<nav class="d-flex justify-content-between bg-light toolbar" id="toolbar">
+    <ul class="nav py-2 d-none d-md-inline-flex">
         <li class="nav-item">
-            <a href="/" class="icon-20 icon-home align-bottom"></a>
+            <div class="nav-link">
+                <a href="/" class="icon-20 icon-home align-bottom"></a>
+            </div>
         </li>
-        <li class="nav-item px-2"><strong>&#8250;</strong></li>
         <li class="nav-item">
-            <a href="{{ $product->category->link }}">
+            <div class="nav-link px-0 fw-bold">&#8250;</div>
+        </li>
+        <li class="nav-item">
+            <a href="{{ $product->category->link }}" class="nav-link">
                 {{ $product->category->title }}
             </a>
         </li>
-        <li class="nav-item px-2"><strong>&#8250;</strong></li>
+        <li class="nav-item px-0">
+            <div class="nav-link px-0 fw-bold">&#8250;</div>
+        </li>
         <li class="nav-item">
-            {{$product->model}}
+            <span class="nav-link">
+                {{$product->model}}
+            </span>
         </li>
     </ul>
 
-    <ul class="navbar-nav">
+    <ul class="nav py-2">
         <li class="nav-item">
-            <a class="nav-link scroll-to-id" href="#product-description" data-id="product-description">
-                <span>Описание</span>
+            <a class="nav-link scroll-to-id" href="#product-description">
+                Описание
             </a>
         </li>
 {{--        <li class="nav-item">--}}
@@ -27,8 +35,8 @@
 {{--            </a>--}}
 {{--        </li>--}}
         <li class="nav-item">
-            <a class="nav-link scroll-to-id" href="#product-analogues" data-id="product-analogues">
-                <span>Аналоги</span>
+            <a class="nav-link scroll-to-id" href="#product-analogues">
+                Аналоги
             </a>
         </li>
     </ul>

@@ -1,0 +1,41 @@
+@import 'vars';
+
+a {
+    color: #000;
+}
+a:hover {
+    color: $bright;
+    text-decoration: none;
+}
+label {
+    cursor: pointer !important;
+}
+h1{
+    font-size: 1.3rem;
+    text-align: center;
+}
+h2{
+    font-size: 1.2rem;
+    text-align: center;
+}
+h3{
+    font-size: 1.1rem;
+    text-align: center;
+}
+h4{
+    font-size: 1rem;
+    text-align: center;
+}
+h5{
+    font-size: .9rem;
+    text-align: center;
+}
+h1, h2, h3, h4, h5 {
+    span {
+        display: inline-block;
+        padding: 0 2rem .5rem 2rem;
+        text-transform: uppercase;
+        letter-spacing: .1rem;
+        border-bottom: $gray solid 1px;
+    }
+}

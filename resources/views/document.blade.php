@@ -4,6 +4,8 @@
     <main role="main" class="content">
         <h1><span>{{ $document->title }}</span></h1>
 
-      {{ $document->text }}
+        <div class="w-75 m-auto">
+            {!! $document->text !!}
+        </div>
     </main>
 @stop

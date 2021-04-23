@@ -16,7 +16,8 @@ class CategoryShare
     {
         return Category
             ::where('parent_id', 0)
-            ->where('is_active', true)
+            ->isActive()
+            ->with('children')
             ->orderBy('ord')
             ->get();
     }

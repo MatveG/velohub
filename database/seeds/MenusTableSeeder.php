@@ -26,18 +26,18 @@ class MenusTableSeeder extends Seeder
             'link' => '/dostavka/',
             'name' => 'Доставка',
         ]);
-        DB::table('menus')->insert([
-            'parent_id' => 0,
-            'ord' => 3,
-            'is_active' => true,
-            'link' => '/garantija/',
-            'name' => 'Гарантия',
-        ]);
+//        DB::table('menus')->insert([
+//            'parent_id' => 0,
+//            'ord' => 3,
+//            'is_active' => true,
+//            'link' => '/garantija/',
+//            'name' => 'Гарантия',
+//        ]);
         DB::table('menus')->insert([
             'parent_id' => 0,
             'ord' => 4,
             'is_active' => 1,
-            'link' => '/servis/',
+            'link' => '/servis-velosipedov/',
             'name' => 'Сервис',
         ]);
         DB::table('menus')->insert([

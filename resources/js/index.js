@@ -71,9 +71,13 @@ if (scrollTop) {
     scrollTop.onclick = () => scrollTo({top: 0, behavior: 'smooth'});
 }
 
-['load', 'scroll'].forEach((eventType) => {
-    addEventListener(eventType, scrollState);
+addEventListener('load', () =>{
+    if (document.getElementById('toolbar')) {
+        document.body.classList.add('body-scroll');
+    }
+    scrollState();
 });
+addEventListener('scroll', scrollState);
 Array.from(document.getElementsByClassName('category-select-sort')).forEach((el) => {
     el.addEventListener('change', applySorting);
 });

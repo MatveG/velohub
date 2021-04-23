@@ -1,0 +1,34 @@
+@import 'vars';
+
+footer {
+    padding: 2rem 3rem 2rem 3rem;
+    background-color: $dark;
+    font-size: 90%;
+    color: #ddd;
+
+    img {
+        filter: grayscale(100%);
+        -webkit-filter: grayscale(100%);
+    }
+    a {
+        color: #fff
+    }
+    footer a:hover {
+        color: #888;
+    }
+    hr {
+        border-color: #555;
+    }
+    h1, h2, h3, h4, h5 {
+        span {
+            border-color: #555;
+        }
+    }
+    h5 {
+        span {
+            padding-left: 0;
+            padding-right: 0;
+            width: 100%;
+        }
+    }
+}

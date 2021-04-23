@@ -23,7 +23,7 @@ class CatalogWidget
     {
         $menuItems = $this->category
           ->whereParent_id($pId)
-          ->active()
+          ->isActive()
           ->orderBy('ord')
           ->get();
 

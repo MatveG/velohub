@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Product;
-use Illuminate\Support\Facades\Artisan;
 
 class RootController extends Controller
 {
     public function __invoke()
     {
-//        dd( Artisan::call('update:veloplaneta') );
-//        dd(Artisan::call('parse:veloplaneta'));
-
-        $document = Document::where('slug', 'index')->firstOrFail();
+        $document = Document::where('slug', 'root')->firstOrFail();
 
         $saleProducts = Product::where('is_active', true)
             ->where('is_stock', true)

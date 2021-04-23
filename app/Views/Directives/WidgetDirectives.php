@@ -3,11 +3,12 @@
 namespace App\Views\Directives;
 
 use App\Models\Widget;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Blade;
 
 class WidgetDirectives
 {
-    private static $widgets;
+    private static Collection $widgets;
 
     public static function directives()
     {

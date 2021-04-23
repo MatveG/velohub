@@ -5,7 +5,7 @@ namespace App\Views\Share;
 use App\Models\Menu;
 use Illuminate\Support\Facades\View;
 
-class MenuShare
+class   MenuShare
 {
     public static function share()
     {
@@ -16,7 +16,8 @@ class MenuShare
     {
         return Menu
             ::where('parent_id', 0)
-            ->active()
+            ->isActive()
+            ->with('children')
             ->orderBy('ord')
             ->get();
     }

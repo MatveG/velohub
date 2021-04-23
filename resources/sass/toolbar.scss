@@ -1,0 +1,15 @@
+@import 'vars';
+
+.toolbar {
+    position: fixed;
+    height: $toolbar-size;
+    top: $header-size;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+.toolbar-scroll {
+    top: $header-scroll;
+    transition-property: all;
+    transition-duration: .5s;
+}

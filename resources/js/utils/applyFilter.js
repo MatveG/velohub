@@ -46,7 +46,17 @@ export default ({target}) => {
         }
     }
 
-    flag === true && newQuery.push(name + '-is-' + value);
+    if (flag === true) {
+        if (name === 'price') {
+            const values = Array.from(document.getElementsByName('price')).map((el) => el.value);
+
+            if (values.length) {
+                newQuery.push(`${name}-is-${Math.min(...values)}-to-${Math.max(...values)}`);
+            }
+        } else {
+            newQuery.push(name + '-is-' + value);
+        }
+    }
 
     window.location = '/' + sortAndCombineQuery(newQuery, firsIn) + '/' + window.location.search;
 };

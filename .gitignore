@@ -1,7 +1,7 @@
 /.idea
 /node_modules
+/public/assets/webfonts/
 /public/media
-/storage/*.key
 /storage
 /vendor
 .data
@@ -11,4 +11,3 @@
 _ide_helper.php
 npm-debug.log
 yarn-error.log
-/public/assets/webfonts/

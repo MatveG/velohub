@@ -26,7 +26,7 @@ class CategoryController extends Controller
 
         $products = $query->select('variants.*', 'products.*')
             ->orderBy('products.' . $request->orderBy, $request->orderWay)
-            ->simplePaginate();
+            ->paginate();
 
         $meta = (object)[
             'title' => $category->title,

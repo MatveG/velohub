@@ -3,7 +3,9 @@
         <div class="col-sm-2 pt-4">
             <h5><span>Навигация</span></h5>
             <ul class="nav flex-column">
-                @include('layouts.footer.menu-parent')
+                @if($menuTree)
+                    @include('layouts.footer.menu-parent')
+                @endif
             </ul>
         </div>
 
