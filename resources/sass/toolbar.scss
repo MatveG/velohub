@@ -6,7 +6,20 @@
     top: $header-size;
     right: 0;
     left: 0;
-    z-index: 1030;
+    background-color: $middle;
+    font-size: 90%;
+    transition-property: all;
+    transition-duration: .3s;
+    z-index: 100;
+    * {
+        color: #fff;
+        text-decoration: none !important;
+        line-height: $toolbar-size/1.8;
+    }
+    nav-item {
+        height: $toolbar-size;
+        line-height: $toolbar-size;
+    }
 }
 .toolbar-scroll {
     top: $header-scroll;

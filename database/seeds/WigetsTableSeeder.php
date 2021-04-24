@@ -15,10 +15,9 @@ class WigetsTableSeeder extends Seeder
         DB::table('widgets')->insert([
             'slug' => 'header-contacts',
             'name' => 'Contact details in Header',
-            'text' => '<strong>+38 (098) 100-10-67</strong>
-                <a class="ml-1 icon-25 icon-telegram align-middle" href="tg://resolve?domain="></a>
-                <a class="ml-1 icon-25 icon-viber align-middle" href="viber://chat?number=380981001067"></a>
-                <span class="ml-1 small">ПН-ПТ 10<sup>00</sup>-19<sup>00</sup></span>',
+            'text' => '
+<strong>+38 (098) 100-10-67</strong>
+<span class="ml-1 small">ПН-ПТ 10<sup>00</sup>-19<sup>00</sup></span>',
         ]);
         DB::table('widgets')->insert([
             'slug' => 'footer-contacts',
@@ -40,15 +39,16 @@ class WigetsTableSeeder extends Seeder
         DB::table('widgets')->insert([
             'slug' => 'footer-address',
             'name' => 'Address details in Footer',
-            'text' => '<p>
-                  <b>Оболонь</b>:<br>
-                  Оболонский проспект, 52А
-                </p>
-                <p>
-                  <b>Теремки</b>:<br>
-                  ул. Академика Вильямса, 6-Г, оф. 57
-                </p>
-                <span class="small">Цены и наличие актуальны при оформлении заказа на сайте.</span>',
+            'text' => '
+<p>
+  <b>Оболонь</b>:<br>
+  Оболонский проспект, 52А
+</p>
+<p>
+  <b>Теремки</b>:<br>
+  ул. Академика Вильямса, 6-Г, оф. 57
+</p>
+<span class="small">Цены и наличие актуальны при оформлении заказа на сайте.</span>',
         ]);
     }
 }

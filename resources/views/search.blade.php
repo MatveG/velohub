@@ -14,7 +14,7 @@
                     <div class="w-50 m-auto">@include('category.search')</div>
                 </div>
 
-                @include('category.toolbar')
+                @include('layouts.toolbar')
 
                 @if(!$products)
                     <main class="col-12 mt-3 text-center">
@@ -30,7 +30,7 @@
                     </div>
                 </main>
 
-                @include('category.toolbar')
+                @include('layouts.toolbar')
             </div>
         </div>
     </div>

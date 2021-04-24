@@ -1,0 +1,29 @@
+@import "vars";
+
+.bg-light, .btn-light {
+    background-color: #eee !important;
+}
+
+.bg-dark, .btn-dark{
+    background-color: #212121;
+}
+
+.btn-gray {
+    background-color: $light;
+    color: #fff;
+}
+
+.bright {
+    color: $bright !important;
+}
+
+.bg-bright {
+    background-color: $bright !important;
+    color: #fff;
+}
+
+.btn-bright{
+    background-color: $bright;
+    letter-spacing: 1px;
+    color: #fff;
+}

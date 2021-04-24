@@ -1,8 +1,25 @@
 @extends('layouts.main')
 
-@section('content')
-    @include('product.toolbar')
+@section('path')
+    <li class="nav-item">
+        <div class="nav-link px-0 fw-bold">&#8250;</div>
+    </li>
+    <li class="nav-item">
+        <a href="{{ $product->category->link }}" class="nav-link">
+            {{ $product->category->title }}
+        </a>
+    </li>
+    <li class="nav-item px-0">
+        <div class="nav-link px-0 fw-bold">&#8250;</div>
+    </li>
+    <li class="nav-item">
+            <span class="nav-link">
+                {{$product->model}}
+            </span>
+    </li>
+@endsection
 
+@section('content')
     <main class="content">
         <div class="row">
             <section class="col-12 col-lg-9 col-xl-9" id="product-description">

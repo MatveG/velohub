@@ -5,6 +5,7 @@
 </head>
 <body>
     @include('layouts.header')
+    @include('layouts.toolbar')
 
     <div id="content">
         @yield('content')

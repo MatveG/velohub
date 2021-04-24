@@ -1,4 +1,4 @@
-import './../sass/app.scss';
+import '../sass/index.scss';
 import React from 'react';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
@@ -71,12 +71,7 @@ if (scrollTop) {
     scrollTop.onclick = () => scrollTo({top: 0, behavior: 'smooth'});
 }
 
-addEventListener('load', () =>{
-    if (document.getElementById('toolbar')) {
-        document.body.classList.add('body-scroll');
-    }
-    scrollState();
-});
+addEventListener('load', scrollState);
 addEventListener('scroll', scrollState);
 Array.from(document.getElementsByClassName('category-select-sort')).forEach((el) => {
     el.addEventListener('change', applySorting);

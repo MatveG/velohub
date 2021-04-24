@@ -1,0 +1,47 @@
+@import 'colours';
+@import 'footer';
+@import 'icons';
+@import 'loader';
+@import 'main-navbar';
+@import 'navbar-info';
+@import 'pagination';
+@import 'product';
+@import 'toolbar';
+@import 'typography';
+@import 'vars';
+
+html,body {
+    height: 100%;
+    background-color: #fff;
+    color: #222;
+    line-height: 125%;
+}
+
+body {
+    padding-top: $header-size + $toolbar-size;
+    background-color: #fff;
+}
+
+.content {
+    padding: 1rem 2rem 1rem 2rem;
+    background-color: #fff;
+}
+
+hr{
+    height: 1px;
+    border: 0;
+    border-top: 1px solid $gray;
+}
+
+.spacer {
+    margin: 1.5rem 0 1.5rem 0;
+}
+
+.collapsing {
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+
+.nowrap {
+    white-space: nowrap !important;
+}
