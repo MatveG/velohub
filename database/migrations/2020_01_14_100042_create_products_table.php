@@ -22,16 +22,18 @@ class CreateProductsTable extends Migration
             $table->boolean('is_stock')->default(false)->index();
             $table->boolean('is_sale')->default(false)->index();
 
+            $table->integer('warranty')->nullable();
+
             $table->float('price')->nullable();
             $table->float('price_old')->nullable();
             $table->float('weight')->nullable();
 
-            $table->string('code');
+            $table->string('code')->nullable();
             $table->string('barcode')->nullable();
-            $table->string('slug');
+            $table->string('slug')->nullable();
             $table->string('title')->nullable();
             $table->string('brand')->nullable();
-            $table->string('model');
+            $table->string('model')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();

@@ -9,13 +9,24 @@
             @include('layouts.header.catalog-parent')
         </ul>
 
-        @include('layouts.header.buttons')
+        <hr class="d-lg-none">
+
+        <ul class="navbar-nav px-3 d-lg-none">
+            @if($menuTree)
+                @include('layouts.header.menu')
+            @endif
+        </ul>
+
+        @include('layouts.header.right')
+
+        <br class="d-lg-none">
     </nav>
 
-    @include('layouts.header.collapse')
-
-    <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+        class="navbar-toggler navbar-dark"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
 </nav>

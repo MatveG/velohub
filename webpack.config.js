@@ -3,7 +3,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-    mode: 'development',
     entry: {
         'public/assets/app.min': './resources/js/index.js',
         'public/assets/admin/app.min': './resources/admin/index.js',
@@ -51,7 +50,7 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'sass-loader',
+                    '-loader',
                 ],
             },
         ],

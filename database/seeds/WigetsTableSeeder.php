@@ -24,15 +24,9 @@ class WigetsTableSeeder extends Seeder
             'name' => 'Contacts details in Footer',
             'text' => '<p>
 <strong><a href="call:+380981001067">+38 (098) 100-10-67</a></strong>
-</p>
-<p>
-<a class="icon-25 icon-telegram" href="tg://resolve?domain="></a>
-<a class="icon-25 icon-viber ml-1" href="viber://chat?number=380981001067"></a>
-</p>
-<p>
+<br>
 <i>ПН-СБ</i>: <b>9<sup>00</sup> - 19<sup>00</sup></b>, <i>ВС</i>: <b>выходной</b><br>
-</p>
-<p>
+<br>
 <span class="small">Заказы, оформленные в нерабочее время, обрабатываются на следующий рабочий день.</span>
 </p>',
         ]);

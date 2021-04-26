@@ -1,6 +1,6 @@
 @foreach($menuTree as $menu)
     <li class="nav-item">
-        <a href="{{ $menu->link }}" class="nav-link">
+        <a href="{{ $menu->link }}" class="nav-link p-1">
             {{ $menu->name }}
         </a>
     </li>

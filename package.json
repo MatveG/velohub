@@ -1,9 +1,10 @@
 {
-    "name": "webpack-sass",
+    "name": "webpack-qwe",
     "version": "1.0.0",
     "scripts": {
-        "build": "webpack",
-        "watch": "webpack --watch --quiet"
+        "start": "webpack --mode=production",
+        "build": "webpack --mode=development",
+        "watch": "webpack --mode=development --watch --quiet"
     },
     "devDependencies": {
         "@babel/core": "^7.13.15",

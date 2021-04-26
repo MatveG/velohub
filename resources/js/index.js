@@ -73,7 +73,7 @@ if (scrollTop) {
 
 addEventListener('load', scrollState);
 addEventListener('scroll', scrollState);
-Array.from(document.getElementsByClassName('category-select-sort')).forEach((el) => {
+Array.from(document.getElementsByClassName('select-sort')).forEach((el) => {
     el.addEventListener('change', applySorting);
 });
 Array.from(document.getElementsByClassName('category-filter')).forEach((el) => {

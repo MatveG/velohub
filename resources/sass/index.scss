@@ -1,6 +1,7 @@
 @import 'colours';
 @import 'footer';
 @import 'icons';
+@import 'input-search';
 @import 'loader';
 @import 'main-navbar';
 @import 'navbar-info';
@@ -12,13 +13,18 @@
 
 html,body {
     height: 100%;
-    background-color: #fff;
+    background-color: $middle;
     color: #222;
     line-height: 125%;
 }
 
 body {
     padding-top: $header-size + $toolbar-size;
+    background-color: $middle;
+}
+
+.body-scroll {
+    padding-top: $header-scroll + $toolbar-size;
     background-color: #fff;
 }
 

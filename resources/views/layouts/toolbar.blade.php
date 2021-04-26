@@ -8,9 +8,9 @@
         @yield('path')
     </ul>
 
-    <ul class="nav justify-content-end">
+    <ul class="nav justify-content-end text-end">
         <li class="nav-link">
-            <a href="/">
+            <a href="tel:+380981001067">
                 +38 (098) 100-10-67
             </a>
         </li>
@@ -19,8 +19,9 @@
                 ПН-ПТ: 10<sup class="text-white-50">00</sup>-19<sup class="text-white-50">00</sup>
             </span>
         </li>
+
         @if($menuTree)
-            @include('layouts.header.menu')
+            @include('layouts.toolbar.menu')
         @endif
     </ul>
 </nav>

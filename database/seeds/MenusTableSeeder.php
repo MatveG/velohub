@@ -12,13 +12,13 @@ class MenusTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('menus')->insert([
-            'parent_id' => 0,
-            'ord' => 1,
-            'is_active' => true,
-            'link' => '/magaziny',
-            'name' => 'Магазины',
-        ]);
+//        DB::table('menus')->insert([
+//            'parent_id' => 0,
+//            'ord' => 1,
+//            'is_active' => true,
+//            'link' => '/magaziny',
+//            'name' => 'Магазины',
+//        ]);
         DB::table('menus')->insert([
             'parent_id' => 0,
             'ord' => 2,

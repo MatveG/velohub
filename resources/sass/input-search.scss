@@ -1,0 +1,29 @@
+.input-search-cont {
+    width: 300px;
+    top: -0.8rem !important;
+    right: 2.5rem !important;
+}
+
+.input-search {
+    position: relative;
+}
+
+.input-search input[type=search] {
+    width: 100%;
+    padding-right: 2.5rem;
+}
+
+.input-search .input-group-prepend {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    z-index:9;
+}
+
+.input-search button {
+    width: 1.85rem;
+    background-size: 75%;
+    background-position: center;
+    background-repeat: no-repeat;
+}

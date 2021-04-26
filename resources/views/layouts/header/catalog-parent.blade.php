@@ -1,5 +1,5 @@
 @foreach($categoryTree as $category)
-    <li class="nav-item m-1 dropdown">
+    <li class="nav-item dropdown">
         @if($category->is_parent)
             <a id="dropdown-{{$category->id}}" class="nav-link" href="#" type="button"
                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

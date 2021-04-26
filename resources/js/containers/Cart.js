@@ -20,7 +20,7 @@ const Cart = (props) => {
     return (
         <Modal
             title="Корзина"
-            classes={['modal-fullscreen', 'w-75']}
+            classes={['modal-fullscreen', window.screen.availWidth > 900 ? 'w-75' : 'w-100']}
             bodyClasses={['p-2', 'px-4', 'text-center']}
             active={isOpen}
             handleClose={hideCart}>
