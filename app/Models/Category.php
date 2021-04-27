@@ -20,7 +20,7 @@ class Category extends Model
         'is_active',
         'is_parent',
         'ord',
-        'latin',
+        'slug',
         'title',
         'title_short',
         'seo_title',
@@ -40,6 +40,16 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class, 'parent_id', 'id');
+    }
+
+    public function getFeaturesAttribute()
+    {
+        return json_decode($this->attributes['features'], true);
+    }
+
+    public function setFeaturesAttribute($value)
+    {
+        $this->attributes['features'] = json_encode((array)($value), JSON_UNESCAPED_UNICODE);
     }
 
 //    public function getFeaturesAttribute($value)

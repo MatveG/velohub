@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Services\Admin\ShopImages;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use SimpleXMLElement;
+use Hidehalo\Nanoid\Client;
 
 class ParseVeloplaneta extends Command
 {
@@ -69,7 +71,7 @@ class ParseVeloplaneta extends Command
         "что-02-0311625" => 0,   // Акция
         "что-02-0340289" => 0,   // Запчасти супер акция
         "с213" => 0,             // Велосипеды
-        "что-02-0347825" => 0,   // Горные
+        "что-02-0347825" => 1,   // Горные
         "что-02-0347826" => 0,   // Городские / Гибриды
         "что-02-0347827" => 0,   // Шоссейные
         "что-02-0347828" => 0,   // Детские
@@ -224,31 +226,44 @@ class ParseVeloplaneta extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $this->runs = 0;
-        $this->xml = parseXmlFile(self::XML_PATH);
-
-        if (empty($this->xml->shop->categories->category) || empty($this->xml->shop->offers->offer)) {
-            throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
-        }
     }
 
     public function handle(): string
     {
-        $categories = $this->mapCategories($this->xml->shop->categories->category);
+        if (!file_exists(self::XML_PATH)) {
+            throw new \RuntimeException('XML file doesn\'t exist: ' . self::XML_PATH);
+        }
 
-        foreach ($this->xml->shop->offers->offer as $offer) {
-            if (empty((string)$offer->picture) || $this->productExist((string)$offer->vp_sku)) {
+        $xml = parseXmlFile(self::XML_PATH);
+        $runs = 0;
+
+        if (empty($xml->shop->categories->category) || empty($xml->shop->offers->offer)) {
+            throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
+        }
+
+        $categories = $this->mapCategories($xml->shop->categories->category);
+
+        foreach ($xml->shop->offers->offer as $offer) {
+            if (
+                empty((string)$offer->picture) ||
+                get_headers((string)$offer->picture)[0] !== 'HTTP/1.1 200 OK' ||
+                $this->productExist((string)$offer->vp_sku)
+            ) {
                 continue;
             }
 
-            $this->storeProduct(
-                $this->formatData($offer),
-                (string)$offer->picture
-            );
-            $this->runs++;
+            $category = Category::find(self::CATEGORY_MAPPING[(string)$offer->categoryId]);
 
-            if ($this->runs >= self::MAX_RUNS) {
+            if ($category) {
+                [$category->features, $features] = $this->mapFeatures($category->features, $offer->param);
+                $category->save();
+
+                $data = $this->mapData($offer);
+                $this->storeProduct($category, $data, $features);
+                $runs++;
+            }
+
+            if ($runs >= self::MAX_RUNS) {
                 break;
             }
         }
@@ -261,6 +276,11 @@ class ParseVeloplaneta extends Command
         return "Parsed $this->runs new items";
     }
 
+    private function productExist($code): bool
+    {
+        return Product::where('code', $code)->exists();
+    }
+
     private function mapCategories(object $categories): array
     {
         foreach ($categories as $category) {
@@ -270,12 +290,7 @@ class ParseVeloplaneta extends Command
         return $result ?? [];
     }
 
-    private function productExist($code): bool
-    {
-        return Product::where('code', $code)->exists();
-    }
-
-    private function formatData(SimpleXMLElement $offer): array
+    private function mapData(SimpleXMLElement $offer): array
     {
         $category_id = self::CATEGORY_MAPPING[(string)$offer->categoryId];
         $is_active = self::DEFAULT_ACTIVE;
@@ -284,19 +299,10 @@ class ParseVeloplaneta extends Command
         $barcode = trim((string)$offer->barcode);
         $brand = trim(ucwords(strtolower((string)$offer->brand)));
         $description = trim((string)$offer->description);
-
+        $picture = (string)$offer->picture;
         [$title, $model] = preg_split("/" . preg_quote($brand) . "/i", $name) ?: [null, $name];
         $title = trim($title);
         $model = trim($model);
-
-        $features = $title ? ['type' => trim($title)] : [];
-        $summary = '';
-
-        foreach ($offer->param as $param) {
-            if (!in_array((string)$param->attributes()->name, self::IGNORED_PARAMS)) {
-                $summary .= (string)$param->attributes()->name . ': ' . $param . '\n';
-            }
-        }
 
         return compact([
             'category_id',
@@ -306,23 +312,57 @@ class ParseVeloplaneta extends Command
             'title',
             'brand',
             'model',
-            'summary',
             'description',
-            'features',
+            'picture',
         ]);
     }
 
-    private function storeProduct(array $updatesArray, string $imagePath): Product
+    protected function mapFeatures(array $features, object $params): array
     {
-        $product = new Product($updatesArray);
+        $result = [];
+
+        foreach ($params as $param) {
+            $title = (string)$param->attributes()->name;
+
+            if ($title === 'Не отображать на сайте') {
+                continue;
+            }
+
+            $index = array_search($title, array_column($features, 'title'));
+
+            if ($index === false) {
+                $features[] = [
+                    'id' => (new Client())->generateId(6),
+                    'ord' => count($features),
+                    'title' => $title,
+                    'slug' => null,
+                    'type' => 'string',
+                    'hint' => null,
+                    'required' => false,
+                    'filter' => false,
+                    'units' => null,
+                    'values' => [],
+                    'sub' => [],
+                ];
+                $index = count($features) - 1;
+            }
+            $result[$features[$index]['id']] = (string)$param;
+        }
+
+        return [$features, $result];
+    }
+
+    private function storeProduct(Category $category, array $data, array $features): void
+    {
+        $product = $category->products()->create($data);
+        $product->features = $features;
         $product->save();
+
         $product->images = ShopImages::uploadImages(
-            [$imagePath],
+            [$data['picture']],
             $product->imagesFolder,
             $product->imagesName
         );
         $product->save();
-
-        return $product;
     }
 }

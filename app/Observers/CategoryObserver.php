@@ -51,9 +51,9 @@ class CategoryObserver
     {
         return array_map(static function ($element) use ($prefix) {
             if ($element['filter']) {
-                $element['latin'] = latinize(($prefix ? "$prefix-" : '') . $element['title']);
+                $element['slug'] = latinize(($prefix ? "$prefix-" : '') . $element['title']);
             } else {
-                $element['latin'] = null;
+                $element['slug'] = null;
             }
 
             if (!empty($element['sub'])) {

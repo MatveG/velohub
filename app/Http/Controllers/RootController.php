@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Product;
+use Illuminate\Support\Facades\Artisan;
+use SebastianBergmann\Environment\Console;
 
 class RootController extends Controller
 {
     public function __invoke()
     {
+        Artisan::call('parse:veloplaneta');
+
+
         $document = Document::where('slug', 'root')->firstOrFail();
 
         $saleProducts = Product::where('is_active', true)

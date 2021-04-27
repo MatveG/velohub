@@ -44,7 +44,6 @@ class Product extends Model
         'features',
     ];
     protected $casts = [
-        'features' => 'object',
         'images' => 'array',
         'stocks' => 'object',
     ];
@@ -60,15 +59,15 @@ class Product extends Model
             ->isActive();
     }
 
-//    public function getFeaturesAttribute()
-//    {
-//        return json_decode($this->attributes['features'], true);
-//    }
-//
-//    public function setFeaturesAttribute($value)
-//    {
-//        $this->attributes['features'] = json_encode((object)($value));
-//    }
+    public function getFeaturesAttribute()
+    {
+        return json_decode($this->attributes['features'], true);
+    }
+
+    public function setFeaturesAttribute($value)
+    {
+        $this->attributes['features'] = json_encode((object)($value), JSON_UNESCAPED_UNICODE);
+    }
 
 //    public function getFullNameAttribute()
 //    {

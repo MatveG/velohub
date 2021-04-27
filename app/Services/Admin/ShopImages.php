@@ -7,16 +7,18 @@ use Intervention\Image\Facades\Image;
 
 class ShopImages
 {
-    public static function uploadImages(array $filesArray, string $folderName, string $fileName)
+    public static function uploadImages(array $filesArray, string $folderName, string $fileName): array
     {
-        return array_filter(array_map(static function($image) use ($folderName, $fileName) {
-            return self::uploadAnImage($image, $folderName, $fileName);
-        }, $filesArray));
+        return array_filter(
+            array_map(static function($image) use ($folderName, $fileName) {
+                return self::uploadAnImage($image, $folderName, $fileName);
+            }, $filesArray)
+        );
     }
 
     public static function uploadAnImage($file, string $folderName, string $fileName)
     {
-        if (!File::exists($file)) {
+        if (File::exists($file)) {
             return null;
         }
 

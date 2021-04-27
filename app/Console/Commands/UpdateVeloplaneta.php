@@ -16,29 +16,39 @@ class UpdateVeloplaneta extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $this->runs = 0;
-        $this->xml = parseXmlFile(self::XML_PATH);
-
-        if (empty($this->xml->shop->offer)) {
-            throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
-        }
     }
 
     public function handle(): string
     {
+        $xml = $this->parseXmlFile();
+        $runs = 0;
         $this->resetStocks();
 
-        foreach ($this->xml->shop->offer as $offer) {
+        foreach ($xml->shop->offer as $offer) {
             $product = Product::where('code', (string)$offer->vp_sku)->first();
 
             if ($product) {
                 $product->update($this->formatData($offer));
-                $this->runs++;
+                $runs++;
             }
         }
 
-        return "Updated $this->runs products";
+        return "Updated $runs products";
+    }
+
+    private function parseXmlFile(): \SimpleXMLElement
+    {
+        try {
+            $xml = simplexml_load_file(self::XML_PATH);
+        } catch (\Exception $ex) {
+            throw new \RuntimeException($ex);
+        }
+
+        if (empty($xml->shop->categories->category) || empty($xml->shop->offers->offer)) {
+            throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
+        }
+
+        return $xml;
     }
 
     private function resetStocks(): void

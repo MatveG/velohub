@@ -9,13 +9,14 @@
         "ext-json": "*",
         "ext-pgsql": "*",
         "ext-redis": "*",
+        "ext-simplexml": "*",
         "fideloper/proxy": "^4.0",
         "friendsofphp/php-cs-fixer": "^2.16",
         "fzaninotto/faker": "^1.9",
+        "hidehalo/nanoid-php": "^1.1",
         "intervention/image": "^2.5",
         "laravel/framework": "^7.0",
-        "laravel/tinker": "^2.0",
-        "ext-simplexml": "*"
+        "laravel/tinker": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

@@ -25,7 +25,7 @@ trait Common
     {
         $format = '%s.%d.%s';
 
-        return sprintf($format, $this->latin, $this->id, settings('shop', 'images_format'));
+        return sprintf($format, $this->slug, $this->id, settings('shop', 'images_format'));
     }
 
 //    public function getCreatedAtAttribute($date)

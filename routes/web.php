@@ -46,9 +46,9 @@ Route::get('/{slug}/', 'DocumentController')->name('document');
 Route::get('/', 'RootController')->name('index');
 
 // Images routing
-Route::get('/media/ct/{img}')->name('img.category');
-Route::get('/media/pt/{img}')->name('img.product');
-Route::get('/media/ul/{img}')->name('img.upload');
+Route::get('/media/ct/{img}', 'RootController')->name('img.category');
+Route::get('/media/pt/{img}', 'RootController')->name('img.product');
+Route::get('/media/ul/{img}', 'RootController')->name('img.upload');
 
 Route::namespace('Admin')->group(function () {
     // Categories
