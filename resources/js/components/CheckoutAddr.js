@@ -26,7 +26,7 @@ const CheckoutAddr = (props) => {
                 placeholder="[ Выбор способа оплаты ]"
                 handleChange={handlePaymentSelect}
                 register={register.bind(register, {required: true})}
-                errors={errors} />
+                error={errors.payment} />
 
             <CheckoutSelect
                 classes={['my-2']}
@@ -36,7 +36,7 @@ const CheckoutAddr = (props) => {
                 placeholder="[ Выбор способа доставки ]"
                 handleChange={handleDeliverySelect}
                 register={register.bind(register, {required: true})}
-                errors={errors} />
+                error={errors.delivery} />
 
             {delivery && <CheckoutInfo
                 classes={['my-2']}

@@ -39,7 +39,7 @@ tooling:
   phpunit:
     service: appserver
     description: "Run PHP Unit tests: lando phpunit"
-    cmd: "vendor/bin/phpunit --testsuite Feature --coverage-html tests/coverage"
+    cmd: "vendor/bin/phpunit --testsuite FeaturesCast --coverage-html tests/coverage"
   phpunitdebug:
     service: appserver
     cmd: php -d xdebug.remote_port=9000 vendor/bin/phpunit

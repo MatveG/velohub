@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Casts\FeaturesCast;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Casts\Feature;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
@@ -56,7 +56,7 @@ class Category extends Model
 //    {
 //        $features = json_decode($this->attributes['features'], true);
 //        $features = array_map(function ($feature) {
-//            return Feature::init($feature);
+//            return FeaturesCast::init($feature);
 //        }, $features);
 //
 //        return $features;

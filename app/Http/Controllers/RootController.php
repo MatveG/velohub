@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Document;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
@@ -11,7 +12,11 @@ class RootController extends Controller
 {
     public function __invoke()
     {
-        Artisan::call('parse:veloplaneta');
+//        Artisan::call('parse:veloplaneta');
+
+        $category = Category::find(1);
+
+        dd($category->features);
 
 
         $document = Document::where('slug', 'root')->firstOrFail();

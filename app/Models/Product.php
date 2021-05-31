@@ -69,11 +69,6 @@ class Product extends Model
         $this->attributes['features'] = json_encode((object)($value), JSON_UNESCAPED_UNICODE);
     }
 
-//    public function getFullNameAttribute()
-//    {
-//        return $this->title . ' ' . $this->brand . ' ' . $this->model;
-//    }
-
     public function getLinkAttribute()
     {
         return route('product', ['slug' => $this->slug, 'id' => $this->id]);

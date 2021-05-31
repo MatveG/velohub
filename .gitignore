@@ -4,12 +4,13 @@
 /public/media
 /storage
 /vendor
+/public/assets/admin/app.min.css
+/public/assets/admin/app.min.js
+*.log
+*.map
 .data
 .env
 .env.backup
 .phpunit.result.cache
+.editorconfig
 _ide_helper.php
-npm-debug.log
-yarn-error.log
-/public/assets/admin/app.min.css
-/public/assets/admin/app.min.js

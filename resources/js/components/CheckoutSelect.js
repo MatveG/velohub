@@ -3,14 +3,10 @@ import React from 'react';
 const CheckoutSelect = (props) => {
     const id = `input-${Math.random() * 10 ** 16}`;
     const classes = ['form-control', ...props.classes || []];
-    let error = {};
+    const error = props.error || {};
 
-    if (props.errors && props.errors[props.name]) {
-        error = props.errors[props.name];
-
-        if (error.type) {
-            classes.push('is-invalid');
-        }
+    if (error.type) {
+        classes.push('is-invalid');
     }
 
     return (

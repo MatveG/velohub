@@ -3,8 +3,11 @@ import Modal from './ui/Modal';
 import ProductThumbs from './ProductThumbs';
 
 const ProductImage = (props) => {
-    const [modal, setModal] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [active, setActive] = useState(0);
+
+    const openModal = () => setIsOpen(true);
+    const closeModal = () => setIsOpen(false);
 
     return (
         <div>
@@ -13,14 +16,19 @@ const ProductImage = (props) => {
                     alt=""
                     role="button"
                     src={props.images[active]}
-                    onClick={() => setModal(true)}/>
+                    onClick={openModal}/>
             </div>
 
             <div className="mt-2 d-flex justify-content-center">
                 <ProductThumbs images={props.images} handleClick={setActive} />
             </div>
 
-            <Modal active={modal} title="Фото" classes={['modal-fullscreen', 'w-50']}>
+            <Modal
+                title="Фото"
+                classes={['modal-fullscreen', 'w-50', 'below-lg-100']}
+                active={isOpen}
+                handleClose={closeModal}>
+
                 <div className="d-flex justify-content-center">
                     <ProductThumbs images={props.images} handleClick={setActive} />
                 </div>
@@ -34,3 +42,4 @@ const ProductImage = (props) => {
 };
 
 export default ProductImage;
+

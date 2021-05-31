@@ -10,6 +10,7 @@
         "ext-pgsql": "*",
         "ext-redis": "*",
         "ext-simplexml": "*",
+        "better/nanoid": "^0.0.1",
         "fideloper/proxy": "^4.0",
         "friendsofphp/php-cs-fixer": "^2.16",
         "fzaninotto/faker": "^1.9",

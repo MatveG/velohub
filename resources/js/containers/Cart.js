@@ -7,8 +7,12 @@ import useCart from '../hooks/useCart';
 
 const Cart = (props) => {
     const {
-        isOpen, products, totalCost,
-        hideCart, removeProduct, updateProduct,
+        isOpen,
+        products,
+        totalCost,
+        hideCart,
+        removeProduct,
+        updateProduct,
     } = useCart();
 
     const updateAmount = (product, mod) => {
@@ -20,7 +24,7 @@ const Cart = (props) => {
     return (
         <Modal
             title="Корзина"
-            classes={['modal-fullscreen', window.screen.availWidth > 900 ? 'w-75' : 'w-100']}
+            classes={['modal-fullscreen', 'w-75', 'below-lg-100']}
             bodyClasses={['p-2', 'px-4', 'text-center']}
             active={isOpen}
             handleClose={hideCart}>

@@ -37,21 +37,21 @@ const Checkout = () => {
         const finalData = {...userData, ...formData};
 
         setLoading(true);
-        // axios.post('/api/orders', finalData)
-        //     .then(({data}) => {
-        //         if (!data.id) {
-        //             throw new Error;
-        //         }
-        //         setUserData({...userData, ...data});
-        //         setStage(stage + 1);
-        //     })
-        //     .catch((error) => {
-        //         dispatch(fireDanger('Возникла ошибка при сохранении заказа'));
-        //         console.error(error);
-        //     })
-        //     .finally(() => {
-        //         setLoading(false);
-        //     });
+        axios.post('/api/orders', finalData)
+            .then(({data}) => {
+                if (!data.id) {
+                    throw new Error;
+                }
+                setUserData({...userData, ...data});
+                setStage(stage + 1);
+            })
+            .catch((error) => {
+                dispatch(fireDanger('Возникла ошибка при сохранении заказа'));
+                console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     if (stage === 3) {

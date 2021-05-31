@@ -19,7 +19,7 @@ const CheckoutBuyer = (props) => {
                         required: true,
                         minLength: 3,
                     })}
-                    errors={errors} />
+                    error={errors.name} />
             </div>
 
             <div className="col-6 py-2">
@@ -41,7 +41,7 @@ const CheckoutBuyer = (props) => {
                         minLength: 10,
 
                     })}
-                    errors={errors}
+                    error={errors.phone}
                     defaultValue={props.userData.phone} />
             </div>
 
@@ -57,7 +57,7 @@ const CheckoutBuyer = (props) => {
                             message: 'invalid email address',
                         },
                     })}
-                    errors={errors}
+                    error={errors.email}
                     defaultValue={props.userData.email} />
             </div>
 

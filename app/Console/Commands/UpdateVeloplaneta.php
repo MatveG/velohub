@@ -10,7 +10,7 @@ class UpdateVeloplaneta extends Command
     private const STOCK_CODE = 'planeta';
     private const XML_PATH = '/app/storage/xml/price.xml';
 
-    protected $signature = 'update:veloplaneta';
+    protected $signature = 'update:veloplaneta {xmlPath?}';
     protected $description = 'Update Veloplaneta stocks';
 
     public function __construct()
@@ -20,9 +20,9 @@ class UpdateVeloplaneta extends Command
 
     public function handle(): string
     {
-        $xml = $this->parseXmlFile();
-        $runs = 0;
+        $xml = $this->parseXmlFile($this->argument('xmlPath') ?? self::XML_PATH);
         $this->resetStocks();
+        $runs = 0;
 
         foreach ($xml->shop->offer as $offer) {
             $product = Product::where('code', (string)$offer->vp_sku)->first();
@@ -36,16 +36,16 @@ class UpdateVeloplaneta extends Command
         return "Updated $runs products";
     }
 
-    private function parseXmlFile(): \SimpleXMLElement
+    private function parseXmlFile(string $xmlPath): \SimpleXMLElement
     {
         try {
-            $xml = simplexml_load_file(self::XML_PATH);
+            $xml = simplexml_load_file($xmlPath);
+
+            if (empty($xml->shop->categories->category) || empty($xml->shop->offers->offer)) {
+                throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
+            }
         } catch (\Exception $ex) {
             throw new \RuntimeException($ex);
-        }
-
-        if (empty($xml->shop->categories->category) || empty($xml->shop->offers->offer)) {
-            throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
         }
 
         return $xml;
@@ -53,11 +53,7 @@ class UpdateVeloplaneta extends Command
 
     private function resetStocks(): void
     {
-        Product::query()->update([
-            'stocks' => [
-                'planeta' => 0,
-            ],
-        ]);
+        Product::query()->update(['stocks' => ['planeta' => 0]]);
     }
 
     private function formatData(object $offer): array

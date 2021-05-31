@@ -2,9 +2,9 @@ import React from 'react';
 
 const CartProduct = (props) => {
     return (
-        <tr style={{padding: '15rem'}}>
+        <tr>
             <td className="align-middle">
-                {props.removeProduct && <button className="btn btn-sm btn-bright btn-cart-remove"
+                {props.removeProduct && <button className="btn btn-sm btn-gray btn-cart-remove"
                     onClick={() => props.removeProduct(props.product)}>&times;</button>}
             </td>
 
@@ -31,13 +31,13 @@ const CartProduct = (props) => {
 
             <td className="align-middle text-center">
                 <div className="nowrap">
-                    {props.updateAmount && <a className="btn btn-sm btn-primary btn-cart-decrease"
+                    {props.updateAmount && <a className="btn btn-sm btn-bright btn-cart-decrease"
                         onClick={() => props.updateAmount(props.product, -1)} href="#">-</a>}
                     &nbsp;
                     <span id="amount-{{ $product->id }}"
                         className="font-weight-bold">{props.product.amount}</span>
                     &nbsp;
-                    {props.updateAmount && <a className="btn btn-sm btn-primary btn-cart-increase"
+                    {props.updateAmount && <a className="btn btn-sm btn-bright btn-cart-increase"
                         onClick={() => props.updateAmount(props.product, 1)} href="#">+</a>}
                 </div>
             </td>

@@ -8,14 +8,15 @@ use App\Services\Admin\ShopImages;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use SimpleXMLElement;
-use Hidehalo\Nanoid\Client;
+use Better\Nanoid\Client;
+use Better\Nanoid\GeneratorInterface;
 
 class ParseVeloplaneta extends Command
 {
     private const XML_PATH = '/app/storage/xml/veloplaneta.xml';
-    private const MAX_RUNS = 10;
+    private const MAX_RUNS = 50;
     private const DEFAULT_ACTIVE = true;
-    private const CATEGORY_MAPPING = [
+    private const CATEGORY_MAP = [
         "что-02-0311688" => 0,   // Pride
         "акс" => 0,              // Аксессуары
         "что-02-0348160" => 0,   // Звонки
@@ -219,8 +220,7 @@ class ParseVeloplaneta extends Command
     private const IGNORED_PARAMS = [
         'Не отображать на сайте',
     ];
-
-    protected $signature = 'parse:veloplaneta';
+    protected $signature = 'parse:veloplaneta {xmlPath?}';
     protected $description = 'Parse Veloplaneta XML';
 
     public function __construct()
@@ -230,69 +230,62 @@ class ParseVeloplaneta extends Command
 
     public function handle(): string
     {
-        if (!file_exists(self::XML_PATH)) {
-            throw new \RuntimeException('XML file doesn\'t exist: ' . self::XML_PATH);
+        try {
+            $xml = simplexml_load_file($this->argument('xmlPath') ?? self::XML_PATH);
+        } catch (\Exception $ex) {
+            throw new \RuntimeException($ex);
         }
-
-        $xml = parseXmlFile(self::XML_PATH);
-        $runs = 0;
 
         if (empty($xml->shop->categories->category) || empty($xml->shop->offers->offer)) {
-            throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
+            return "Xml file doesn't have categories and/or offers";
         }
 
-        $categories = $this->mapCategories($xml->shop->categories->category);
+        $counter = 0;
 
         foreach ($xml->shop->offers->offer as $offer) {
-            if (
-                empty((string)$offer->picture) ||
-                get_headers((string)$offer->picture)[0] !== 'HTTP/1.1 200 OK' ||
-                $this->productExist((string)$offer->vp_sku)
-            ) {
-                continue;
+            $productSku = (string)$offer->vp_sku;
+            $categoryId = self::CATEGORY_MAP[(string)$offer->categoryId];
+
+            if ($categoryId && !$this->productExists($productSku) && $this->hasPicture($offer)) {
+                $offerData = $this->parseOfferData($offer);
+                $category = Category::find($categoryId);
+                $product = $category->products()->create($offerData);
+
+                $product->features = $this->mapFeatures($offer->param, $category);
+                $product->save();
+                $product->images = ShopImages::uploadImages(
+                    [$offerData['picture']],
+                    $product->imagesFolder,
+                    $product->imagesName
+                );
+                $product->save();
+
+                $counter++;
             }
 
-            $category = Category::find(self::CATEGORY_MAPPING[(string)$offer->categoryId]);
-
-            if ($category) {
-                [$category->features, $features] = $this->mapFeatures($category->features, $offer->param);
-                $category->save();
-
-                $data = $this->mapData($offer);
-                $this->storeProduct($category, $data, $features);
-                $runs++;
-            }
-
-            if ($runs >= self::MAX_RUNS) {
+            if ($counter >= self::MAX_RUNS) {
                 break;
             }
         }
 
-        // refactor!
-        DB::statement("UPDATE products SET search = (setweight(to_tsvector(title), 'B') ||
-            setweight(to_tsvector(brand), 'C') ||
-            setweight(to_tsvector(model), 'A')) WHERE id > 0");
+        $this->updateSearchIndex();
 
-        return "Parsed $this->runs new items";
+        return "Parsed $counter new items";
     }
 
-    private function productExist($code): bool
+    private function hasPicture(SimpleXMLElement $offer): bool
     {
-        return Product::where('code', $code)->exists();
+        return !empty((string)$offer->picture) && get_headers((string)$offer->picture)[0] === 'HTTP/1.1 200 OK';
     }
 
-    private function mapCategories(object $categories): array
+    protected function productExists(string $productCode): bool
     {
-        foreach ($categories as $category) {
-            $result[(string)$category->attributes()->id] = (string)$category;
-        }
-
-        return $result ?? [];
+        return Product::where('code', $productCode)->exists();
     }
 
-    private function mapData(SimpleXMLElement $offer): array
+    private function parseOfferData(SimpleXMLElement $offer): array
     {
-        $category_id = self::CATEGORY_MAPPING[(string)$offer->categoryId];
+        $category_id = self::CATEGORY_MAP[(string)$offer->categoryId];
         $is_active = self::DEFAULT_ACTIVE;
         $name = trim((string)$offer->name);
         $code = trim((string)$offer->vp_sku);
@@ -317,23 +310,24 @@ class ParseVeloplaneta extends Command
         ]);
     }
 
-    protected function mapFeatures(array $features, object $params): array
+    protected function mapFeatures(object $offerParams, Category $category): array
     {
-        $result = [];
+        $featuresMap = [];
+        $categoryFeatures = $category->features;
 
-        foreach ($params as $param) {
-            $title = (string)$param->attributes()->name;
-
-            if ($title === 'Не отображать на сайте') {
+        foreach ($offerParams as $param) {
+            if (in_array((string)$param->attributes()->nam, self::IGNORED_PARAMS)) {
                 continue;
             }
 
-            $index = array_search($title, array_column($features, 'title'));
+            $title = (string)$param->attributes()->name;
+            $categoryFeatureIndex = array_search($title, array_column($categoryFeatures, 'title'));
 
-            if ($index === false) {
-                $features[] = [
-                    'id' => (new Client())->generateId(6),
-                    'ord' => count($features),
+            if ($categoryFeatureIndex === false) {
+                $categoryFeatureIndex = count($categoryFeatures);
+                $categoryFeatures[] = [
+                    'id' => (new Client())->produce(6),
+                    'ord' => count($category->features),
                     'title' => $title,
                     'slug' => null,
                     'type' => 'string',
@@ -344,25 +338,22 @@ class ParseVeloplaneta extends Command
                     'values' => [],
                     'sub' => [],
                 ];
-                $index = count($features) - 1;
             }
-            $result[$features[$index]['id']] = (string)$param;
+
+            $featureKey = $categoryFeatures[$categoryFeatureIndex]['id'];
+            $featuresMap[$featureKey] = (string)$param;
         }
 
-        return [$features, $result];
+        $category->features = $categoryFeatures;
+        $category->save();
+
+        return $featuresMap;
     }
 
-    private function storeProduct(Category $category, array $data, array $features): void
+    private function updateSearchIndex(): void
     {
-        $product = $category->products()->create($data);
-        $product->features = $features;
-        $product->save();
-
-        $product->images = ShopImages::uploadImages(
-            [$data['picture']],
-            $product->imagesFolder,
-            $product->imagesName
-        );
-        $product->save();
+        DB::statement("UPDATE products SET search = (setweight(to_tsvector(title), 'B') ||
+            setweight(to_tsvector(brand), 'C') ||
+            setweight(to_tsvector(model), 'A')) WHERE id > 0");
     }
 }

@@ -42,12 +42,12 @@ class CreateProductsTable extends Migration
             $table->text('summary')->nullable();
             $table->text('description')->nullable();
 
-            $table->json('features')->default('{}');
             $table->json('images')->default('[]');
             $table->json('videos')->default('[]');
             $table->json('files')->default('[]');
-            $table->json('settings')->default('{}');
             $table->json('stocks')->default('{}');
+            $table->json('features')->default('{}');
+            $table->json('settings')->default('{}');
 
             $table->timestamps();
         });
