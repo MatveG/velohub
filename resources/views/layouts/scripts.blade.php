@@ -8,7 +8,7 @@
 
 <script>
     window._CONFIG = {
-        currency: {!!json_encode(settings('shop', 'currency'))!!},
+        currency: {!!json_encode(config('shop.currency'))!!},
         payments: [
             {
                 id: 1,

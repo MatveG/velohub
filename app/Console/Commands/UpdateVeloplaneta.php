@@ -7,9 +7,8 @@ use Illuminate\Console\Command;
 
 class UpdateVeloplaneta extends Command
 {
+    private const XML_URL = '/app/storage/xml/price.xml';
     private const STOCK_CODE = 'planeta';
-    private const XML_PATH = '/app/storage/xml/price.xml';
-
     protected $signature = 'update:veloplaneta {xmlPath?}';
     protected $description = 'Update Veloplaneta stocks';
 
@@ -20,52 +19,33 @@ class UpdateVeloplaneta extends Command
 
     public function handle(): string
     {
-        $xml = $this->parseXmlFile($this->argument('xmlPath') ?? self::XML_PATH);
-        $this->resetStocks();
-        $runs = 0;
+        $counter = 0;
+        $xml = simplexml_load_file($this->argument('xmlPath') ?? self::XML_URL);
+
+        if (empty($xml->shop->offer)) {
+            return "Xml file is empty";
+        }
+
+        Product::query()->update(['stocks' => ['planeta' => 0]]);
 
         foreach ($xml->shop->offer as $offer) {
-            $product = Product::where('code', (string)$offer->vp_sku)->first();
-
-            if ($product) {
-                $product->update($this->formatData($offer));
-                $runs++;
-            }
+            $counter += Product::where('code', (string)$offer->vp_sku)->update($this->parseData($offer));
         }
 
-        return "Updated $runs products";
+        return "Updated $counter products";
     }
 
-    private function parseXmlFile(string $xmlPath): \SimpleXMLElement
-    {
-        try {
-            $xml = simplexml_load_file($xmlPath);
-
-            if (empty($xml->shop->categories->category) || empty($xml->shop->offers->offer)) {
-                throw new \RuntimeException('XML file is empty: ' . self::XML_PATH);
-            }
-        } catch (\Exception $ex) {
-            throw new \RuntimeException($ex);
-        }
-
-        return $xml;
-    }
-
-    private function resetStocks(): void
-    {
-        Product::query()->update(['stocks' => ['planeta' => 0]]);
-    }
-
-    private function formatData(object $offer): array
+    private function parseData(object $offer): array
     {
         $rest = (int)$offer->rest;
-        $is_stock = $rest > 0;
+        $is_active = $is_stock = $rest > 0;
         $is_sale = (int)$offer->Discount > 0;
         $price = $is_sale ? (int)$offer->RRP_D : (int)$offer->RRP;
         $price_old = $is_sale ? (int)$offer->RRP : null;
         $stocks = [self::STOCK_CODE => $rest];
 
         return compact([
+            'is_active',
             'is_stock',
             'is_sale',
             'price',

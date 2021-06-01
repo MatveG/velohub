@@ -46,9 +46,11 @@
     .nav-link:hover, .dropdown-item:hover{
         color: #aaa ;
     }
+    transition-property: all;
+    transition-duration: .2s;
 }
 .navbar-main-scroll {
     height: $header-scroll;
     transition-property: all;
-    transition-duration: .5s;
+    transition-duration: .4s;
 }

@@ -9,7 +9,7 @@ class Order extends Model
     use Traits\Common;
     use Traits\Relations\BelongsTo\User;
 
-    protected $name = 'order';
+    protected string $name = 'order';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'payment',
@@ -25,5 +25,4 @@ class Order extends Model
         'address' => 'object',
         'products' => 'object'
     ];
-
 }

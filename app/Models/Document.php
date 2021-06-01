@@ -8,7 +8,6 @@ class Document extends Model
 {
     use Traits\Common;
 
-    protected $name = 'content';
+    protected string $name = 'content';
     protected $dates = ['created_at', 'updated_at'];
-
 }

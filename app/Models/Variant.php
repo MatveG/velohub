@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
+use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
 
 class Variant extends Model
 {
     use Traits\Common;
-    use Traits\Shop;
+    use Traits\Images;
     use Traits\Relations\BelongsTo\Product;
     use Traits\Relations\BelongsTo\Category;
 
-    protected $name = 'variant';
-    protected $imagesFolder = '/media/variant';
+    protected string $name = 'variant';
+    protected string $imagesFolder = '/media/variant';
     public $timestamps = false;
     protected $fillable = [
         'product_id',
@@ -30,55 +31,21 @@ class Variant extends Model
 
     ];
     protected $casts = [
-        'codes' => 'array',
         'images' => 'array',
+        'parameters' => JsonObject::class,
+        'stocks' => JsonObject::class
     ];
 
-    public function carts()
-    {
-        return $this->belongsToMany(Cart::class, 'cart_barcode')->withPivot('amount');
-    }
-
-    public function getParametersAttribute($value)
-    {
-        return json_decode($this->attributes['parameters']);
-    }
-
-    public function getStocksAttribute($value)
-    {
-        return json_decode($this->attributes['stocks']);
-    }
-
-    public function getPricesAttribute($value)
-    {
-        return json_decode($this->attributes['prices']);
-    }
-
-    public function setParametersAttribute($value)
-    {
-        $this->attributes['parameters'] = json_encode((object)($value));
-    }
-
-    public function setStocksAttribute($value)
-    {
-        $this->attributes['stocks'] = json_encode((object)($value));
-    }
-
-    public function setPricesAttribute($value)
-    {
-        $this->attributes['prices'] = json_encode((object)($value));
-    }
-
-    public function getImagesNameAttribute()
+    public function getImagesNameAttribute(): string
     {
         $format = '%s-%s.%d.%s';
 
         return sprintf(
             $format,
             $this->product->latin,
-            latinize( implode( array_values((array)$this->parameters), '-' ) ),
+            latinize(implode('-', array_values((array)$this->parameters))),
             $this->id,
-            settings('category', 'images_format')
+            config('category.images_format')
         );
     }
 

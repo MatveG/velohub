@@ -2,22 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Document;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
-use SebastianBergmann\Environment\Console;
 
 class RootController extends Controller
 {
     public function __invoke()
     {
-//        Artisan::call('parse:veloplaneta');
-
-        $category = Category::find(1);
-
-        dd($category->features);
-
+//        dd(Artisan::call('parse:veloplaneta'));
+//        dd(Artisan::call('update:veloplaneta'));
 
         $document = Document::where('slug', 'root')->firstOrFail();
 
@@ -40,7 +34,11 @@ class RootController extends Controller
             'keywords' => $document->seo_keywords,
         ];
 
-        return view('root', compact(['document', 'saleProducts', 'newProducts', 'meta']));
+        return view('root', compact([
+            'document',
+            'saleProducts',
+            'newProducts',
+            'meta'
+        ]));
     }
-
 }

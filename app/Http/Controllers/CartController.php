@@ -9,22 +9,22 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    public function foo(Request $request): JsonResponse
-    {
-        DB::statement("UPDATE carts SET products = '[{\"id\":50,\"variant_id\":null,\"amount\":1},{\"id\":100,\"variant_id\":101,\"amount\":1}]' WHERE id = 153");
-
-        $cart = Cart::where('id', 153)->firstOrFail();
-
-        $cart->products = array_filter($cart->products, function ($el) {
-            return $el['id'] !== 50;
-        });
-        $cart->save();
-
-
-        dd($cart->products);
-
-        return response()->json($this->mapCartProducts($cart->products));
-    }
+//    public function foo(Request $request): JsonResponse
+//    {
+//        DB::statement("UPDATE carts SET products = '[{\"id\":50,\"variant_id\":null,\"amount\":1},{\"id\":100,\"variant_id\":101,\"amount\":1}]' WHERE id = 153");
+//
+//        $cart = Cart::where('id', 153)->firstOrFail();
+//
+//        $cart->products = array_filter($cart->products, function ($el) {
+//            return $el['id'] !== 50;
+//        });
+//        $cart->save();
+//
+//
+//        dd($cart->products);
+//
+//        return response()->json($this->mapCartProducts($cart->products));
+//    }
 
 //    public function show(Request $request): JsonResponse
 //    {

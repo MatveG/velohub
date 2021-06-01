@@ -13,19 +13,6 @@ class SettingsTableSeeder extends Seeder
     public function run()
     {
         DB::table('settings')->insert([
-            'group' => 'shop',
-            'key' => 'images_format',
-            'value' => 'jpg',
-        ]);
-
-        DB::table('settings')->insert([
-            'group' => 'shop',
-            'key' => 'items_per_page',
-            'value' => '18',
-        ]);
-
-        DB::table('settings')->insert([
-            'group' => 'shop',
             'key' => 'currency',
             'value' => json_encode([
                 'title' => 'гривны',
@@ -37,7 +24,6 @@ class SettingsTableSeeder extends Seeder
         ]);
 
         DB::table('settings')->insert([
-            'group' => 'shop',
             'key' => 'currencies',
             'value' => json_encode([
                 'uah' => [
@@ -58,7 +44,6 @@ class SettingsTableSeeder extends Seeder
         ]);
 
         DB::table('settings')->insert([
-            'group' => 'shop',
             'key' => 'stocks',
             'value' => json_encode([
                 'stock-1' => [
@@ -71,9 +56,19 @@ class SettingsTableSeeder extends Seeder
         ]);
 
         DB::table('settings')->insert([
-            'group' => 'shop',
+            'key' => 'images_format',
+            'value' => 'jpg',
+        ]);
+
+        DB::table('settings')->insert([
             'key' => 'cashback_amount',
             'value' => 0.05,
         ]);
+
+        DB::table('settings')->insert([
+            'key' => 'admin.per_page',
+            'value' => '18',
+        ]);
+
     }
 }

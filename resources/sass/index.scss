@@ -5,7 +5,6 @@
 @import 'input-search';
 @import 'loader';
 @import 'main-navbar';
-@import 'navbar-info';
 @import 'pagination';
 @import 'product';
 @import 'toolbar';
@@ -14,14 +13,13 @@
 
 html,body {
     height: 100%;
-    background-color: $middle;
+    background-color: #fff;
     color: #222;
     line-height: 125%;
 }
 
 body {
     padding-top: $header-size + $toolbar-size;
-    background-color: $middle;
 }
 
 .body-scroll {

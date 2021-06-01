@@ -24,14 +24,6 @@ class CategoryObserver
         if ($category->isDirty('title')) {
             $category->slug = latinize($category->title);
         }
-
-        if ($category->isDirty('features')) {
-            $category->features = self::mapSlugProperty($category->features);
-        }
-
-        if ($category->isDirty('parameters')) {
-            $category->parameters = self::mapSlugProperty($category->parameters);
-        }
     }
 
     public function deleting(Category $category)
@@ -45,22 +37,5 @@ class CategoryObserver
 
     private static function decrementOrd($parentId, $initialValue) {
         return Category::where('parent_id', $parentId)->where('ord', '>', $initialValue)->decrement('ord');
-    }
-
-    private static function mapSlugProperty(array $array, ?string $prefix = null)
-    {
-        return array_map(static function ($element) use ($prefix) {
-            if ($element['filter']) {
-                $element['slug'] = latinize(($prefix ? "$prefix-" : '') . $element['title']);
-            } else {
-                $element['slug'] = null;
-            }
-
-            if (!empty($element['sub'])) {
-                $element['sub'] = self::mapSlugProperty($element['sub'], $element['title']);
-            }
-
-            return $element;
-        }, $array);
     }
 }

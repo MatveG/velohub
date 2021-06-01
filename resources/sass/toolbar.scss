@@ -18,9 +18,11 @@
         height: $toolbar-size;
         line-height: $toolbar-size;
     }
+    transition-property: all;
+    transition-duration: .2s;
 }
 .toolbar-scroll {
     top: $header-scroll;
     transition-property: all;
-    transition-duration: .5s;
+    transition-duration: .4s;
 }

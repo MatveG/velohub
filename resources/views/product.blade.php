@@ -24,10 +24,10 @@
         <div class="row">
             <section class="col-12 col-lg-9 col-xl-9" id="product-description">
                 <div class="row">
-                    <div class="col-12 col-lg-6 col-xl-6">
+                    <div class="col-12 col-lg-7 col-xl-7">
                         @include('product.general')
                     </div>
-                    <div class="col-12 col-lg-6 col-xl-6">
+                    <div class="col-12 col-lg-5 col-xl-5">
                         <div id="product-image">
                             <script>
                                 window._PRODUCT_IMAGES = {!!json_encode($product->images)!!};

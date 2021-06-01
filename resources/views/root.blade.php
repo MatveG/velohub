@@ -1,9 +1,9 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="block">
-        <img class="w-100" src="{{ route('img.upload', ['img' => 'slider.jpg']) }}" alt="">
-    </div>
+{{--    <div class="block">--}}
+{{--        <img class="w-100" src="{{ route('img.upload', ['img' => 'slider.jpg']) }}" alt="">--}}
+{{--    </div>--}}
 
     <main class="content">
         @if($saleProducts)

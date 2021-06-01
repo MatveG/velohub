@@ -32,6 +32,26 @@
         font-size: 1.1rem;
         color: $bright;
     }
+
+    .item-thumb {
+        margin: auto;
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+        overflow: hidden;
+        padding: 5px !important;
+
+        img
+        {
+            position: absolute;
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            top: 50%;
+            left: 50%;
+            transform: translate( -50%, -50%);
+        }
+    }
 }
 
 .product-thumb {

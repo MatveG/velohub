@@ -8,6 +8,6 @@ class Widget extends Model
 {
     use Traits\Common;
 
-    protected $name = 'widget';
+    protected string $name = 'widget';
     public $timestamps = false;
 }

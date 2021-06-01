@@ -8,11 +8,8 @@ class Cart extends Model
 {
     use Traits\Common;
 
-    protected $name = 'cart';
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
+    protected string $name = 'cart';
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'products'
     ];

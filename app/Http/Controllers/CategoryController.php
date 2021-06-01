@@ -13,14 +13,14 @@ class CategoryController extends Controller
         $category = Category::whereId($id)->isActive()->firstOrFail();
 
         $query = $category->products()
-            ->join('variants', 'products.id', '=', 'variants.product_id')
+            ->leftJoin('variants', 'products.id', '=', 'variants.product_id')
             ->isActive();
 
         $filters = FiltersService::init($query, $request->filter)
             ->addSliderFilter('products.price', 'price', 'Price')
             ->addPlainFilter('products.brand', 'brand', 'Brand')
             ->addFiltersSet($category->features, 'products.features')
-            ->addFiltersSet($category->features, 'variants.parameters')
+            ->addFiltersSet($category->parameters, 'variants.parameters')
             ->applyFilters()
             ->getFilters();
 

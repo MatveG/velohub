@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Services\FiltersService;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Validation\ValidationException;
 
 class SearchController extends Controller
 {
+    /**
+     * @throws ValidationException
+     */
     public function __invoke(Request $request, string $path = '')
     {
         $this->validate($request, ['find' => 'required']);

@@ -9,7 +9,7 @@ class Menu extends Model
 {
     use Traits\Common;
 
-    protected $name = 'menu';
+    protected string $name = 'menu';
     public $timestamps = false;
 
     public function children(): HasMany

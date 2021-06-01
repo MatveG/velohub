@@ -1,9 +1,8 @@
 <?php
 
-// [{"id":"6qcnLu","ord":null,"title":"stringOne","latin":"stringone","type":"string","hint":null,"required":true,"filter":true,"units":null,"values":[],"sub":[]},{"id":"C4t5_8","ord":null,"title":"numberTwo","latin":"numbertwo","type":"number","hint":null,"required":false,"filter":true,"units":"sm","values":[],"sub":[]}]
-// [{"id":"wbDv9_","ord":null,"title":"paramThree","latin":"paramthree","type":"string","filter":true,"units":null,"values":[]}]
-
 namespace App\Services;
+
+use Illuminate\Support\Collection;
 
 class FiltersService
 {
@@ -47,34 +46,33 @@ class FiltersService
         return $this->addFilter('SliderFilter', ...$arguments);
     }
 
-    private function addFilter(
-        string $type,
-        string $column,
-        string $slug,
-        string $title,
-        string $units = null
-    ): self {
+    private function addFilter(string $type, string $column, string $slug, string $title, string $units = null): self
+    {
         $className = "App\Services\Filters\\$type";
         $filter = $className::init($column, $slug, $title, $units)
             ->fetchValues($this->query)
             ->fetchParams($this->params);
-        !$filter->isEmpty() && $this->filters[] = $filter;
+
+        if (!$filter->isEmpty()) {
+            $this->filters[] = $filter;
+        }
 
         return $this;
     }
 
-    public function addFiltersSet(array $fieldsSet, string $column): self
+    public function addFiltersSet(Collection $fields, string $tableColumn): self
     {
-        $filters = array_filter($fieldsSet, fn ($el) => $el['filter'] === true);
-        usort($filters, fn ($a, $b) => $a['ord'] <=> $b['ord']);
+        $filters = $fields->where('is_filter', true)->sortBy('ord');
 
-        array_walk($filters, fn ($filter) => $this->addFilter(
-            self::filterType($filter),
-            "$column->{$filter['id']}",
-            $filter['latin'],
-            $filter['title'],
-            $filter['units']
-        ));
+        $filters->each(function ($filter) use ($tableColumn) {
+            $this->addFilter(
+                self::filterType($filter),
+                "$tableColumn->$filter->key",
+                $filter->slug,
+                $filter->title,
+                $filter->units
+            );
+        });
 
         return $this;
     }
@@ -91,8 +89,8 @@ class FiltersService
         return $this->filters;
     }
 
-    private static function filterType(array $filter): string
+    private static function filterType(object $filter): string
     {
-        return $filter['type'] === 'multiple' ? 'AndFilter' : 'PlainFilter';
+        return $filter->type === 'multiple' ? 'AndFilter' : 'PlainFilter';
     }
 }

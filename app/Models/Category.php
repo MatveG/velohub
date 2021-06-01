@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use App\Casts\FeaturesCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
     use Traits\Common;
+    use Traits\Relations\HasMany\Features;
+    use Traits\Relations\HasMany\Parameters;
     use Traits\Relations\HasMany\Products;
     use Traits\Relations\HasMany\Variants;
 
-    protected $name = 'category';
-    protected $imagesFolder = '/media/category';
+    protected string $name = 'category';
+    protected string $imagesFolder = '/media/category';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'parent_id',
@@ -33,38 +34,15 @@ class Category extends Model
     ];
     protected $casts = [
         'images' => 'array',
-        'features' => 'array',
-        'parameters' => 'array',
     ];
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
-
-    public function getFeaturesAttribute()
-    {
-        return json_decode($this->attributes['features'], true);
-    }
-
-    public function setFeaturesAttribute($value)
-    {
-        $this->attributes['features'] = json_encode((array)($value), JSON_UNESCAPED_UNICODE);
-    }
-
-//    public function getFeaturesAttribute($value)
-//    {
-//        $features = json_decode($this->attributes['features'], true);
-//        $features = array_map(function ($feature) {
-//            return FeaturesCast::init($feature);
-//        }, $features);
-//
-//        return $features;
-//    }
 
     public function getLinkAttribute(): string
     {
         return route('category', ['slug' => $this->slug, 'id' => $this->id]);
     }
-
 }

@@ -170,7 +170,9 @@ button.icon {
   height: 6rem;
   padding: 0;
   background: #333;
-  border-bottom: #333 solid 1px; }
+  border-bottom: #333 solid 1px;
+  transition-property: all;
+  transition-duration: .2s; }
   .navbar-main .navbar-collapse {
     background: #333; }
   .navbar-main .navbar-toggler {
@@ -206,7 +208,7 @@ button.icon {
 .navbar-main-scroll {
   height: 4.25rem;
   transition-property: all;
-  transition-duration: .5s; }
+  transition-duration: .4s; }
 
 .pagination {
   justify-content: center;
@@ -254,6 +256,22 @@ button.icon {
   font-size: 1.1rem;
   color: #fb7833; }
 
+.item-product .item-thumb {
+  margin: auto;
+  position: relative;
+  width: 15rem;
+  height: 15rem;
+  overflow: hidden;
+  padding: 5px !important; }
+  .item-product .item-thumb img {
+    position: absolute;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); }
+
 .product-thumb {
   position: relative;
   width: 6rem;
@@ -285,7 +303,9 @@ button.icon {
   left: 0;
   background-color: #444;
   font-size: 90%;
-  z-index: 100; }
+  z-index: 100;
+  transition-property: all;
+  transition-duration: .2s; }
   .toolbar * {
     color: #fff;
     text-decoration: none !important;
@@ -297,7 +317,7 @@ button.icon {
 .toolbar-scroll {
   top: 4.25rem;
   transition-property: all;
-  transition-duration: .5s; }
+  transition-duration: .4s; }
 
 a {
   color: #000; }
@@ -338,13 +358,12 @@ h1 span, h2 span, h3 span, h4 span, h5 span {
 
 html, body {
   height: 100%;
-  background-color: #444;
+  background-color: #fff;
   color: #222;
   line-height: 125%; }
 
 body {
-  padding-top: 8.5rem;
-  background-color: #444; }
+  padding-top: 8.5rem; }
 
 .body-scroll {
   padding-top: 6.75rem;

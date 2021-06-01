@@ -2,52 +2,54 @@
 
 namespace App\Models;
 
+use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     use Traits\Common;
-    use Traits\Shop;
+    use Traits\Images;
+    use Traits\Search;
     use Traits\Relations\BelongsTo\Category;
     use Traits\Relations\HasMany\Variants;
     use Traits\Relations\HasMany\Comments;
 
-    protected $name = 'product';
-    protected $imagesFolder = '/media/product';
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
+    protected string $name = 'product';
+    protected string $imagesFolder = '/media/pt';
+    protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'category_id',
         'is_active',
         'is_stock',
         'is_sale',
+        'warranty',
         'price',
-        'price_sale',
-        'stocks',
+        'price_old',
         'weight',
-        'sale_text',
         'code',
         'barcode',
+        'slug',
         'title',
         'brand',
         'model',
         'seo_title',
         'seo_description',
         'seo_keywords',
+        'sale_text',
         'summary',
         'description',
-        'images',
-        'videos',
-        'files',
-        'features',
     ];
     protected $casts = [
         'images' => 'array',
-        'stocks' => 'object',
+        'videos' => 'array',
+        'files' => 'array',
+        'stocks' => JsonObject::class,
+        'features' => JsonObject::class,
+        'settings' => JsonObject::class
     ];
-    protected $appends = ['link'];
+    protected $appends = [
+        'link'
+    ];
 
     public function analogs()
     {
@@ -59,36 +61,8 @@ class Product extends Model
             ->isActive();
     }
 
-    public function getFeaturesAttribute()
-    {
-        return json_decode($this->attributes['features'], true);
-    }
-
-    public function setFeaturesAttribute($value)
-    {
-        $this->attributes['features'] = json_encode((object)($value), JSON_UNESCAPED_UNICODE);
-    }
-
-    public function getLinkAttribute()
+    public function getLinkAttribute(): string
     {
         return route('product', ['slug' => $this->slug, 'id' => $this->id]);
     }
-
-    public function scopeSearchBy($query, $string)
-    {
-        $query->whereRaw("search @@ to_tsquery('" . $this->searchEscape($string) . "')");
-    }
-
-    public function scopeOrderByRelevance($query, $string)
-    {
-        $query->orderByRaw("ts_rank(search, to_tsquery('" . $this->searchEscape($string) . "')) DESC");
-    }
-
-    private function searchEscape(string $string): string
-    {
-        return str_replace(' ', '  |', trim(
-            preg_replace('/[^+A-Za-z0-9- ]/', '', $string)
-        ));
-    }
-
 }
