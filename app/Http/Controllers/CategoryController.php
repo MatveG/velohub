@@ -28,12 +28,14 @@ class CategoryController extends Controller
             ->orderBy('products.' . $request->orderBy, $request->orderWay)
             ->paginate();
 
+        $route = route('category', compact(['slug', 'id']));
+
         $meta = (object)[
             'title' => $category->title,
             'description' => $category->description,
             'keywords' => $category->keywords,
         ];
 
-        return view('category', compact(['category', 'filters', 'products', 'meta']));
+        return view('category', compact(['category', 'filters', 'products', 'route', 'meta']));
     }
 }

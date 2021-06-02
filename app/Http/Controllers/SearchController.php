@@ -5,18 +5,16 @@ namespace App\Http\Controllers;
 use App\Services\FiltersService;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use Illuminate\Validation\ValidationException;
 
 class SearchController extends Controller
 {
-    /**
-     * @throws ValidationException
-     */
     public function __invoke(Request $request, string $path = '')
     {
         $this->validate($request, ['find' => 'required']);
 
-        $query = Product::isActive()->searchBy($request->find);
+        $keywords = $this->escapeSearchString($request->find);
+
+        $query = Product::isActive()->searchBy($keywords);
 
         $filters = FiltersService::init($query, $request->filter)
             ->addSliderFilter('products.price', 'price', 'Price')
@@ -24,8 +22,10 @@ class SearchController extends Controller
             ->getFilters();
 
         $products = $query->orderBy('products.' . $request->orderBy, $request->orderWay)
-            ->orderByRelevance($request->find)
+            ->orderByRelevance($keywords)
             ->simplePaginate();
+
+        $route = route('search') . '?' . request()->getQueryString();
 
         $meta = (object)[
             'title' => 'Поиск: ' . $request->find,
@@ -33,6 +33,11 @@ class SearchController extends Controller
             'keywords' => str_replace(' ', ',', $request->find),
         ];
 
-        return view('category', compact(['products', 'filters', 'meta']));
+        return view('category', compact(['products', 'filters', 'route', 'meta']));
+    }
+
+    private function escapeSearchString(string $string): string
+    {
+        return str_replace(' ', '  |', trim(preg_replace('/[^+A-Za-z0-9- ]/', '', $string)));
     }
 }

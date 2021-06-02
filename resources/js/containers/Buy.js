@@ -13,6 +13,8 @@ const Buy = (props) => {
     const variant = keyId !== undefined ? props.variants[keyId] : {};
     let isInStock; let isInCart;
 
+    console.log(props.product);
+
     if (variant.id) {
         isInStock = !!variant.is_stock;
         isInCart = !!products.find((el) => {
@@ -21,7 +23,7 @@ const Buy = (props) => {
     } else {
         isInStock = !!props.product.is_stock;
         isInCart = !!products.find((el) => {
-            return el.id === props.product.id && el.variant_id === 0;
+            return el.id === props.product.id;
         });
     }
 

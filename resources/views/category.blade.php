@@ -17,7 +17,23 @@
     <div class="content">
         <div class="row">
             <aside class="col-md-2 pr-lg-3">
-                @include('category.filters')
+                <h2 class="d-none d-lg-block d-md-block"><span>Параметры</span></h2>
+
+                <button class="d-block d-lg-none d-md-none btn btn-light w-100 mb-3 text-center"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapse-filters">
+                    Фильтр по параметрам
+                </button>
+
+                <div id="collapse-filters" class="collapse d-lg-block">
+                    @if(request()->filter)
+                        <a class="btn btn-light w-100" href="{{$route}}">сбросить</a>
+                    @endif
+                    @include('category.sorting')
+                    @foreach($filters as $filter)
+                        @include('category.filter')
+                    @endforeach
+                </div>
             </aside>
 
             <div class="col-md-10">

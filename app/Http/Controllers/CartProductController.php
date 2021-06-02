@@ -53,9 +53,7 @@ class CartProductController extends Controller
 
         $cart->products = array_merge(
             $cart->products,
-            [
-                $product->only('id', 'variant_id', 'amount')
-            ]
+            [$product->only('id', 'variant_id', 'amount')]
         );
         $cart->save();
 

@@ -1,12 +1,6 @@
-<h1><span>{{ $product->name }} {{$product->model}}</span></h1>
-
-{{--        <div class="text-right">--}}
-{{--            <button class="btn btn-sm btn-light compare-toggle" role="button">--}}
-{{--                в сравнение--}}
-{{--            </button>--}}
-{{--        </div>--}}
-
-<p>{{ $product->preview }}</p>
+@if($product->preview)
+    <p>{{ $product->preview }}</p>
+@endif
 
 <table class="table table-hover small">
     <tr>

@@ -11,9 +11,7 @@ trait Images
 
     public function getImagesNameAttribute(): string
     {
-        $format = '%s.%d.%s';
-
-        return sprintf($format, $this->slug, $this->id, settings('shop.images_format'));
+        return sprintf('%s.%d.%s', $this->slug, $this->id, setting('images_format'));
     }
 
     public function getThumbAttribute(): ?string

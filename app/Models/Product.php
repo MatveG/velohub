@@ -9,13 +9,12 @@ class Product extends Model
 {
     use Traits\Common;
     use Traits\Images;
-    use Traits\Search;
     use Traits\Relations\BelongsTo\Category;
     use Traits\Relations\HasMany\Variants;
     use Traits\Relations\HasMany\Comments;
 
     protected string $name = 'product';
-    protected string $imagesFolder = '/media/pt';
+    protected string $imagesFolder = '/images/product';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'category_id',
@@ -64,5 +63,15 @@ class Product extends Model
     public function getLinkAttribute(): string
     {
         return route('product', ['slug' => $this->slug, 'id' => $this->id]);
+    }
+
+    public function scopeSearchBy($query, $keywords)
+    {
+        $query->whereRaw("search @@ to_tsquery('" . $keywords . "')");
+    }
+
+    public function scopeOrderByRelevance($query, $keywords)
+    {
+        $query->orderByRaw("ts_rank(search, to_tsquery('" . $keywords . "')) DESC");
     }
 }

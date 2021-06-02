@@ -20,8 +20,7 @@
         margin: auto;
     }
     .item-link{
-        font-weight: bold;
-        line-height: 200%;
+        line-height: 150%;
     }
     .item-price {
         display: inline-block;
@@ -36,8 +35,8 @@
     .item-thumb {
         margin: auto;
         position: relative;
-        width: 15rem;
-        height: 15rem;
+        width: 12.5rem;
+        height: 12.5rem;
         overflow: hidden;
         padding: 5px !important;
 

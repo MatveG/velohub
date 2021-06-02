@@ -13,7 +13,7 @@ class Variant extends Model
     use Traits\Relations\BelongsTo\Category;
 
     protected string $name = 'variant';
-    protected string $imagesFolder = '/media/variant';
+    protected string $imagesFolder = '/images/variant';
     public $timestamps = false;
     protected $fillable = [
         'product_id',
@@ -48,5 +48,4 @@ class Variant extends Model
             config('category.images_format')
         );
     }
-
 }

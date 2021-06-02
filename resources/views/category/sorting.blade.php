@@ -6,7 +6,7 @@
             <option value="id-desc" {{ request('sort') === 'id-desc' ? 'selected' : '' }}>сначала новинки</option>
             <option value="price-asc" {{ request('sort') === 'price-asc' ? 'selected' : '' }}>сначала дешевые</option>
             <option value="price-desc" {{ request('sort') === 'price-desc' ? 'selected' : '' }}>сначала дорогие</option>
-            <option value="title-asc" {{ request('sort') === 'title-asc' ? 'selected' : '' }}>по названию</option>
+            <option value="model-asc" {{ request('sort') === 'model-asc' ? 'selected' : '' }}>по названию</option>
         </select>
     </label>
 </form>

@@ -22,8 +22,8 @@
         <div class="col-sm-2 pt-4">
             <h5><span>Принимаем</span></h5>
             <div class="text-center">
-                <img src="/media/ul/visa-mc.png" width="90" height="90" alt=""><br>
-                <img src="/media/ul/chast.png" width="110" height="68" alt="">
+                <img src="/images/widget/visa-mc.png" width="90" height="90" alt=""><br>
+                <img src="/images/widget/chast.png" width="110" height="68" alt="">
             </div>
         </div>
     </div>

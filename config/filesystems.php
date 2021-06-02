@@ -45,7 +45,7 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'rootReducer' => storage_path('../public/media'),
+            'rootReducer' => storage_path('../public/images'),
         ],
 
         'public' => [

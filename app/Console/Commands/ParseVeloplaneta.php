@@ -235,6 +235,9 @@ class ParseVeloplaneta extends Command
             return "Xml file is empty";
         }
 
+        // Не отображать на сайте
+        // discount_price
+
         foreach ($xml->shop->offers->offer as $offer) {
             $productSku = (string)$offer->vp_sku;
             $categoryId = self::CATEGORY_MAP[(string)$offer->categoryId];

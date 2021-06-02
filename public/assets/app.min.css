@@ -244,8 +244,7 @@ button.icon {
   margin: auto; }
 
 .item-product .item-link {
-  font-weight: bold;
-  line-height: 200%; }
+  line-height: 150%; }
 
 .item-product .item-price {
   display: inline-block;
@@ -259,8 +258,8 @@ button.icon {
 .item-product .item-thumb {
   margin: auto;
   position: relative;
-  width: 15rem;
-  height: 15rem;
+  width: 12.5rem;
+  height: 12.5rem;
   overflow: hidden;
   padding: 5px !important; }
   .item-product .item-thumb img {

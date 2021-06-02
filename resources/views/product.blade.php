@@ -21,12 +21,20 @@
 
 @section('content')
     <main class="content">
-        <div class="row">
-            <section class="col-12 col-lg-9 col-xl-9" id="product-description">
+        <h1><span>{{ $product->name }} {{$product->model}}</span></h1>
+
+        <div class="row mt-4">
+            <section class="col-12 col-lg-10 col-xl-10" id="product-description">
                 <div class="row">
                     <div class="col-12 col-lg-7 col-xl-7">
                         @include('product.general')
+                        {{--        <div class="text-right">--}}
+                        {{--            <button class="btn btn-sm btn-light compare-toggle" role="button">--}}
+                        {{--                в сравнение--}}
+                        {{--            </button>--}}
+                        {{--        </div>--}}
                     </div>
+
                     <div class="col-12 col-lg-5 col-xl-5">
                         <div id="product-image">
                             <script>
@@ -36,19 +44,21 @@
                     </div>
                 </div>
             </section>
-            <section class="col-12 col-lg-3 col-xl-3 text-center">
-                <div class="m-auto">
-                    <h4><span>Купить</span></h4>
 
+            <section class="col-12 col-lg-2 col-xl-2 text-center">
+                <div class="m-auto py-3 rounded-3 shadow-sm">
+                    <h5><span>Купить</span></h5>
                     <div id="product-buy">
                         <script>
-                            window._PRODUCT = {!!json_encode($product->only(['id', 'is_stock', 'is_sale', 'price', 'price_sale']))!!};
+                            window._PRODUCT = {!!json_encode($product->only(['id', 'is_stock', 'is_sale', 'price', 'price_old']))!!};
                             window._PRODUCT_VARIANTS = {!!$product->variants!!};
                         </script>
                     </div>
                 </div>
 
-                @include('product.terms')
+                <div class="mt-3 px-3 py-2 rounded-3 shadow-sm">
+                    @include('product.terms')
+                </div>
             </section>
         </div>
 

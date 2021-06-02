@@ -1,7 +1,7 @@
 /.idea
 /node_modules
 /public/assets/webfonts/
-/public/media
+/public/images
 /storage
 /vendor
 /public/assets/admin/app.min.css
