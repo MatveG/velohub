@@ -24,6 +24,14 @@ class CreateMenusTable extends Migration
             $table->string('name')->nullable();
             $table->timestamps();
         });
+
+        DB::statement("DROP TRIGGER IF EXISTS menus_keep_ord ON menus;");
+        DB::statement("CREATE TRIGGER menus_keep_ord BEFORE DELETE OR UPDATE ON menus
+        FOR EACH ROW EXECUTE PROCEDURE keep_ord();");
+
+        DB::statement("DROP TRIGGER IF EXISTS menus_new_ord ON menus;");
+        DB::statement("CREATE TRIGGER menus_new_ord BEFORE INSERT OR UPDATE ON menus
+        FOR EACH ROW EXECUTE PROCEDURE new_ord();");
     }
 
     /**

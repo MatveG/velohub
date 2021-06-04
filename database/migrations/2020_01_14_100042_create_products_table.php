@@ -54,9 +54,8 @@ class CreateProductsTable extends Migration
 
         DB::statement("ALTER TABLE products ADD COLUMN search tsvector;");
         DB::statement("CREATE INDEX products_search_index ON products USING GIN(search);");
-        DB::statement("DROP TRIGGER IF EXISTS search_sync ON features;");
-        DB::statement("DROP FUNCTION IF EXISTS search_sync();");
-        DB::statement("CREATE FUNCTION search_sync() RETURNS TRIGGER AS $$
+
+        DB::statement("CREATE OR REPLACE FUNCTION sync_search() RETURNS TRIGGER AS $$
         BEGIN
             new.search = (setweight(to_tsvector(COALESCE(NEW.title, '')), 'B') ||
                 setweight(to_tsvector(COALESCE(NEW.brand, '')), 'C') ||
@@ -64,7 +63,9 @@ class CreateProductsTable extends Migration
             RETURN NEW;
         END
         $$ LANGUAGE 'plpgsql';");
-        DB::statement("CREATE TRIGGER search_sync BEFORE INSERT OR UPDATE ON products
+
+        DB::statement("DROP TRIGGER IF EXISTS products_sync_search ON features;");
+        DB::statement("CREATE TRIGGER products_sync_search BEFORE INSERT OR UPDATE ON products
         FOR EACH ROW EXECUTE PROCEDURE sync_search();");
     }
 

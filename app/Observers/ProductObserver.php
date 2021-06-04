@@ -27,7 +27,7 @@ class ProductObserver
         }
 
         if ($product->variants()->count()) {
-            $this->clearStockPropeties($product);
+            $this->clearStockProperties($product);
             $this->syncVariantProperties($product);
             $this->syncVariantPrices($product);
         }
@@ -58,11 +58,11 @@ class ProductObserver
         $product->save();
     }
 
-    private function clearStockPropeties(Product $product)
+    private function clearStockProperties(Product $product)
     {
         $product->code = null;
         $product->barcode = null;
-//        $product->stocks = null;
+        $product->stocks = null;
         $product->weight = null;
     }
 

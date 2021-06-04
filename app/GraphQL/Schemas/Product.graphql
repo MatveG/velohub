@@ -1,0 +1,42 @@
+type Query {
+    product(id: ID! @eq): Product @find
+    products: [Product!]! @all
+}
+
+type Product {
+    id: ID!
+    category_id: Int!
+    is_active: Boolean!
+    is_stock: Boolean!
+    is_sale: Boolean!
+    warranty: Int!
+    price: Float!
+    price_old: Float!
+    weight: Float!
+    code: String!
+    barcode: String!
+    slug: String!
+    title: String!
+    brand: String!
+    model: String!
+    seo_title: String!
+    seo_description: String!
+    seo_keywords: String!
+    sale_text: String!
+    summary: String!
+    description: String!
+    stocks: String!
+    features: JSON!
+    settings: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    link: String!
+
+
+#    items: [Item]! @hasMany
+#    users: [User]! @hasMany
+}
+
+enum JSON {
+
+}

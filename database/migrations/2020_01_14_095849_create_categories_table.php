@@ -36,6 +36,14 @@ class CreateCategoriesTable extends Migration
 
             $table->timestamps();
         });
+
+        DB::statement("DROP TRIGGER IF EXISTS categories_keep_ord ON categories;");
+        DB::statement("CREATE TRIGGER categories_keep_ord BEFORE DELETE OR UPDATE ON categories
+        FOR EACH ROW EXECUTE PROCEDURE keep_ord();");
+
+        DB::statement("DROP TRIGGER IF EXISTS categories_new_ord ON categories;");
+        DB::statement("CREATE TRIGGER categories_new_ord BEFORE INSERT OR UPDATE ON categories
+        FOR EACH ROW EXECUTE PROCEDURE new_ord();");
     }
 
     /**

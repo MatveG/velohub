@@ -16,6 +16,7 @@ class CreateParametersTable extends Migration
         Schema::create('parameters', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('category_id')->index();
+            $table->bigInteger('parent_id')->index();
 
             $table->boolean('is_required')->default(false)->index();
             $table->boolean('is_filter')->default(false)->index();
@@ -28,6 +29,14 @@ class CreateParametersTable extends Migration
 
             $table->json('values')->default(json_encode([]));
         });
+
+        DB::statement("DROP TRIGGER IF EXISTS parameters_keep_ord ON parameters;");
+        DB::statement("CREATE TRIGGER parameters_keep_ord BEFORE DELETE OR UPDATE ON parameters
+        FOR EACH ROW EXECUTE PROCEDURE keep_ord();");
+
+        DB::statement("DROP TRIGGER IF EXISTS parameters_new_ord ON parameters;");
+        DB::statement("CREATE TRIGGER parameters_new_ord BEFORE INSERT OR UPDATE ON parameters
+        FOR EACH ROW EXECUTE PROCEDURE new_ord();");
     }
 
     /**

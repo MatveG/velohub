@@ -33,6 +33,5 @@ class VariantObserver
     // deleted:
     // delete all images
     // update product stocks
-
 }
 

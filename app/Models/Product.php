@@ -27,7 +27,6 @@ class Product extends Model
         'weight',
         'code',
         'barcode',
-        'slug',
         'title',
         'brand',
         'model',
@@ -37,6 +36,9 @@ class Product extends Model
         'sale_text',
         'summary',
         'description',
+        'stocks',
+        'features',
+        'settings'
     ];
     protected $casts = [
         'images' => 'array',
