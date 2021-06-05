@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
@@ -11,15 +12,15 @@ class Setting extends Model
     protected string $name = 'config';
     public $timestamps = false;
     protected $fillable = [];
-    protected $casts = [];
+    protected $casts = [
+        'value' => JsonObject::class
+    ];
     protected $appends = [
         'value'
     ];
 
-    public function getValueAttribute()
+    public function getRawValueAttribute(): string
     {
-        return $this->attributes['value'][0] === '{' ?
-            json_decode($this->attributes['value']) :
-            $this->attributes['value'];
+        return $this->attributes['value'];
     }
 }

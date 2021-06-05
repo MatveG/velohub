@@ -29,8 +29,6 @@ class Category extends Model
         'seo_keywords',
         'description',
         'images',
-        'features',
-        'parameters',
     ];
     protected $casts = [
         'images' => 'array',

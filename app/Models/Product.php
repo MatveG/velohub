@@ -49,7 +49,8 @@ class Product extends Model
         'settings' => JsonObject::class
     ];
     protected $appends = [
-        'link'
+        'link',
+        'thumb'
     ];
 
     public function analogs()
@@ -60,6 +61,21 @@ class Product extends Model
             ->where('price', '>=', $this->price * 0.85)
             ->where('price', '<=', $this->price * 1.15)
             ->isActive();
+    }
+
+//    public function getRawStocksAttribute(): string
+//    {
+//        return $this->attributes['stocks'];
+//    }
+
+    public function getRawFeaturesAttribute(): string
+    {
+        return $this->attributes['features'];
+    }
+
+    public function getRawSettingsAttribute(): string
+    {
+        return $this->attributes['settings'];
     }
 
     public function getLinkAttribute(): string

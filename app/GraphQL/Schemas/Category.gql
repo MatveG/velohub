@@ -1,0 +1,31 @@
+type Category {
+    id: ID!
+    parent_id: Int!
+    is_active: Boolean!
+    is_parent: Boolean!
+    title: String
+    title_short: String
+    slug: String
+    seo_title: String
+    seo_description: String
+    seo_keywords: String
+    description: String
+
+    images: String
+    settings: String
+}
+
+input CategoryInput {
+    parent_id: Int!
+    is_active: Boolean
+    is_parent: Boolean
+}
+
+extend type Query {
+    category(id: ID! @eq): Category @find
+    categories: [Category!]! @all
+}
+
+extend type Mutation {
+    createCategory(input: ProductInput @spread): Product @create
+}

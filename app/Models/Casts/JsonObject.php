@@ -8,7 +8,7 @@ class JsonObject implements CastsAttributes
 {
     public function get($model, $key, $value, $attributes)
     {
-        return json_decode($value, true);
+        return json_decode($value);
     }
 
     public function set($model, $key, $value, $attributes)

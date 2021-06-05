@@ -19,7 +19,7 @@ trait Images
         return (count($this->images)) ? $this->images[0] : null;
 
 //        return (count($this->images))
-//            ? route('img.product', ['img' => str_replace('.jpg', '-md.jpg', $this->images[0])])
+//            ? route('img.product', ['img' => str_replace('.jpg', '-sm.jpg', $this->images[0])])
 //            : null;
     }
 
@@ -37,7 +37,6 @@ trait Images
     public function getImageAttribute(): ?string
     {
         return (count($this->images)) ? $this->images[0] : null;
-//        return (isset($this->images[0])) ? route('img.product', ['img' => $this->images[0]]) : null;
     }
 
 

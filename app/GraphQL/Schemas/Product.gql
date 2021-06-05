@@ -1,0 +1,97 @@
+type Product {
+    category: Category @belongsTo
+    variants: Variant @hasMany
+    id: ID!
+    category_id: Int!
+    is_active: Boolean!
+    is_stock: Boolean!
+    is_sale: Boolean!
+    warranty: Int
+    price: Float
+    price_old: Float
+    weight: Float
+    code: String
+    barcode: String
+    slug: String
+    title: String
+    brand: String
+    model: String
+    seo_title: String
+    seo_description: String
+    seo_keywords: String
+    sale_text: String
+    summary: String
+    description: String
+    link: String
+    thumb: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    stocks: String! @rename(attribute: "rawStocks")
+    features: String! @rename(attribute: "rawFeatures")
+    settings: String! @rename(attribute: "rawSettings")
+}
+
+input ProductInput {
+    category_id: Int!
+    is_active: Boolean
+    is_stock: Boolean
+    is_sale: Boolean
+    warranty: Int
+    price: Float
+    price_old: Float
+    weight: Float
+    code: String
+    barcode: String
+    title: String
+    brand: String
+    model: String
+    seo_title: String
+    seo_description: String
+    seo_keywords: String
+    sale_text: String
+    summary: String
+    description: String
+
+    stocks: String
+    features: String
+    settings: String
+}
+
+extend type Query {
+    product(id: ID! @eq): Product @find
+    products: [Product!]! @all
+}
+
+extend type Mutation {
+    createProduct(id: ID!, input: ProductInput @spread): Product @create
+    updateProduct(id: ID!, input: ProductInput @spread): Product @update
+    deleteProduct(id: ID!): Product @delete
+}
+
+
+#{
+#    product(id: 1087) {
+#        title
+#        brand
+#        model
+#        category {
+#            title
+#        }
+#        variants {
+#            code
+#        }
+#    }
+#}
+
+
+#mutation {
+#    createProduct(
+#        input: {
+#            category_id: 999
+#            seo_keywords: "foo-bar"
+#        }
+#    ) {
+#        id
+#        seo_keywords
+#    }
+#}

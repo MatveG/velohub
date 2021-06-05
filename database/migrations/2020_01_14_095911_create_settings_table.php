@@ -19,7 +19,6 @@ class CreateSettingsTable extends Migration
             $table->string('key');
             $table->text('value')->nullable();
             $table->text('comment')->nullable();
-            $table->timestamps();
         });
     }
 

@@ -60,10 +60,10 @@ class ProductObserver
 
     private function clearStockProperties(Product $product)
     {
+        $product->weight = null;
         $product->code = null;
         $product->barcode = null;
-        $product->stocks = null;
-        $product->weight = null;
+        $product->stocks = (object)[];
     }
 
     private function syncVariantProperties(Product $product, $update = [])

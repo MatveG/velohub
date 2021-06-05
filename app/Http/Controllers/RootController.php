@@ -10,7 +10,7 @@ class RootController extends Controller
 {
     public function __invoke()
     {
-        dd(Artisan::call('parse:veloplaneta'));
+//        dd(Artisan::call('parse:veloplaneta'));
 //        dd(Artisan::call('update:veloplaneta'));
 
         $document = Document::where('slug', 'root')->firstOrFail();
