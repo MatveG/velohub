@@ -2,28 +2,68 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\Admin\ShopImages;
+use App\Services\Admin\ModelImages;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        $product = Product::get()->makeHidden(['created_at', 'updated_at', 'search']);
+        $products = Product::with('category')->get();
 
-        return response()->json($product);
+        return response()->json(
+            $products->map(fn($el) => $el->only([
+                'id',
+                'is_active',
+                'is_stock',
+                'code',
+                'title',
+                'brand',
+                'model',
+                'category',
+                'thumb'
+            ]))
+        );
     }
 
-    public function edit($id)
+    public function get($id): JsonResponse
     {
-        $product = Product::find($id);
+        $product = Product::with('category.features', 'variants')->find($id);
 
-        return response()->json($product);
+        return response()->json($product->only([
+            'id',
+            'category_id',
+            'is_active',
+            'is_stock',
+            'is_sale',
+            'warranty',
+            'price',
+            'price_old',
+            'weight',
+            'code',
+            'barcode',
+            'slug',
+            'title',
+            'brand',
+            'model',
+            'seo_title',
+            'seo_description',
+            'seo_keywords',
+            'sale_text',
+            'summary',
+            'description',
+            'images',
+            'stocks',
+            'features',
+            'category',
+            'variants'
+        ]));
     }
 
-    public function store(Request $request)
+    public function post(Request $request): JsonResponse
     {
         $this->validate($request, [
             'category_id' => 'required|integer',
@@ -36,11 +76,11 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function update(Request $request, $id)
+    public function patch(Request $request, int $id): JsonResponse
     {
         $this->validate($request, [
-            'category_id' => 'required|integer',
-            'model' => 'required|min:2|max:255|string',
+            'category_id' => 'integer',
+            'model' => 'min:2|max:255|string',
             'code' => 'max:255|nullable|unique:products,code,' . $id
         ]);
 
@@ -50,14 +90,14 @@ class ProductController extends Controller
         return response()->json($product->only($changes));
     }
 
-    public function destroy($id)
+    public function delete(int $id): JsonResponse
     {
         Product::findOrFail($id)->delete();
 
         return response()->json();
     }
 
-    public function uploadImages(Request $request, $id)
+    public function uploadImages(Request $request, int $id): JsonResponse
     {
         request()->validate([
             'images.*' => 'image|mimes:jpg,jpeg,gif,png|max:1048',
@@ -65,13 +105,13 @@ class ProductController extends Controller
         ]);
 
         $product = Product::find($id);
-        $uploadedImages = ShopImages::uploadImages(
+        $newImages = ModelImages::uploadImages(
             $request->images,
             $product->imagesFolder,
             $product->imagesName
         );
 
-        return response()->json($uploadedImages);
+        return response()->json($newImages);
     }
 
 }

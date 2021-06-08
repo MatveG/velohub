@@ -1,4 +1,5 @@
 type Category {
+    features: [Feature!] @hasMany
     id: ID!
     parent_id: Int!
     is_active: Boolean!
@@ -11,8 +12,8 @@ type Category {
     seo_keywords: String
     description: String
 
-    images: String
-    settings: String
+    images: String @rename(attribute: "rawImages")
+    settings: String @rename(attribute: "rawSettings")
 }
 
 input CategoryInput {

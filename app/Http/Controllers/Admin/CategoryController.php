@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Services\Admin\ShopImages;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        return response()->json(Category::all());
+        $categories = Category::where('parent_id', 0)->with('children')->get();
+
+        return response()->json($categories);
     }
 
     public function edit($id)

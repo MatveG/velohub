@@ -16,11 +16,16 @@ trait Images
 
     public function getThumbAttribute(): ?string
     {
-        return (count($this->images)) ? $this->images[0] : null;
+        return  $this->images[0] ?? null;
 
 //        return (count($this->images))
 //            ? route('img.product', ['img' => str_replace('.jpg', '-sm.jpg', $this->images[0])])
 //            : null;
+    }
+
+    public function getImageAttribute(): ?string
+    {
+        return (count($this->images)) ? $this->images[0] : null;
     }
 
 //    public function getThumbsAttribute(): ?array
@@ -33,11 +38,4 @@ trait Images
 //            return route('img.product', ['img' => str_replace('.jpg', '-md.jpg', $item)]);
 //        }, $this->images);
 //    }
-
-    public function getImageAttribute(): ?string
-    {
-        return (count($this->images)) ? $this->images[0] : null;
-    }
-
-
 }

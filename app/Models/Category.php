@@ -39,6 +39,16 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 
+    public function getRawImagesAttribute(): string
+    {
+        return $this->attributes['images'];
+    }
+
+    public function getRawSettingsAttribute(): string
+    {
+        return $this->attributes['settings'];
+    }
+
     public function getLinkAttribute(): string
     {
         return route('category', ['slug' => $this->slug, 'id' => $this->id]);

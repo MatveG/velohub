@@ -63,10 +63,10 @@ class Product extends Model
             ->isActive();
     }
 
-//    public function getRawStocksAttribute(): string
-//    {
-//        return $this->attributes['stocks'];
-//    }
+    public function getRawStocksAttribute(): string
+    {
+        return $this->attributes['stocks'];
+    }
 
     public function getRawFeaturesAttribute(): string
     {

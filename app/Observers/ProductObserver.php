@@ -27,7 +27,7 @@ class ProductObserver
         }
 
         if ($product->variants()->count()) {
-            $this->clearStockProperties($product);
+//            $this->clearStockProperties($product);
             $this->syncVariantProperties($product);
             $this->syncVariantPrices($product);
         }

@@ -24,6 +24,9 @@ class Feature extends Model
     protected $casts = [
         'values' => 'array',
     ];
+    protected $appends = [
+        'key'
+    ];
 
     public function children(): HasMany
     {
@@ -33,5 +36,10 @@ class Feature extends Model
     public function getKeyAttribute(): string
     {
         return "f$this->id";
+    }
+
+    public function getRawValuesAttribute(): string
+    {
+        return $this->attributes['values'];
     }
 }

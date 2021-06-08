@@ -1,10 +1,10 @@
 type Variant {
-    id: ID!
-    product_id: Int!
-    category_id: Int!
-    is_active: Boolean!
-    is_stock: Boolean!
-    is_sale: Boolean!
+    id: ID
+    product_id: Int
+    category_id: Int
+    is_active: Boolean
+    is_stock: Boolean
+    is_sale: Boolean
     price: Float
     surcharge: Float
     weight: Float
