@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Document;
-use App\Models\Feature;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
 
 class RootController extends Controller
 {
@@ -15,9 +15,9 @@ class RootController extends Controller
 //        dd(Artisan::call('parse:veloplaneta'));
 //        dd(Artisan::call('update:veloplaneta'));
 
-        $products = Product::with('category.features', 'variants')->find(1005);
+        $orders = Order::all();
+        return response()->json($orders);
 
-//        dd($products);
 
         $document = Document::where('slug', 'root')->firstOrFail();
 

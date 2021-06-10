@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Casts\JsonObject;
+use App\Models\Casts\OrderProducts;
 use Illuminate\Database\Eloquent\Model;
 
 class Variant extends Model
@@ -32,8 +32,8 @@ class Variant extends Model
     ];
     protected $casts = [
         'images' => 'array',
-        'parameters' => JsonObject::class,
-        'stocks' => JsonObject::class
+        'parameters' => OrderProducts::class,
+        'stocks' => OrderProducts::class
     ];
 
     public function getImagesNameAttribute(): string

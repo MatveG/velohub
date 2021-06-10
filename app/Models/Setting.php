@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Casts\JsonObject;
+use App\Models\Casts\OrderProducts;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
@@ -13,7 +13,7 @@ class Setting extends Model
     public $timestamps = false;
     protected $fillable = [];
     protected $casts = [
-        'value' => JsonObject::class
+        'value' => OrderProducts::class
     ];
     protected $appends = [
         'value'

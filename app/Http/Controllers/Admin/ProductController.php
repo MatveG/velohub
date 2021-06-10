@@ -4,68 +4,46 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\Admin\ModelImages;
+use App\Services\Admin\ShopImagesUploader;
 
 class ProductController extends Controller
 {
     public function index(): JsonResponse
     {
-        $products = Product::with('category')->get();
-
-        return response()->json(
-            $products->map(fn($el) => $el->only([
+        $products = Product::query()
+            ->with([
+                'category' => fn ($query) => $query->select(['id', 'title'])
+            ])
+            ->get([
                 'id',
                 'is_active',
                 'is_stock',
+                'slug',
                 'code',
                 'title',
                 'brand',
                 'model',
-                'category',
-                'thumb'
-            ]))
-        );
+                'price',
+                'category_id',
+                'images'
+            ]);
+
+        return response()->json($products);
     }
 
     public function get($id): JsonResponse
     {
         $product = Product::with('category.features', 'variants')->find($id);
 
-        return response()->json($product->only([
-            'id',
-            'category_id',
-            'is_active',
-            'is_stock',
-            'is_sale',
-            'warranty',
-            'price',
-            'price_old',
-            'weight',
-            'code',
-            'barcode',
-            'slug',
-            'title',
-            'brand',
-            'model',
-            'seo_title',
-            'seo_description',
-            'seo_keywords',
-            'sale_text',
-            'summary',
-            'description',
-            'images',
-            'stocks',
-            'features',
-            'category',
-            'variants'
-        ]));
+        return response()->json($product);
     }
 
     public function post(Request $request): JsonResponse
     {
-        $this->validate($request, [
+        $request->validate([
             'category_id' => 'required|integer',
             'model' => 'required|min:2|max:255|string',
             'code' => 'max:255|nullable|unique:variants'
@@ -78,16 +56,16 @@ class ProductController extends Controller
 
     public function patch(Request $request, int $id): JsonResponse
     {
-        $this->validate($request, [
+        $request->validate([
             'category_id' => 'integer',
             'model' => 'min:2|max:255|string',
-            'code' => 'max:255|nullable|unique:products,code,' . $id
+            'code' => 'max:255|nullable|unique:products,code,' . $id,
         ]);
 
-        $product = tap(Product::findOrFail($id))->update($request->all());
-        $changes = array_keys($product->getChanges());
+        $product = Product::findOrFail($id);
+        $product->update($request->all());
 
-        return response()->json($product->only($changes));
+        return response()->json($product->getChanges());
     }
 
     public function delete(int $id): JsonResponse
@@ -99,19 +77,36 @@ class ProductController extends Controller
 
     public function uploadImages(Request $request, int $id): JsonResponse
     {
-        request()->validate([
+        $request->validate([
+            'images' => 'required|array',
             'images.*' => 'image|mimes:jpg,jpeg,gif,png|max:1048',
             'images.0' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
         ]);
 
         $product = Product::find($id);
-        $newImages = ModelImages::uploadImages(
-            $request->images,
-            $product->imagesFolder,
-            $product->imagesName
-        );
 
-        return response()->json($newImages);
+        $newImages = ShopImagesUploader::uploadImages($request->images, $product->imagesFolder, $product->imagesName);
+        $product->images = [
+            ...array_diff($product->images, $newImages),
+            ...$newImages
+        ];
+        $product->save();
+
+        return response()->json($product->images);
     }
 
+    public function updateImages(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'images' => 'array',
+            'images.*' => 'string',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->images = $request->images;
+        $product->save();
+        File::delete(array_diff($product->getOriginal('images'), $product->images));
+
+        return response()->json($product->images);
+    }
 }

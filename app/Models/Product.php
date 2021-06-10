@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Casts\JsonObject;
+use App\Models\Casts\OrderProducts;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -40,13 +40,16 @@ class Product extends Model
         'features',
         'settings'
     ];
+    protected $hidden = [
+        'search'
+    ];
     protected $casts = [
         'images' => 'array',
         'videos' => 'array',
         'files' => 'array',
-        'stocks' => JsonObject::class,
-        'features' => JsonObject::class,
-        'settings' => JsonObject::class
+        'stocks' => OrderProducts::class,
+        'features' => OrderProducts::class,
+        'settings' => OrderProducts::class
     ];
     protected $appends = [
         'link',

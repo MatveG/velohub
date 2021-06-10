@@ -1,4 +1,6 @@
+import axios from 'axios';
 import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
 import config from 'react-global-configuration';
 import CheckoutBuyer from '../components/CheckoutBuyer';
 import CheckoutAddr from '../components/CheckoutAddr';
@@ -7,6 +9,7 @@ import Loader from '../components/ui/Loader';
 import Card from '../components/ui/Card';
 import useCart from '../hooks/useCart';
 import CartComponent from '../components/CartComponent';
+import {fireDanger} from '../state/actions/toast';
 
 const localData = JSON.parse(localStorage.getItem('_udata') || '{}');
 
@@ -17,6 +20,7 @@ const mapShippingCost = (couriers, total) => couriers.map((el) => {
 
 const Checkout = () => {
     const {isPending, products, totalCost} = useCart();
+    const dispatch = useDispatch();
     const [stage, setStage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState({...localData});

@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Order;
-use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function __invoke(Request $request, CartService $service): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
         $this->validate($request, [
             'payment' => 'required|min:1',
@@ -30,8 +30,6 @@ class OrderController extends Controller
         $order->shipping = 0;
         $order->total = 0;
         $order->products = $cart->products;
-
-        dd($order);
 
         $order->save();
 //        $cart->delete();

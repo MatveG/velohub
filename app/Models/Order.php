@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Casts\OrderProducts;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -22,7 +23,16 @@ class Order extends Model
         'address',
     ];
     protected $casts = [
+        'created_at' => 'datetime:d-m-y, H:i',
         'address' => 'object',
-        'products' => 'object'
+        'products' => OrderProducts::class
     ];
+    protected $appends = [
+        'client'
+    ];
+
+    public function getClientAttribute(): string
+    {
+        return trim($this->attributes['name'] . ' ' . $this->attributes['surname']);
+    }
 }

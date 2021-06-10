@@ -17,7 +17,7 @@ return [
         /*
          * The URI the endpoint responds to, e.g. mydomain.com/graphql.
          */
-        'uri' => '/admin/api',
+        'uri' => '/gql',
 
         /*
          * Lighthouse creates a named route for convenient URL generation and redirects.
