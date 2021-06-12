@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\Admin\ModelImages;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\Admin\ShopImagesUploader;
+use App\Services\Admin\ImagesUploader;
 
 class ProductController extends Controller
 {
@@ -105,6 +107,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->images = $request->images;
         $product->save();
+
         File::delete(array_diff($product->getOriginal('images'), $product->images));
 
         return response()->json($product->images);

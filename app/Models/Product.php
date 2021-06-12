@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Casts\OrderProducts;
+use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -47,11 +47,12 @@ class Product extends Model
         'images' => 'array',
         'videos' => 'array',
         'files' => 'array',
-        'stocks' => OrderProducts::class,
-        'features' => OrderProducts::class,
-        'settings' => OrderProducts::class
+        'stocks' => JsonObject::class,
+        'features' => JsonObject::class,
+        'settings' => JsonObject::class
     ];
     protected $appends = [
+        'name',
         'link',
         'thumb'
     ];
@@ -79,6 +80,11 @@ class Product extends Model
     public function getRawSettingsAttribute(): string
     {
         return $this->attributes['settings'];
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->attributes['title'] . ' ' . $this->attributes['brand'] . ' ' . $this->attributes['model'];
     }
 
     public function getLinkAttribute(): string

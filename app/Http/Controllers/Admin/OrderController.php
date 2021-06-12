@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Services\Admin\ShopImagesUploader;
+use App\Services\Admin\ImagesUploader;
 
 class OrderController extends Controller
 {

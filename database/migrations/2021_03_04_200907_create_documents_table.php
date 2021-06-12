@@ -17,7 +17,7 @@ class CreateDocumentsTable extends Migration
             $table->bigIncrements('id');
             $table->boolean('is_active')->default(false)->index();
             $table->string('slug');
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('text')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();

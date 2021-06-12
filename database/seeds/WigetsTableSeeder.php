@@ -14,14 +14,14 @@ class WigetsTableSeeder extends Seeder
     {
         DB::table('widgets')->insert([
             'slug' => 'header-contacts',
-            'name' => 'Contact details in Header',
+            'title' => 'Contact details in Header',
             'text' => '
 <strong>+38 (098) 100-10-67</strong>
 <span class="ml-1 small">ПН-ПТ 10<sup>00</sup>-19<sup>00</sup></span>',
         ]);
         DB::table('widgets')->insert([
             'slug' => 'footer-contacts',
-            'name' => 'Contacts details in Footer',
+            'title' => 'Contacts details in Footer',
             'text' => '<p>
 <strong><a href="call:+380981001067">+38 (098) 100-10-67</a></strong>
 <br>
@@ -32,7 +32,7 @@ class WigetsTableSeeder extends Seeder
         ]);
         DB::table('widgets')->insert([
             'slug' => 'footer-address',
-            'name' => 'Address details in Footer',
+            'title' => 'Address details in Footer',
             'text' => '
 <p>
   <b>Оболонь</b>:<br>

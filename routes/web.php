@@ -1,5 +1,8 @@
 <?php
 
+// Auth
+Route::post('login', 'AuthController@login');
+
 // Category
 Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')
     ->where('path', '.*')

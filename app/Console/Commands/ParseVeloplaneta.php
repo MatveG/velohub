@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Services\Admin\ShopImages;
+use App\Services\Admin\ImagesUploader;
+use App\Services\Admin\ModelImages;
 use Illuminate\Console\Command;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use SimpleXMLElement;
 
@@ -255,8 +257,8 @@ class ParseVeloplaneta extends Command
                 $product = $category->products()->firstOrCreate($offerData);
                 $product->features = $this->mapFeatures($offer->param, $category);
                 $product->save();
-                $product->images = ShopImages::uploadImages(
-                    [(string)$offer->picture],
+                $product->images = ModelImages::copyByUrl(
+                    (string)$offer->picture,
                     $product->imagesFolder,
                     $product->imagesName
                 );

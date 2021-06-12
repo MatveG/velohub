@@ -21,14 +21,14 @@ class CreateOrdersTable extends Migration
             $table->integer('delivery')->index();
             $table->float('discount')->default(0);
             $table->float('shipping')->default(0);
-            $table->float('total')->nullable();
+            $table->float('total')->default(0);
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('name')->nullable();
             $table->string('surname')->nullable();
             $table->text('text')->nullable();
             $table->json('address')->default('{}');
-            $table->json('products')->default('{}');
+            $table->json('products')->default('[]');
             $table->timestamps();
         });
     }

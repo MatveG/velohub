@@ -19,11 +19,11 @@ class CreateCommentsTable extends Migration
             $table->bigInteger('user_id')->nullable()->index();
             $table->boolean('is_active')->default(false)->index();
             $table->smallInteger('rating')->default(0);
-            $table->string('author');
+            $table->string('author')->nullable();
             $table->string('email')->nullable();
             $table->text('pros')->nullable();
             $table->text('cons')->nullable();
-            $table->text('text');
+            $table->text('text')->nullable();
             $table->text('video')->nullable();
             $table->timestamps();
         });

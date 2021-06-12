@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Casts\OrderProducts;
+use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
 
 class Variant extends Model
@@ -32,20 +32,20 @@ class Variant extends Model
     ];
     protected $casts = [
         'images' => 'array',
-        'parameters' => OrderProducts::class,
-        'stocks' => OrderProducts::class
+        'parameters' => JsonObject::class,
+        'stocks' => JsonObject::class
     ];
 
-    public function getImagesNameAttribute(): string
-    {
-        $format = '%s-%s.%d.%s';
-
-        return sprintf(
-            $format,
-            $this->product->latin,
-            latinize(implode('-', array_values((array)$this->parameters))),
-            $this->id,
-            config('category.images_format')
-        );
-    }
+//    public function getImagesNameAttribute(): string
+//    {
+//        $format = '%s-%s.%d.%s';
+//
+//        return sprintf(
+//            $format,
+//            $this->product->latin,
+//            latinize(implode('-', array_values((array)$this->parameters))),
+//            $this->id,
+//            config('category.images_format')
+//        );
+//    }
 }
