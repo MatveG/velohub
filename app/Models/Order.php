@@ -10,7 +10,7 @@ class Order extends Model
     use Traits\Common;
     use Traits\Relations\BelongsTo\User;
 
-    protected string $name = 'order';
+    protected string $modelName = 'order';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'status',

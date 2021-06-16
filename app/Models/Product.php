@@ -4,16 +4,17 @@ namespace App\Models;
 
 use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
     use Traits\Common;
-    use Traits\Images;
+    use Traits\ProductImages;
     use Traits\Relations\BelongsTo\Category;
     use Traits\Relations\HasMany\Variants;
     use Traits\Relations\HasMany\Comments;
 
-    protected string $name = 'product';
+    protected string $modelName = 'product';
     protected string $imagesFolder = '/images/product';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [

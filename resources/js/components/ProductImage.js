@@ -15,12 +15,15 @@ const ProductImage = (props) => {
                 <img className="w-100"
                     alt=""
                     role="button"
-                    src={props.images[active]}
+                    src={props.baseUrl + props.images[active]}
                     onClick={openModal}/>
             </div>
 
             <div className="mt-2 d-flex justify-content-center">
-                <ProductThumbs images={props.images} handleClick={setActive} />
+                <ProductThumbs
+                    images={props.images}
+                    baseUrl={props.baseUrl}
+                    handleClick={setActive} />
             </div>
 
             <Modal
@@ -30,11 +33,16 @@ const ProductImage = (props) => {
                 handleClose={closeModal}>
 
                 <div className="d-flex justify-content-center">
-                    <ProductThumbs images={props.images} handleClick={setActive} />
+                    <ProductThumbs
+                        images={props.images}
+                        baseUrl={props.baseUrl}
+                        handleClick={setActive} />
                 </div>
 
                 <div className="mt-2">
-                    <img className="w-100" src={props.images[active]} alt={props.images[active]}/>
+                    <img className="w-100"
+                        src={props.baseUrl + props.images[active]}
+                        alt={props.images[active]}/>
                 </div>
             </Modal>
         </div>

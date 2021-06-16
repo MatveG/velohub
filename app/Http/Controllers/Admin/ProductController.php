@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Services\Admin\ModelImages;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\Admin\ImagesUploader;
 
 class ProductController extends Controller
 {
@@ -75,41 +71,5 @@ class ProductController extends Controller
         Product::findOrFail($id)->delete();
 
         return response()->json();
-    }
-
-    public function uploadImages(Request $request, int $id): JsonResponse
-    {
-        $request->validate([
-            'images' => 'required|array',
-            'images.*' => 'image|mimes:jpg,jpeg,gif,png|max:1048',
-            'images.0' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
-        ]);
-
-        $product = Product::find($id);
-
-        $newImages = ShopImagesUploader::uploadImages($request->images, $product->imagesFolder, $product->imagesName);
-        $product->images = [
-            ...array_diff($product->images, $newImages),
-            ...$newImages
-        ];
-        $product->save();
-
-        return response()->json($product->images);
-    }
-
-    public function updateImages(Request $request, int $id): JsonResponse
-    {
-        $request->validate([
-            'images' => 'array',
-            'images.*' => 'string',
-        ]);
-
-        $product = Product::findOrFail($id);
-        $product->images = $request->images;
-        $product->save();
-
-        File::delete(array_diff($product->getOriginal('images'), $product->images));
-
-        return response()->json($product->images);
     }
 }

@@ -26,7 +26,7 @@ const store = createStore(
 
 const productImage = document.getElementById('product-image');
 productImage && render(
-    <ProductImage images={_PRODUCT_IMAGES}/>,
+    <ProductImage images={_PRODUCT_IMAGES} baseUrl={_PRODUCT_IMAGES_PATH}/>,
     productImage,
 );
 

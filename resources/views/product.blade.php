@@ -39,6 +39,7 @@
                         <div id="product-image">
                             <script>
                                 window._PRODUCT_IMAGES = {!!json_encode($product->images)!!};
+                                window._PRODUCT_IMAGES_PATH = '{!!Storage::url('')!!}';
                             </script>
                         </div>
                     </div>

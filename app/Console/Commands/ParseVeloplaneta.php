@@ -2,19 +2,16 @@
 
 namespace App\Console\Commands;
 
+use SimpleXMLElement;
+use Illuminate\Console\Command;
 use App\Models\Category;
 use App\Models\Product;
-use App\Services\Admin\ImagesUploader;
-use App\Services\Admin\ModelImages;
-use Illuminate\Console\Command;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
-use SimpleXMLElement;
+use App\Services\ImagesUploader;
 
 class ParseVeloplaneta extends Command
 {
     private const XML_URL = '/app/storage/xml/veloplaneta.xml';
-    private const MAX_RUNS = 5;
+    private const MAX_RUNS = 100;
     private const DEFAULT_ACTIVE = false;
     private const IGNORED_PARAMS = [
         'Не отображать на сайте',
@@ -237,37 +234,24 @@ class ParseVeloplaneta extends Command
             return "Xml file is empty";
         }
 
-        // Не отображать на сайте
-        // discount_price
-
         foreach ($xml->shop->offers->offer as $offer) {
-            $productSku = (string)$offer->vp_sku;
-            $categoryId = self::CATEGORY_MAP[(string)$offer->categoryId];
-
             if ($counter >= self::MAX_RUNS) {
                 break;
-            } elseif (empty($categoryId) || $this->productExists($productSku) || !$this->hasPicture($offer)) {
-                continue;
             }
-
+            $productSku = (string)$offer->vp_sku;
+            $categoryId = self::CATEGORY_MAP[(string)$offer->categoryId];
             $category = Category::where('id', $categoryId)->where('is_parent', false)->first();
 
-            if ($category) {
+            if ($category && !$this->productExists($productSku) && $this->hasPicture($offer)) {
                 $offerData = $this->parseOfferData($offer);
                 $product = $category->products()->firstOrCreate($offerData);
                 $product->features = $this->mapFeatures($offer->param, $category);
                 $product->save();
-                $product->images = ModelImages::copyByUrl(
-                    (string)$offer->picture,
-                    $product->imagesFolder,
-                    $product->imagesName
-                );
+                $product->images = ImagesUploader::upload([(string)$offer->picture], $product->imagesStoragePath);
                 $product->save();
                 $counter++;
             }
         }
-
-        $this->updateSearchIndex();
 
         return "Parsed $counter new items";
     }
@@ -291,7 +275,7 @@ class ParseVeloplaneta extends Command
         $barcode = trim((string)$offer->barcode);
         $brand = trim(ucwords(strtolower((string)$offer->brand)));
         $description = trim((string)$offer->description);
-        [$title, $model] = preg_split("/" . preg_quote($brand) . "/i", $name) ?: [null, $name];
+        [$title, $model] = strpos($name, $brand) ? preg_split("/" . preg_quote($brand) . "/i", $name) : [null, $name];
         $title = trim($title);
         $model = trim($model);
 
@@ -312,7 +296,7 @@ class ParseVeloplaneta extends Command
         foreach ($offerParams as $param) {
             $title = (string)$param->attributes()->name;
 
-            if (empty(self::IGNORED_PARAMS[$title])) {
+            if (!in_array($title, self::IGNORED_PARAMS)) {
                 $feature = $category->features()->firstOrCreate([
                     'parent_id' => 0,
                     'title' => $title,
@@ -323,12 +307,5 @@ class ParseVeloplaneta extends Command
         }
 
         return $featuresMap ?? [];
-    }
-
-    private function updateSearchIndex(): void
-    {
-        DB::statement("UPDATE products SET search = (setweight(to_tsvector(title), 'B') ||
-            setweight(to_tsvector(brand), 'C') ||
-            setweight(to_tsvector(model), 'A')) WHERE id > 0");
     }
 }

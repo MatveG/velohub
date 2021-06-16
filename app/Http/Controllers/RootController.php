@@ -3,22 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
-use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 class RootController extends Controller
 {
     public function __invoke()
     {
-
-        dd(Artisan::call('parse:veloplaneta'));
+//        dd(Artisan::call('parse:veloplaneta'));
 //        dd(Artisan::call('update:veloplaneta'));
-
-//        $orders = Order::all();
-//        return response()->json($orders);
-
+        dd(setting('admin.per_page'));
 
         $document = Document::where('slug', 'root')->firstOrFail();
 

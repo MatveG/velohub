@@ -9,18 +9,14 @@ class Setting extends Model
 {
     use Traits\Common;
 
-    protected string $name = 'config';
+    protected string $modelName = 'config';
     public $timestamps = false;
     protected $fillable = [];
-    protected $casts = [
-        'value' => OrderProducts::class
-    ];
-    protected $appends = [
-        'value'
-    ];
+    protected $casts = [];
+    protected $appends = [];
 
     public function getRawValueAttribute(): string
     {
-        return $this->attributes['value'];
+        return  ? json_decode($this->attributes['value']) : $this->attributes['value'];
     }
 }

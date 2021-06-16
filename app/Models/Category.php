@@ -13,7 +13,7 @@ class Category extends Model
     use Traits\Relations\HasMany\Products;
     use Traits\Relations\HasMany\Variants;
 
-    protected string $name = 'category';
+    protected string $modelName = 'category';
     protected string $imagesFolder = '/images/category';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [

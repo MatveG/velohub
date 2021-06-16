@@ -17,10 +17,10 @@
     </tr>
     @if($product->category->features)
         @foreach($product->category->features as $feature)
-            @if(!empty($product->features[$feature->key]))
+            @if(!empty($product->features->{$feature->key}))
                 <tr>
                     <td class="py-1">{{ $feature->title }}</td>
-                    <td class="py-1"><i>{{ $product->features[$feature->key] }} {{ $feature->units }}</i></td>
+                    <td class="py-1"><i>{{ $product->features->{$feature->key} }} {{ $feature->units }}</i></td>
                 </tr>
             @endif
         @endforeach

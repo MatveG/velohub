@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Product;
 use App\Models\Variant;
-use App\Services\Admin\ModelImages;
+use App\Services\Admin\ImagesUploader;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +28,7 @@ class ProductObserver
     public function updating(Product $product)
     {
         if ($product->isDirty('slug') && count($product->images)) {
-            $product->images = ModelImages::renameImages($product->images, $product->imagesName);
+            $product->images = ImagesUploader::renameImages($product->images, $product->imagesName);
         }
     }
 

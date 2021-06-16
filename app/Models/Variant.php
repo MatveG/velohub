@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Variant extends Model
 {
     use Traits\Common;
-    use Traits\Images;
+    use Traits\ProductImages;
     use Traits\Relations\BelongsTo\Product;
     use Traits\Relations\BelongsTo\Category;
 
-    protected string $name = 'variant';
+    protected string $modelName = 'variant';
     protected string $imagesFolder = '/images/variant';
     public $timestamps = false;
     protected $fillable = [

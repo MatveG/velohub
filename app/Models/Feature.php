@@ -9,7 +9,7 @@ class Feature extends Model
 {
     use Traits\Relations\BelongsTo\Category;
 
-    protected string $name = 'feature';
+    protected string $modelName = 'feature';
     public $timestamps = false;
     protected $fillable = [
         'parent_id',

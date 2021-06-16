@@ -41,7 +41,7 @@ class UpdateVeloplaneta extends Command
         $is_active = $is_stock = $rest > 0;
         $is_sale = (int)$offer->Discount > 0;
         $price = $is_sale ? (int)$offer->RRP_D : (int)$offer->RRP;
-        $price_old = $is_sale ? (int)$offer->RRP : null;
+        $price_old = $is_sale && (int)$offer->RRP ? (int)$offer->RRP : null;
         $stocks = [self::STOCK_CODE => $rest];
 
         return compact([

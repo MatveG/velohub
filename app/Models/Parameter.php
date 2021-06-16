@@ -8,7 +8,7 @@ class Parameter extends Model
 {
     use Traits\Relations\BelongsTo\Category;
 
-    protected string $name = 'parameter';
+    protected string $modelName = 'parameter';
     public $timestamps = false;
     protected $fillable = [
         'parent_id',

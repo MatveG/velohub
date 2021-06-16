@@ -15,10 +15,11 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title')->nullable();
             $table->string('key');
+            $table->string('title')->nullable();
             $table->text('value')->nullable();
-            $table->text('comment')->nullable();
+            $table->text('hint')->nullable();
+            $table->json('values')->default(json_encode([]));
         });
     }
 
