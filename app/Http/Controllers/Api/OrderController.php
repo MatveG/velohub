@@ -32,7 +32,7 @@ class OrderController extends Controller
         $order->products = $cart->products;
 
         $order->save();
-//        $cart->delete();
+        $cart->delete();
 
         return response()->json($order);
     }

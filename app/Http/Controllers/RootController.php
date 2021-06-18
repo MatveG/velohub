@@ -5,29 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 
 class RootController extends Controller
 {
     public function __invoke()
     {
 //        dd(Artisan::call('parse:veloplaneta'));
-//        dd(Artisan::call('update:veloplaneta'));
-        dd(setting('admin.per_page'));
 
         $document = Document::where('slug', 'root')->firstOrFail();
 
         $saleProducts = Product::where('is_active', true)
             ->where('is_stock', true)
             ->where('is_sale', true)
-            ->orderBy('products.id', 'desc')
-            ->limit(6)
+            ->orderBy('id', 'desc')
+            ->limit(8)
             ->get();
 
         $newProducts = Product::where('is_active', true)
             ->where('is_stock', true)
-            ->orderBy('products.id', 'desc')
-            ->limit(6)
+            ->orderBy('id', 'desc')
+            ->limit(8)
             ->get();
 
         $meta = (object)[

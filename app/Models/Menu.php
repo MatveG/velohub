@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Menu extends Model
 {
-    use Traits\Common;
-
     protected string $modelName = 'menu';
     public $timestamps = false;
 

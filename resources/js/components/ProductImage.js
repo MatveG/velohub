@@ -12,11 +12,11 @@ const ProductImage = (props) => {
     return (
         <div>
             <div className="product-image">
-                <img className="w-100"
+                {!!props.images[active] && <img className="w-100"
                     alt=""
                     role="button"
-                    src={props.baseUrl + props.images[active]}
-                    onClick={openModal}/>
+                    src={props.images[active]}
+                    onClick={openModal}/>}
             </div>
 
             <div className="mt-2 d-flex justify-content-center">
@@ -40,9 +40,9 @@ const ProductImage = (props) => {
                 </div>
 
                 <div className="mt-2">
-                    <img className="w-100"
-                        src={props.baseUrl + props.images[active]}
-                        alt={props.images[active]}/>
+                    {!!props.images[active] && <img className="w-100"
+                        src={props.images[active]}
+                        alt={props.images[active]}/>}
                 </div>
             </Modal>
         </div>

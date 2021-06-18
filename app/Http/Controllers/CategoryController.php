@@ -10,11 +10,11 @@ class CategoryController extends Controller
 {
     public function __invoke(Request $request, string $slug, int $id, string $path = '')
     {
-        $category = Category::whereId($id)->isActive()->firstOrFail();
+        $category = Category::where('id', $id)->where('is_active', true)->firstOrFail();
 
         $query = $category->products()
             ->leftJoin('variants', 'products.id', '=', 'variants.product_id')
-            ->isActive();
+            ->where('is_active', true);
 
         $filters = FiltersService::init($query, $request->filter)
             ->addSliderFilter('products.price', 'price', 'Price')

@@ -27,7 +27,7 @@
             <section class="col-12 col-lg-10 col-xl-10" id="product-description">
                 <div class="row">
                     <div class="col-12 col-lg-7 col-xl-7">
-                        @include('product.general')
+                        @include('includes.product.general')
                         {{--        <div class="text-right">--}}
                         {{--            <button class="btn btn-sm btn-light compare-toggle" role="button">--}}
                         {{--                в сравнение--}}
@@ -39,7 +39,6 @@
                         <div id="product-image">
                             <script>
                                 window._PRODUCT_IMAGES = {!!json_encode($product->images)!!};
-                                window._PRODUCT_IMAGES_PATH = '{!!Storage::url('')!!}';
                             </script>
                         </div>
                     </div>
@@ -58,7 +57,7 @@
                 </div>
 
                 <div class="mt-3 px-3 py-2 rounded-3 shadow-sm">
-                    @include('product.terms')
+                    @include('includes.product.terms')
                 </div>
             </section>
         </div>
@@ -81,7 +80,7 @@
             <h3><span>Аналоги</span></h3>
             <div class="row w-100 text-center">
                 @foreach($product->analogs->take(6) as $product)
-                    @include('category.product')
+                    @include('includes.category.product')
                 @endforeach
             </div>
         </section>

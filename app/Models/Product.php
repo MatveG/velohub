@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Models\Casts\JsonObject;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
-    use Traits\Common;
-    use Traits\ProductImages;
+    use Traits\Images;
     use Traits\Relations\BelongsTo\Category;
     use Traits\Relations\HasMany\Variants;
     use Traits\Relations\HasMany\Comments;
@@ -45,7 +45,6 @@ class Product extends Model
         'search'
     ];
     protected $casts = [
-        'images' => 'array',
         'videos' => 'array',
         'files' => 'array',
         'stocks' => JsonObject::class,
@@ -58,14 +57,14 @@ class Product extends Model
         'thumb'
     ];
 
-    public function analogs()
+    public function analogs(): HasMany
     {
-        return $this
-            ->hasMany(Product::class, 'category_id', 'category_id')
-            ->where('brand', $this->brand)
-            ->where('price', '>=', $this->price * 0.85)
-            ->where('price', '<=', $this->price * 1.15)
-            ->isActive();
+        return $this->hasMany(Product::class, 'category_id', 'category_id')->where([
+            ['is_active', true],
+            ['brand', $this->brand],
+            ['price', '>=', $this->price * 0.85],
+            ['price', '<=', $this->price * 1.15],
+        ]);
     }
 
     public function getRawStocksAttribute(): string

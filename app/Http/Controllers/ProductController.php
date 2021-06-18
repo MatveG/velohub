@@ -10,8 +10,8 @@ class ProductController extends Controller
     public function __invoke(Request $request, string $slug, int $id)
     {
         $product = Product::with('variants')
-            ->whereId($id)
-            ->isActive()
+            ->where('id', $id)
+            ->where('is_active', true)
             ->firstOrFail();
 
         $meta = $seo = (object)[

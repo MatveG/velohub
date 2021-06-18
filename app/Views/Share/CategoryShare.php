@@ -14,9 +14,8 @@ class CategoryShare
 
     protected static function categoryTree()
     {
-        return Category
-            ::where('parent_id', 0)
-            ->isActive()
+        return Category::where('parent_id', 0)
+            ->where('is_active', true)
             ->with('children')
             ->orderBy('ord')
             ->get();

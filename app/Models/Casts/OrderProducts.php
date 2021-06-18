@@ -10,7 +10,7 @@ class OrderProducts implements CastsAttributes
 {
     public function get($model, $key, $value, $attributes)
     {
-        return array_map(function ($product) {
+        $products = array_map(function ($product) {
             if (isset($product->id)) {
                 if (isset($product->variant_id)) {
                     $product->variant = Variant::find($product->variant_id);
@@ -18,16 +18,18 @@ class OrderProducts implements CastsAttributes
                 $product->product = Product::with('variants')->find($product->id);
             }
 
-            return $product;
+            return $product->product ? $product : null;
         }, (array)json_decode($value));
+
+        return array_filter($products);
     }
 
     public function set($model, $key, $value, $attributes)
     {
-//        if (gettype($value) === 'string') {
-//            $value = json_decode($value);
-//        }
-//
-//        return json_encode((object)($value), JSON_UNESCAPED_UNICODE);
+        if (gettype($value) === 'string') {
+            $value = json_decode($value);
+        }
+
+        return json_encode((object)($value), JSON_UNESCAPED_UNICODE);
     }
 }

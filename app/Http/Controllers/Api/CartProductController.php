@@ -25,9 +25,9 @@ class CartProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         $uuid = $request->cookie('_ucart');
-        $cart = $uuid ? Cart::where('uuid', $request->cookie('_ucart'))->first() : null;
+        $cart = Cart::where('uuid', $uuid)->first();
 
-        if (!$uuid || !$cart) {
+        if (empty($uuid) || empty($cart)) {
             $cart = new Cart();
             $cart->uuid = uniqid('', false);
             $cart->products = [];
@@ -97,12 +97,14 @@ class CartProductController extends Controller
 
     private function mapCartProducts(array $products): array
     {
-        return array_map(function ($el) {
+        $products = array_map(function ($el) {
             $product = Product::find($el['id']);
             $product->variant_id = $el['variant_id'] ?? null;
             $product->amount = $el['amount'];
 
-            return $product->only(ONLY_COLS);
+            return $product ? $product->only(ONLY_COLS) : null;
         }, $products);
+
+        return array_filter($products);
     }
 }

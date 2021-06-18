@@ -26,7 +26,7 @@ class ImagesController extends Controller
 
         $class = 'App\Models\\' . ucfirst($request->model);
         $model = (new $class())->findOrFail($id);
-        $uploaded = ImagesUploader::upload($request->images, $model->imagesStoragePath);
+        $uploaded = ImagesUploader::upload($request->images, $model->imagesStorage(), $model->thumbsStorage());
         $model->images = [...$model->images, ...$uploaded];
         $model->save();
 
@@ -43,7 +43,7 @@ class ImagesController extends Controller
 
         $class = 'App\Models\\' . ucfirst($request->model);
         $model = (new $class())->findOrFail($id);
-        Storage::disk('public')->delete(array_diff($model->images, $request->images));
+        Storage::delete(array_diff($model->images, $request->images));
         $model->images = $request->images;
         $model->save();
 

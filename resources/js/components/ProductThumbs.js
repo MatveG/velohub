@@ -8,7 +8,7 @@ const ProductThumbs = (props) => {
                 role="button"
                 key={idx}
                 onClick={() => props.handleClick(idx)}>
-                <img src={props.baseUrl + image} alt={props.alt} />
+                <img src={image} alt={props.alt} />
             </div>
         ))
     );

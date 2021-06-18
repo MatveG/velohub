@@ -9,7 +9,7 @@ class DocumentController extends Controller
     public function __invoke(Document $document, string $slug)
     {
         $document = $document->where('slug', $slug)
-            ->isActive()
+            ->where('is_active', true)
             ->firstOrFail();
 
         $meta = (object)[

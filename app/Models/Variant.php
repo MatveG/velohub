@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Variant extends Model
 {
-    use Traits\Common;
-    use Traits\ProductImages;
+    use Traits\Images;
     use Traits\Relations\BelongsTo\Product;
     use Traits\Relations\BelongsTo\Category;
 

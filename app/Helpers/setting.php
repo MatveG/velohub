@@ -3,22 +3,20 @@
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 
-if (!function_exists('setting')) {
-    function setting(string $key, ?string $property = null)
+if (!function_exists('settings')) {
+    function settings(string $group, string $key = null)
     {
         static $settings;
 
         if (empty($settings)) {
-//            $settings = Cache::rememeber('settings', 30, function () {
-//                return Setting::all()->pluck('value', 'key')->toArray();
-//            });
-            $settings = Setting::all()->toArray();
-            $settings = array_column($settings, 'value', 'key');
-//            $settings = array_map(fn ($val) => $val['key'] => $val['value'], $settings);
+            $settings = Cache::remember('settings', 5*60, function () {
+                return array_map(
+                    fn ($group) => array_column($group, 'value', 'key'),
+                    Setting::all()->groupBy('group')->toArray()
+                );
+            });
         }
 
-        dd($settings);
-
-        return $property ? $settings[$key]->$property ?? null : $settings[$key] ?? null;
+        return $key ? $settings[$group][$key] ?? null : $settings[$group] ?? null;
     }
 }

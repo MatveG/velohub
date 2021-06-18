@@ -8,24 +8,35 @@ use Intervention\Image\Facades\Image;
 
 class ImagesUploader
 {
-    protected static int $imgQuality = 70;
-    protected static int $imgMaxSize = 1000;
-    protected static string $imgFormat = 'jpg';
+    protected static int $imageSize = 700;
+    protected static int $thumbSize = 200;
+    protected static int $imgQuality = 80;
+    protected static string $imgFormat = 'webp';
 
-    public static function upload(array $imagesArr, string $dirPath): array
+    public static function upload(array $imagesArr, string $imagesDir, string $thumbsDir): array
     {
         return array_filter(
-            array_map(fn ($image) => self::store($image, $dirPath), $imagesArr)
+            array_map(fn ($image) => self::storeWithThumb($image, $imagesDir, $thumbsDir), $imagesArr)
         );
     }
 
-    private static function store($image, string $dirPath): ?string
+    private static function storeWithThumb($image, string $imagesDir, string $thumbsDir): ?string
     {
-        $imgPath = $dirPath . Str::orderedUuid() . '.' . self::$imgFormat;
-        $imgInstance = Image::make($image)
-            ->resize(self::$imgMaxSize, self::$imgMaxSize, fn ($constraint) => $constraint->aspectRatio())
-            ->encode(self::$imgFormat);
+        $imageName = Str::orderedUuid() . '.' . self::$imgFormat;
 
-        return Storage::disk('public')->put($imgPath, $imgInstance) ? $imgPath : null;
+        return Storage::put(
+            $imagesDir . $imageName,
+            self::makeImage($image, self::$imageSize, self::$imgFormat)
+        ) && Storage::put(
+            $thumbsDir . $imageName,
+            self::makeImage($image, self::$thumbSize, self::$imgFormat)
+        ) ? $imageName : null;
+    }
+
+    private static function makeImage($image, int $size, string $format): ?string
+    {
+        return Image::make($image)
+            ->resize($size, $size, fn ($constraint) => $constraint->aspectRatio())
+            ->encode($format);
     }
 }

@@ -11,7 +11,7 @@
                 <h2><span>Скидки</span></h2>
                 <div class="row text-center">
                     @foreach($saleProducts as $product)
-                        @include('category.product')
+                        @include('includes.category.product')
                     @endforeach
                 </div>
             </section>
@@ -24,7 +24,7 @@
                 <h2><span>Новинки</span></h2>
                 <div class="row text-center">
                     @foreach($newProducts as $product)
-                        @include('category.product')
+                        @include('includes.category.product')
                     @endforeach
                 </div>
             </section>

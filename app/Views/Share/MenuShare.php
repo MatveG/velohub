@@ -14,9 +14,8 @@ class   MenuShare
 
     public static function menuTree()
     {
-        return Menu
-            ::where('parent_id', 0)
-            ->isActive()
+        return Menu::where('parent_id', 0)
+            ->where('is_active', true)
             ->with('children')
             ->orderBy('ord')
             ->get();

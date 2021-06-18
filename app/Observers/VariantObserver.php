@@ -13,16 +13,6 @@ class VariantObserver
         // clear unused parameters
     }
 
-    public function updating(Variant $variant)
-    {
-        if ($variant->isDirty('images')) {
-            ShopImages::deleteImages(array_diff(
-                json_decode($variant->getOriginal('images'), true),
-                $variant->images
-            ));
-        }
-    }
-
     //    protected function syncProducts(int $productId)
 //    {
 //        $product = product::find($productId);

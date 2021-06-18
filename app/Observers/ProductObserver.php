@@ -25,13 +25,6 @@ class ProductObserver
         }
     }
 
-    public function updating(Product $product)
-    {
-        if ($product->isDirty('slug') && count($product->images)) {
-            $product->images = ImagesUploader::renameImages($product->images, $product->imagesName);
-        }
-    }
-
     private function clearUnusedFeatures(Product $product)
     {
         if ($product->updated_at > Carbon::now()->subHour()) {

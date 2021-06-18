@@ -6,13 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    use Traits\Common;
-
     protected string $modelName = 'cart';
     protected $dates = ['created_at', 'updated_at'];
-    protected $fillable = [
-        'products'
-    ];
+    protected $fillable = [];
     protected $casts = [
         'products' => 'array',
     ];

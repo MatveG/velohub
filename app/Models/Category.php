@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    use Traits\Common;
     use Traits\Relations\HasMany\Features;
     use Traits\Relations\HasMany\Parameters;
     use Traits\Relations\HasMany\Products;

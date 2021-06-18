@@ -13,46 +13,55 @@ class SettingsTableSeeder extends Seeder
     public function run()
     {
         DB::table('settings')->insert([
-            'key' => 'images.format',
+            'group' => 'images',
+            'key' => 'format',
             'value' => 'jpg'
         ]);
         DB::table('settings')->insert([
-            'key' => 'images.dimension',
+            'group' => 'images',
+            'key' => 'dimension',
             'value' => '1000',
             'hint' => 'px'
         ]);
         DB::table('settings')->insert([
-            'key' => 'images.size',
+            'group' => 'images',
+            'key' => 'size',
             'value' => '1024',
             'hint' => 'kb'
         ]);
 
         DB::table('settings')->insert([
-            'key' => 'currency.title',
+            'group' => 'currency',
+            'key' => 'title',
             'value' => 'гривны'
         ]);
         DB::table('settings')->insert([
-            'key' => 'currency.abbr',
+            'group' => 'currency',
+            'key' => 'abbr',
             'value' => 'грн'
         ]);
         DB::table('settings')->insert([
-            'key' => 'currency.sign',
+            'group' => 'currency',
+            'key' => 'sign',
             'value' => '₴'
         ]);
         DB::table('settings')->insert([
-            'key' => 'currency.align',
+            'group' => 'currency',
+            'key' => 'align',
             'value' => 'right'
         ]);
 
         DB::table('settings')->insert([
-            'key' => 'shop.stocks',
+            'group' => 'shop',
+            'key' => 'stocks',
             'value' => json_encode([
                 'stock-1' => 'Stock 1',
                 'stock-2' => 'Stock 2',
             ]),
         ]);
         DB::table('settings')->insert([
-            'key' => 'shop.cashback',
+            'group' => 'shop',
+            'key' => 'cashback',
             'value' => 5,
             'hint' => '%'
         ]);

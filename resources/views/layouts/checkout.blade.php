@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('layouts.head')
+    @include('includes.head')
 </head>
 <body>
 
@@ -21,6 +21,6 @@
     @yield('content')
 </div>
 
-@include('layouts.scripts')
+@include('includes.scripts')
 </body>
 </html>

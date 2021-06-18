@@ -11,7 +11,6 @@ export function cartFetch() {
                 dispatch(cartFill(response.data));
             })
             .catch((err) => {
-                dispatch(cartEmpty());
                 dispatch(fireDanger('Failed fetching cart data'));
                 console.error(err);
             });

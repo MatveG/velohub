@@ -14,16 +14,17 @@ class SearchController extends Controller
 
         $keywords = $this->escapeSearchString($request->find);
 
-        $query = Product::isActive()->searchBy($keywords);
+        $query = Product::where('is_active', true)->searchBy($keywords);
 
         $filters = FiltersService::init($query, $request->filter)
             ->addSliderFilter('products.price', 'price', 'Price')
             ->addPlainFilter('products.brand', 'brand', 'Brand')
+            ->applyFilters()
             ->getFilters();
 
         $products = $query->orderBy('products.' . $request->orderBy, $request->orderWay)
             ->orderByRelevance($keywords)
-            ->simplePaginate();
+            ->paginate();
 
         $route = route('search') . '?' . request()->getQueryString();
 

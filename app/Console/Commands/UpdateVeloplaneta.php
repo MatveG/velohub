@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class UpdateVeloplaneta extends Command
 {
-    private const XML_URL = '/app/storage/xml/price.xml';
+    private const XML_URL = 'http://exchange-file.com/data/Ostatok3_(-L)_full.xml';
     private const STOCK_CODE = 'planeta';
     protected $signature = 'update:veloplaneta {xmlPath?}';
     protected $description = 'Update Veloplaneta stocks';

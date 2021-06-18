@@ -29,9 +29,11 @@
                     @if(request()->filter)
                         <a class="btn btn-light w-100" href="{{$route}}">сбросить</a>
                     @endif
-                    @include('category.sorting')
+
+                    @include('includes.category.sorting')
+
                     @foreach($filters as $filter)
-                        @include('category.filter')
+                        @include('includes.category.filter')
                     @endforeach
                 </div>
             </aside>
@@ -41,14 +43,14 @@
 
                 <main class="mt-3 mb-3">
                     <div class="row text-center">
-                        @if(!$products)
+                        @if(!count($products))
                             <div class="col-12 text-center">
                                 <i>По данному запросу не найдено ни одного товара.</i>
                             </div>
                         @endif
 
                         @foreach($products as $product)
-                            @include('category.product')
+                            @include('includes.category.product')
                         @endforeach
                     </div>
 
