@@ -14,6 +14,10 @@ tooling:
     service: appserver
     description: "Composer dump-autoload"
     cmd: "composer dump-autoload"
+  optimize:
+    service: appserver
+    description: "Clear cache and optimize"
+    cmd: "php artisan optimize:clear"
   tinker:
     service: appserver
     description: "Drop into a tinker console"

@@ -33,7 +33,7 @@ const Cart = (props) => {
                 ? <div>
                     <CartComponent
                         currency={config.get('currency')}
-                        products={products}
+                        items={products}
                         totalCost={totalCost}
                         updateAmount={updateAmount}
                         removeProduct={removeProduct} />

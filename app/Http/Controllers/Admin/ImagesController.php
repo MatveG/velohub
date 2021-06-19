@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Services\ImagesUploader;
+use App\Services\ImagesUploadService;
 
 class ImagesController extends Controller
 {
@@ -26,7 +26,7 @@ class ImagesController extends Controller
 
         $class = 'App\Models\\' . ucfirst($request->model);
         $model = (new $class())->findOrFail($id);
-        $uploaded = ImagesUploader::upload($request->images, $model->imagesStorage(), $model->thumbsStorage());
+        $uploaded = ImagesUploadService::upload($request->images, $model->imagesStorage(), $model->thumbsStorage());
         $model->images = [...$model->images, ...$uploaded];
         $model->save();
 

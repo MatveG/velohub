@@ -4,9 +4,9 @@ import {
     CART_EMPTY,
     CART_FILL,
     CART_PENDING,
-    CART_PUSH,
-    CART_REMOVE,
-    CART_UPDATE,
+    // CART_PUSH,
+    // CART_REMOVE,
+    // CART_UPDATE,
 } from '../reducers/cart';
 
 export const cartOpen = () => ({
@@ -30,17 +30,17 @@ export const cartPending = () => ({
     type: CART_PENDING,
 });
 
-export const cartPush = (product) => ({
-    type: CART_PUSH,
-    payload: product,
-});
-
-export const cartRemove = (product) => ({
-    type: CART_REMOVE,
-    payload: product,
-});
-
-export const cartUpdate = (product) => ({
-    type: CART_UPDATE,
-    payload: product,
-});
+// export const cartPush = (product) => ({
+//     type: CART_PUSH,
+//     payload: product,
+// });
+//
+// export const cartRemove = (product) => ({
+//     type: CART_REMOVE,
+//     payload: product,
+// });
+//
+// export const cartUpdate = (product) => ({
+//     type: CART_UPDATE,
+//     payload: product,
+// });

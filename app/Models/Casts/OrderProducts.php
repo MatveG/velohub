@@ -8,28 +8,42 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class OrderProducts implements CastsAttributes
 {
+    const PRODUCT_COLS = [
+        'id',
+        'variant_id',
+        'amount',
+        'title',
+        'brand',
+        'model',
+        'price',
+        'image',
+        'link'
+    ];
+
     public function get($model, $key, $value, $attributes)
     {
-        $products = array_map(function ($product) {
-            if (isset($product->id)) {
-                if (isset($product->variant_id)) {
-                    $product->variant = Variant::find($product->variant_id);
-                }
-                $product->product = Product::with('variants')->find($product->id);
-            }
-
-            return $product->product ? $product : null;
-        }, (array)json_decode($value));
-
-        return array_filter($products);
+        return array_filter(
+            array_map([$this, 'mapModels'], (array)json_decode($value))
+        );
     }
 
     public function set($model, $key, $value, $attributes)
     {
-        if (gettype($value) === 'string') {
-            $value = json_decode($value);
+        return json_encode(
+            (object)(gettype($value) === 'string' ? json_decode($value) : $value),
+            JSON_UNESCAPED_UNICODE
+        );
+    }
+
+    private function mapModels($item)
+    {
+        if ($item->product_id) {
+            $item->product = Product::with('variants')->find($item->product_id)->only(self::PRODUCT_COLS);
+        }
+        if ($item->variant_id) {
+            $item->variant = Variant::find($item->variant_id);
         }
 
-        return json_encode((object)($value), JSON_UNESCAPED_UNICODE);
+        return $item->product ? $item : null;
     }
 }

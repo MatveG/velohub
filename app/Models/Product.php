@@ -31,9 +31,9 @@ class Product extends Model
         'title',
         'brand',
         'model',
-        'seo_title',
-        'seo_description',
-        'seo_keywords',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
         'sale_text',
         'summary',
         'description',
@@ -67,21 +67,6 @@ class Product extends Model
         ]);
     }
 
-    public function getRawStocksAttribute(): string
-    {
-        return $this->attributes['stocks'];
-    }
-
-    public function getRawFeaturesAttribute(): string
-    {
-        return $this->attributes['features'];
-    }
-
-    public function getRawSettingsAttribute(): string
-    {
-        return $this->attributes['settings'];
-    }
-
     public function getNameAttribute(): string
     {
         return $this->attributes['title'] . ' ' . $this->attributes['brand'] . ' ' . $this->attributes['model'];
@@ -101,4 +86,19 @@ class Product extends Model
     {
         $query->orderByRaw("ts_rank(search, to_tsquery('" . $keywords . "')) DESC");
     }
+
+//    public function getRawStocksAttribute(): string
+//    {
+//        return $this->attributes['stocks'];
+//    }
+//
+//    public function getRawFeaturesAttribute(): string
+//    {
+//        return $this->attributes['features'];
+//    }
+//
+//    public function getRawSettingsAttribute(): string
+//    {
+//        return $this->attributes['settings'];
+//    }
 }

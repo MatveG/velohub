@@ -1,6 +1,6 @@
 import React from 'react';
 import CartTable from './CartTable';
-import CartProduct from './CartProduct';
+import CartItem from './CartItem';
 
 const CartComponent = (props) => {
     return (
@@ -8,10 +8,10 @@ const CartComponent = (props) => {
             totalCost={props.totalCost}
             currency={props.currency}>
 
-            {props.products.map((el, idx) => (
-                <CartProduct
+            {props.items.map((item, idx) => (
+                <CartItem
                     key={idx}
-                    product={el}
+                    item={item}
                     currency={props.currency}
                     updateAmount={props.updateAmount}
                     removeProduct={props.removeProduct} />

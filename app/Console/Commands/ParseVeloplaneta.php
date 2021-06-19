@@ -6,7 +6,7 @@ use SimpleXMLElement;
 use Illuminate\Console\Command;
 use App\Models\Category;
 use App\Models\Product;
-use App\Services\ImagesUploader;
+use App\Services\ImagesUploadService;
 
 class ParseVeloplaneta extends Command
 {
@@ -248,7 +248,7 @@ class ParseVeloplaneta extends Command
                 $product = $category->products()->firstOrCreate($offerData);
                 $product->features = $this->mapFeatures($offer->param, $category);
                 $product->save();
-                $product->images = ImagesUploader::upload(
+                $product->images = ImagesUploadService::upload(
                     [(string)$offer->picture],
                     $product->imagesStorage(),
                     $product->thumbsStorage()

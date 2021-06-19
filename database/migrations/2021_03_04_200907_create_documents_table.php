@@ -16,13 +16,13 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->boolean('is_active')->default(false)->index();
-            $table->string('slug');
+            $table->string('slug')->index();
             $table->string('title')->nullable();
             $table->text('text')->nullable();
-            $table->string('seo_title')->nullable();
-            $table->string('seo_description')->nullable();
-            $table->string('seo_keywords')->nullable();
-            $table->text('seo_text')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->text('meta_text')->nullable();
             $table->timestamps();
         });
     }

@@ -8,6 +8,9 @@ const CartTable = (props) => {
                 <tr>
                     <th scope="col"/>
                     <th scope="col">
+                        <span className="p-2">Фото</span>
+                    </th>
+                    <th scope="col">
                         <span className="p-2">Наименование</span>
                     </th>
                     <th scope="col">
@@ -26,7 +29,7 @@ const CartTable = (props) => {
             </tbody>
             <tfoot>
                 <tr>
-                    <th className="align-middle text-right" colSpan="4">
+                    <th className="align-middle text-right" colSpan="5">
                         <strong>Итого:</strong>
                     </th>
                     <th className="align-middle fw-bold">

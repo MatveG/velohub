@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Product;
+use App\Services\MetaService;
 use Illuminate\Support\Facades\Artisan;
 
 class RootController extends Controller
@@ -13,6 +14,10 @@ class RootController extends Controller
 //        dd(Artisan::call('parse:veloplaneta'));
 
         $document = Document::where('slug', 'root')->firstOrFail();
+
+        $meta = MetaService::title($document->meta_title ?? $document->title)
+            ->description($document->meta_description)
+            ->keywords($document->meta_keywords);
 
         $saleProducts = Product::where('is_active', true)
             ->where('is_stock', true)
@@ -27,12 +32,6 @@ class RootController extends Controller
             ->limit(8)
             ->get();
 
-        $meta = (object)[
-            'title' => $document->seo_title,
-            'description' => $document->seo_description,
-            'keywords' => $document->seo_keywords,
-        ];
-
-        return view('root', compact(['document', 'saleProducts', 'newProducts', 'meta']));
+        return view('root', compact(['document', 'meta', 'saleProducts', 'newProducts']));
     }
 }

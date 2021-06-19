@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Services\MetaService;
 
 class ProductController extends Controller
 {
@@ -14,13 +15,9 @@ class ProductController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        $meta = $seo = (object)[
-            'title' => $product->name . ' ' . $product->model,
-            'description' => $product->name . ' ' . $product->firm . ' ' . $product->model,
-            'keywords' => $product->name . ',' . $product->firm . ',' . $product->model,
-        ];
+        $meta = MetaService::each(join(' ', $product->only(['name', 'brand', 'model'])));
 
-        return view('product', compact(['product', 'seo', 'meta']));
+        return view('product', compact(['product', 'meta']));
     }
 
 }

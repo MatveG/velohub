@@ -6,13 +6,15 @@
 
     <nav class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <ul class="navbar-nav px-3">
-            @include('includes.header.catalog-parent')
+            @if($_categoryTree)
+                @include('includes.header.catalog-parent')
+            @endif
         </ul>
 
         <hr class="d-lg-none">
 
         <ul class="navbar-nav px-3 d-lg-none">
-            @if($menuTree)
+            @if($_menuTree)
                 @include('includes.header.menu')
             @endif
         </ul>

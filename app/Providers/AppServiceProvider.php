@@ -15,11 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach (glob(__DIR__.'/../Helpers/*.php') as $filename)
-        {
-            require_once $filename;
-        }
-
         $this->loadViewsFrom(resource_path() . '/admin/views', 'Admin');
     }
 
@@ -33,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
         App\Models\Category::observe(App\Observers\CategoryObserver::class);
         App\Models\Feature::observe(App\Observers\FeatureObserver::class);
         App\Models\Product::observe(App\Observers\ProductObserver::class);
-        App\Models\Variant::observe(App\Observers\VariantObserver::class);
+//        App\Models\Variant::observe(App\Observers\VariantObserver::class);
     }
 }

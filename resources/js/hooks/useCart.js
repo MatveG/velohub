@@ -4,7 +4,9 @@ import {cartFetch, cartProductAttach, cartProductDetach, cartProductUpdate} from
 import {cartOpen, cartClose} from '../state/actions/cart';
 
 const computeTotal = (products) => {
-    return products.reduce((total, el) => total + el.amount * el.price, 0);
+    return products.reduce((total, el) => {
+        return total + el.amount * el[el.variant ? 'variant' : 'product'].price;
+    }, 0);
 };
 
 const useCart = () => {
@@ -28,16 +30,16 @@ const useCart = () => {
         dispatch(cartClose());
     };
 
-    const attachProduct = (product) => {
+    const addProduct = (product) => {
         dispatch(cartProductAttach(product));
-    };
-
-    const removeProduct = (product) => {
-        dispatch(cartProductDetach(product));
     };
 
     const updateProduct = (product) => {
         dispatch(cartProductUpdate(product));
+    };
+
+    const removeProduct = (product) => {
+        dispatch(cartProductDetach(product));
     };
 
     return {
@@ -47,9 +49,9 @@ const useCart = () => {
         totalCost,
         showCart,
         hideCart,
-        attachProduct,
-        removeProduct,
+        addProduct,
         updateProduct,
+        removeProduct,
     };
 };
 

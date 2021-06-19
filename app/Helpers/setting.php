@@ -9,7 +9,7 @@ if (!function_exists('settings')) {
         static $settings;
 
         if (empty($settings)) {
-            $settings = Cache::remember('settings', 5*60, function () {
+            $settings = Cache::remember('App\Helpers\settings', 5 * 60, function () {
                 return array_map(
                     fn ($group) => array_column($group, 'value', 'key'),
                     Setting::all()->groupBy('group')->toArray()

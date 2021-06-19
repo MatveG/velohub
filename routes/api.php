@@ -2,18 +2,16 @@
 
 Route::namespace('Api')->group(function () {
     // Cart Products
-    Route::get('/carts/products', 'CartProductController@index');
-    Route::patch('/carts/products/attach', 'CartProductController@attach');
-    Route::patch('/carts/products/detach', 'CartProductController@detach');
-    Route::patch('/carts/products/update', 'CartProductController@update');
+    Route::post('/cart', 'CartController@index');
+    Route::patch('/cart/add', 'CartController@add');
+    Route::patch('/cart/update', 'CartController@update');
+    Route::patch('/cart/remove', 'CartController@remove');
 
     // Order
-    Route::post('/orders', 'OrderController');
+    Route::post('/order', 'OrderController');
 });
 
-// admin only!
 Route::prefix('admin')->namespace('Admin')->group(function () {
-//Route::namespace('Admin')->group(function () {
     // Settings
     Route::get('/settings', 'SettingController@index');
 

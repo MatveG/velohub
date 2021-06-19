@@ -7,7 +7,7 @@ import NostockButton from '../components/NostockButton';
 import useCart from '../hooks/useCart';
 
 const Buy = (props) => {
-    const {products, showCart, attachProduct} = useCart();
+    const {products, showCart, addProduct} = useCart();
     const [keyId, setKeyId] = useState(undefined);
     const [isValid, setIsValid] = useState(true);
     const variant = keyId !== undefined ? props.variants[keyId] : {};
@@ -37,10 +37,11 @@ const Buy = (props) => {
         if (props.variants.length && !variant.id) {
             return setIsValid(false);
         }
-        attachProduct(variant.id ?
-            {id: variant.product_id, variant_id: variant.id, amount: 1} :
-            {id: props.product.id, variant_id: null, amount: 1},
+        addProduct(variant.id ?
+            {product_id: variant.product_id, variant_id: variant.id, amount: 1} :
+            {product_id: props.product.id, variant_id: null, amount: 1},
         );
+        showCart();
     };
 
     return (

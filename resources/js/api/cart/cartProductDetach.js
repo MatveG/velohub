@@ -1,12 +1,12 @@
 import axios from 'axios';
-import {cartRemove} from '../../state/actions/cart';
+import {cartFill} from '../../state/actions/cart';
 import {fireDanger} from '../../state/actions/toast';
 
 export function cartProductDetach(product) {
     return (dispatch) => {
-        return axios.patch(`/api/carts/products/detach`, product)
-            .then(() => {
-                dispatch(cartRemove(product));
+        return axios.patch(`/api/cart/remove`, product)
+            .then((response) => {
+                dispatch(cartFill(response.data));
             })
             .catch((err) => {
                 dispatch(fireDanger('Failed fetching cart data'));

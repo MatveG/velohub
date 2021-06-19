@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Casts\OrderProducts;
 use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
@@ -10,11 +11,6 @@ class Cart extends Model
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [];
     protected $casts = [
-        'products' => 'array',
+        'products' => OrderProducts::class
     ];
-
-    public function setProductsAttribute($value)
-    {
-        $this->attributes['products'] = json_encode(array_values($value));
-    }
 }

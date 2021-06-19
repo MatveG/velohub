@@ -23,9 +23,9 @@ class Category extends Model
         'slug',
         'title',
         'title_short',
-        'seo_title',
-        'seo_description',
-        'seo_keywords',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
         'description',
         'images',
     ];
@@ -38,18 +38,26 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 
-    public function getRawImagesAttribute(): string
-    {
-        return $this->attributes['images'];
-    }
-
-    public function getRawSettingsAttribute(): string
-    {
-        return $this->attributes['settings'];
-    }
-
     public function getLinkAttribute(): string
     {
         return route('category', ['slug' => $this->slug, 'id' => $this->id]);
     }
+
+
+    public function scopeCache($query)
+    {
+        dd($query);
+        return $query;
+    }
+
+
+//    public function getRawImagesAttribute(): string
+//    {
+//        return $this->attributes['images'];
+//    }
+//
+//    public function getRawSettingsAttribute(): string
+//    {
+//        return $this->attributes['settings'];
+//    }
 }

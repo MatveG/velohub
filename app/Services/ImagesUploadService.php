@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
-class ImagesUploader
+class ImagesUploadService
 {
     protected static int $imageSize = 700;
     protected static int $thumbSize = 200;

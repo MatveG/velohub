@@ -6,7 +6,7 @@ export function cartFetch() {
     return (dispatch) => {
         dispatch(cartPending());
 
-        axios.get('/api/carts/products')
+        axios.post('/api/cart')
             .then((response) => {
                 dispatch(cartFill(response.data));
             })

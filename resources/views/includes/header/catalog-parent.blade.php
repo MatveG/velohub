@@ -1,4 +1,4 @@
-@foreach($categoryTree as $category)
+@foreach($_categoryTree as $category)
     <li class="nav-item dropdown">
         @if($category->is_parent)
             <a id="dropdown-{{$category->id}}" class="nav-link" href="#" type="button"

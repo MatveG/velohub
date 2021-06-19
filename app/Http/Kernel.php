@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'parse.sort' => \App\Http\Middleware\ParseSortRequest::class,
         'parse.path' => \App\Http\Middleware\ParseFilterRequest::class,
+        'escape.search' => \App\Http\Middleware\EscapeSearchRequest::class,
     ];
 
     /**

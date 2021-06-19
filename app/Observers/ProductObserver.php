@@ -2,27 +2,26 @@
 
 namespace App\Observers;
 
+use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Variant;
-use App\Services\Admin\ImagesUploader;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ProductObserver
 {
     public function saving(Product $product)
     {
-        //$this->clearUnusedFeatures($Product);
-
         if ($product->isDirty('brand') || $product->isDirty('model')) {
             $product->slug = latinize($product->brand . ' ' . $product->model);
         }
 
-        if ($product->variants()->count()) {
+//        $this->clearUnusedFeatures($Product);
+
+//        if ($product->variants()->count()) {
 //            $this->clearStockProperties($product);
-            $this->syncVariantProperties($product);
-            $this->syncVariantPrices($product);
-        }
+//            $this->syncVariantProperties($product);
+//            $this->syncVariantPrices($product);
+//        }
     }
 
     private function clearUnusedFeatures(Product $product)
@@ -64,7 +63,7 @@ class ProductObserver
         }
     }
 
-    private function syncVariantPrices(Product $product, $update = [])
+    private function syncVariantPrices(Product $product)
     {
         if ($product->isDirty('price') || $product->isDirty('price_sale')) {
             $surcharge = $product->price - $product->price_sale;

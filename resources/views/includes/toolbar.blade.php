@@ -20,7 +20,7 @@
             </span>
         </li>
 
-        @if($menuTree)
+        @if($_menuTree)
             @include('includes.toolbar.menu')
         @endif
     </ul>

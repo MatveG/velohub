@@ -4,74 +4,66 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\Variant;
 
 class CartService
 {
-    protected $cart;
-    protected $items;
-
-    public function __construct()
+    public static function findProduct(Cart $cart, array $props): ?object
     {
-        $this->cart = new Cart();
-        if (empty($_COOKIE['cart'])) {
+        $searched = array_filter($cart->products, function ($product) use ($props) {
+            return $product->product_id === $props['product_id'] ||
+                $props['variant_id'] && $product->variant_id === $props['variant_id'];
+        });
+
+        return array_shift($searched);
+    }
+
+    public static function addProduct(Cart $cart, array $props): void
+    {
+        if (($existing = self::findProduct($cart, $props))) {
+            self::updateProduct($cart, array_merge($props, ['amount' => $existing->amount + 1]));
             return;
         }
 
-        $cookie = json_decode(rawurldecode($_COOKIE['cart']));
-        $this->cart = $cart->where('id', $cookie->id)->where('sign', $cookie->sign)->first();
+        $product = Product::findOrFail($props['product_id']);
 
-        if (!$this->cart) {
-            setcookie('cart', '', time() - 60, '/', null);
-            return;
+        if ($props['variant_id']) {
+            $variant = Variant::findOrFail($props['variant_id']);
         }
 
-        if($cookie->actual !== true) {
-            $this->cart->variants()->detach();
+        $cart->products = [...$cart->products, [
+            'product_id' => $product->id,
+            'variant_id' => $variant->id ?? null,
+            'amount' => $props['amount'] ?? 1,
+        ]];
+        $cart->save();
+    }
 
-            foreach ($cookie->items as $item) {
-                $this->cart->variants()->attach($item->id, ['amount' => $item->q]);
-                $this->cart->variants->push($item->id, ['amount' => $item->q]);
+    public static function updateProduct(Cart $cart, array $props): void
+    {
+        $product = Product::findOrFail($props['product_id']);
+
+        if ($props['variant_id']) {
+            $variant = Variant::findOrFail($props['variant_id']);
+        }
+
+        $cart->products = array_map(function ($item) use ($props) {
+            if ($item->product_id === $props['product_id']) {
+                $item->amount = $props['amount'];
             }
 
-            $cookie->actual = true;
-            setcookie('cart', json_encode($cookie), time()+60*60*24*365, '/', null);
-        }
-
-        $this->items = $this->cart->variants()->get();
-    }
-
-    public function getItems()
-    {
-        if (!$this->items) {
-            return null;
-        }
-
-        return $this->items->map(function ($item) {
-            $item->amount = $item->pivot->amount;
-            $item->sum = $item->price * $item->pivot->amount;
             return $item;
+        }, $cart->products);
+        $cart->save();
+    }
+
+    public static function removeProduct(Cart $cart, array $props): void
+    {
+        $cart->products = array_filter($cart->products, function ($item) use ($props) {
+            return $props['variant_id'] ?
+                $item->product_id !== $props['product_id'] && $item->variant_id !== $props['variant_id'] :
+                $item->product_id !== $props['product_id'];
         });
+        $cart->save();
     }
-
-    public function getItemsJson()
-    {
-        if (!$this->items) {
-            return null;
-        }
-
-        return $this->items->map(function ($item) {
-            return [
-                'code_id' => $item->id,
-                'price' => $item->prices->{Product::shopPrice()},
-                'amount' => $item->pivot->amount,
-            ];
-        })->toJson();
-    }
-
-    public function clearCart()
-    {
-        $this->cart->delete();
-        setcookie('cart', '', time()-60, '/', null);
-    }
-
 }

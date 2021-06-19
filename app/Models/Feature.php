@@ -38,8 +38,8 @@ class Feature extends Model
         return "f$this->id";
     }
 
-    public function getRawValuesAttribute(): string
-    {
-        return $this->attributes['values'];
-    }
+//    public function getRawValuesAttribute(): string
+//    {
+//        return $this->attributes['values'];
+//    }
 }

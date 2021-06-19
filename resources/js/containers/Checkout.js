@@ -41,7 +41,7 @@ const Checkout = () => {
         const finalData = {...userData, ...formData};
 
         setLoading(true);
-        axios.post('/api/orders', finalData)
+        axios.post('/api/order', finalData)
             .then(({data}) => {
                 if (!data.id) {
                     throw new Error;
@@ -70,7 +70,7 @@ const Checkout = () => {
                 <Card classes={['shadow-sm', 'p-3']}>
                     <CartComponent
                         currency={config.get('currency')}
-                        products={products}
+                        items={products}
                         totalCost={totalCost} />
                 </Card>
             </div>

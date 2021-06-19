@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MetaService;
+
 class CheckoutController extends Controller
 {
     public function __invoke()
     {
-        $meta = (object)[
-            'title' => 'Оформление заказа',
-            'description' => '',
-            'keywords' => '',
-        ];
+        $meta = MetaService::title('Оформление заказа');
 
         return view('checkout', compact(['meta']));
     }

@@ -35,16 +35,4 @@ class Variant extends Model
         'stocks' => JsonObject::class
     ];
 
-//    public function getImagesNameAttribute(): string
-//    {
-//        $format = '%s-%s.%d.%s';
-//
-//        return sprintf(
-//            $format,
-//            $this->product->latin,
-//            latinize(implode('-', array_values((array)$this->parameters))),
-//            $this->id,
-//            config('category.images_format')
-//        );
-//    }
 }
