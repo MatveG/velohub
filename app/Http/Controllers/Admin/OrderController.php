@@ -60,7 +60,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $order->update($request->all());
 
-        return response()->json($order->getChanges());
+        return response()->json($order->only($order->getChanges()));
     }
 
     public function delete(int $id): JsonResponse

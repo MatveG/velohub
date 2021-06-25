@@ -63,7 +63,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->update($request->all());
 
-        return response()->json($product->getChanges());
+        return response()->json($product->only(array_keys($product->getChanges())));
     }
 
     public function delete(int $id): JsonResponse

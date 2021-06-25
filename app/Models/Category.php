@@ -44,12 +44,6 @@ class Category extends Model
     }
 
 
-    public function scopeCache($query)
-    {
-        dd($query);
-        return $query;
-    }
-
 
 //    public function getRawImagesAttribute(): string
 //    {

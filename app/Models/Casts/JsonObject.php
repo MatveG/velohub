@@ -13,9 +13,9 @@ class JsonObject implements CastsAttributes
 
     public function set($model, $key, $value, $attributes)
     {
-        if (gettype($value) === 'string') {
-            $value = json_decode($value);
-        }
+//        if (gettype($value) === 'string' && substr($value, 0, 1) === '{' && substr($value, -strlen($value)) === '}') {
+//            $value = json_decode($value);
+//        }
 
         return json_encode((object)($value), JSON_UNESCAPED_UNICODE);
     }

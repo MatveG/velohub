@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,13 +17,12 @@ class AuthController extends Controller
 //            ], 401);
 //        }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
-
+        $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
+            'token' => $token,
+            'type' => 'Bearer',
         ]);
     }
 }

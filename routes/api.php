@@ -1,5 +1,11 @@
 <?php
 
+// Settings
+Route::get('/admin/settings', 'SettingController@index');
+
+// Auth
+Route::post('/admin/login', 'Api\AuthController@login')->name('login');
+
 Route::namespace('Api')->group(function () {
     // Cart Products
     Route::post('/cart', 'CartController@index');
@@ -11,10 +17,7 @@ Route::namespace('Api')->group(function () {
     Route::post('/order', 'OrderController');
 });
 
-Route::prefix('admin')->namespace('Admin')->group(function () {
-    // Settings
-    Route::get('/settings', 'SettingController@index');
-
+Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(function () {
     // Categories
     Route::get('/categories', 'CategoryController@index');
 //    Route::get('/categories/{id}', 'CategoryController@edit');
@@ -36,8 +39,10 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
     Route::post('/products', 'ProductController@post');
     Route::patch('/products/{id}', 'ProductController@patch');
     Route::delete('/products/{id}', 'ProductController@delete');
-    Route::post('/products/{id}/upload-images', 'ProductController@uploadImages');
-    Route::post('/products/{id}/update-images', 'ProductController@updateImages');
+
+    // Images
+    Route::post('/images/upload/{model}/{id}', 'ImageController@upload');
+    Route::post('/images/update/{model}/{id}', 'ImageController@update');
 
 //    // Variants
 //    Route::get('/variants/{product_id}', 'VariantController@index');

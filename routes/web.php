@@ -1,13 +1,10 @@
 <?php
 
-// Auth
-Route::post('login', 'AuthController@login');
-
 // Category
 Route::get('/category/{slug}/{id}/{path?}/', 'CategoryController')->where('path', '.*')->name('category');
 
 // Comment
-Route::post('/comment/{product_id}/store', 'CommentController@store');
+//Route::post('/comment/{product_id}/store', 'CommentController@store');
 
 // Compare
 Route::get('/compare/{slug}/{id}', 'CompareController')->name('compare');

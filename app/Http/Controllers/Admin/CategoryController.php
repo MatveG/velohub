@@ -45,7 +45,7 @@ class CategoryController extends Controller
 
         $category = tap(Category::find($id))->update($request->all());
 
-        return response()->json($category->getChanges());
+        return response()->json($category->only($category->getChanges()));
     }
 
     public function destroy($id)
