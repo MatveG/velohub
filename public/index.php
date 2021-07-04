@@ -1,7 +1,7 @@
 <?php
-$POPULATION = array(); //population of individuals
+$POPULATION = array();
 $POPULATION_SIZE = 100;
-$DNA_SIZE = 12;
+$DNA_SIZE = 5;
 $GEN_COUNT = 1;
 $TEST_COUNT = 0;
 
@@ -10,8 +10,6 @@ while (true) {
     naturalSelection();
     recreatePopulation();
 }
-
-//========================== FUNCTIONS ============================
 
 function mutate($s) {
     global $DNA_SIZE;
@@ -38,7 +36,7 @@ function reproduction($ia, $ib)
 function recreatePopulation()
 {
     global $POPULATION, $POPULATION_SIZE, $GEN_COUNT;
-
+    //echo '* Recreating population by reproducing randomly...'."<br>";
     $GEN_COUNT++;
     $c = count($POPULATION);
     for ($i=$c; $i<$POPULATION_SIZE; $i++) {
@@ -51,10 +49,10 @@ function recreatePopulation()
 function naturalSelection()
 {
     global $POPULATION, $POPULATION_SIZE, $GEN_COUNT;
-
+    //echo '* Natural selection...'."<br>";
     usort($POPULATION, "cmp");
     array_splice($POPULATION, ceil($POPULATION_SIZE/2));
-    echo 'Best fit gen '.$GEN_COUNT.': '.$POPULATION[0][0].' ('.$POPULATION[0][1].')'."<br>";
+    echo 'Best in generation '.$GEN_COUNT.': '.$POPULATION[0][0].' ('.$POPULATION[0][1].')'."<br>";
 }
 
 function cmp($a, $b)
@@ -66,7 +64,7 @@ function cmp($a, $b)
 function genInitPopulation()
 {
     global $POPULATION, $POPULATION_SIZE;
-
+    //echo '* Generating inital population...'."<br>";
     for($i=0; $i<$POPULATION_SIZE; $i++) {
         $individual = randomIndividual();
         array_push($POPULATION, array($individual,fitness($individual)));
@@ -88,7 +86,7 @@ function fitness($individual)
 {
     global $GEN_COUNT, $POPULATION_SIZE, $TEST_COUNT;
     $TEST_COUNT++;
-    $goal = 'Hello World!';
+    $goal = 'Hello';
     $delta = 0;
     for($i=0; $i<strlen($individual); $i++) {
         $delta -= abs(ord($goal[$i]) - ord($individual[$i]));
@@ -97,7 +95,7 @@ function fitness($individual)
         echo "<br>".'Solution found in '.$GEN_COUNT.' generation(s) of '.$POPULATION_SIZE.' individual(s)!'."<br>";
         echo '>>'.$individual."<br><br>";
         echo 'There was '.$TEST_COUNT.' tests performed'."<br>";
-        echo 'Out of 54^12 possible combinations'."<br>";
+        echo 'Out of 380 204 032 possible combinations'."<br>";
         exit();
     }
     return $delta;
