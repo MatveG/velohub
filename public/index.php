@@ -1,103 +1,62 @@
 <?php
-$POPULATION = array();
-$POPULATION_SIZE = 100;
-$DNA_SIZE = 5;
-$GEN_COUNT = 1;
-$TEST_COUNT = 0;
 
-genInitPopulation();
-while (true) {
-    naturalSelection();
-    recreatePopulation();
-}
+/**
+ * Laravel - A PHP Framework For Web Artisans
+ *
+ * @package  Laravel
+ * @author   Taylor Otwell <taylor@laravel.com>
+ */
 
-function mutate($s) {
-    global $DNA_SIZE;
-    $sample = randomIndividual();
-    for ($i=0; $i<$DNA_SIZE; $i++) {
-        if (rand(0,100) == 100) {
-            $s[$i] = $sample[$i];
-        }
-    }
-    return $s;
-}
+define('LARAVEL_START', microtime(true));
 
-function reproduction($ia, $ib)
-{
-    global $DNA_SIZE;
-    $crosspoint   = rand(0, $DNA_SIZE-1);
-    $ia_before_cp = substr($ia, 0, $crosspoint);
-    $ib_after_cp  = substr($ib, $crosspoint);
-    $child = $ia_before_cp.$ib_after_cp;
-    $child = mutate($child);
-    return array($child, fitness($child));
-}
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| our application. We just need to utilize it! We'll simply require it
+| into the script here so that we don't have to worry about manual
+| loading any of our classes later on. It feels great to relax.
+| loading any of our services later on. It feels great to relax.
+|
+*/
 
-function recreatePopulation()
-{
-    global $POPULATION, $POPULATION_SIZE, $GEN_COUNT;
-    //echo '* Recreating population by reproducing randomly...'."<br>";
-    $GEN_COUNT++;
-    $c = count($POPULATION);
-    for ($i=$c; $i<$POPULATION_SIZE; $i++) {
-        $a = rand(0, $c-1);
-        $b = rand(0, $c-1);
-        array_push($POPULATION, reproduction($POPULATION[$a][0], $POPULATION[$b][0]));
-    }
-}
+require __DIR__.'/../vendor/autoload.php';
 
-function naturalSelection()
-{
-    global $POPULATION, $POPULATION_SIZE, $GEN_COUNT;
-    //echo '* Natural selection...'."<br>";
-    usort($POPULATION, "cmp");
-    array_splice($POPULATION, ceil($POPULATION_SIZE/2));
-    echo 'Best in generation '.$GEN_COUNT.': '.$POPULATION[0][0].' ('.$POPULATION[0][1].')'."<br>";
-}
+/*
+|--------------------------------------------------------------------------
+| Turn On The Lights
+|--------------------------------------------------------------------------
+|
+| We need to illuminate PHP development, so let us turn on the lights.
+| This bootstraps the framework and gets it ready for use, then it
+| will load up this application so that we can run it and send
+| the responses back to the browser and delight our users.
+|
+*/
 
-function cmp($a, $b)
-{
-    if ($a[1] == $b[1]) return 0;
-    return ($a[1] > $b[1]) ? -1 : 1;
-}
+$app = require_once __DIR__.'/../bootstrap/app.php';
 
-function genInitPopulation()
-{
-    global $POPULATION, $POPULATION_SIZE;
-    //echo '* Generating inital population...'."<br>";
-    for($i=0; $i<$POPULATION_SIZE; $i++) {
-        $individual = randomIndividual();
-        array_push($POPULATION, array($individual,fitness($individual)));
-    }
-}
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can handle the incoming request
+| through the kernel, and send the associated response back to
+| the client's browser allowing them to enjoy the creative
+| and wonderful application we have prepared for them.
+|
+*/
 
-function randomIndividual()
-{
-    global $DNA_SIZE;
-    $individual = '';
-    for($i=0; $i<$DNA_SIZE; $i++) {
-        $individual .= str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')[0];
-    }
-    return $individual;
-}
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
 
-function fitness($individual)
-{
-    global $GEN_COUNT, $POPULATION_SIZE, $TEST_COUNT;
-    $TEST_COUNT++;
-    $goal = 'Hello';
-    $delta = 0;
-    for($i=0; $i<strlen($individual); $i++) {
-        $delta -= abs(ord($goal[$i]) - ord($individual[$i]));
-    }
-    if ($delta == 0) {
-        echo "<br>".'Solution found in '.$GEN_COUNT.' generation(s) of '.$POPULATION_SIZE.' individual(s)!'."<br>";
-        echo '>>'.$individual."<br><br>";
-        echo 'There was '.$TEST_COUNT.' tests performed'."<br>";
-        echo 'Out of 380 204 032 possible combinations'."<br>";
-        exit();
-    }
-    return $delta;
-}
-?>
+$response->send();
+
+$kernel->terminate($request, $response);
+
