@@ -17,10 +17,21 @@ class TriggerFunctions extends Migration
             query text;
         BEGIN
             IF TG_OP = 'DELETE' OR NEW.parent_id != OLD.parent_id THEN
-                query := format('UPDATE %I
-                SET ord = ord - 1
-                WHERE parent_id = $1.parent_id
-                AND ord > $1.ord', TG_TABLE_NAME);
+                IF ((SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_name=TG_TABLE_NAME and column_name='category_id') = 'category_id') THEN
+
+                    query := format('UPDATE %I
+                    SET ord = ord - 1
+                    WHERE parent_id = $1.parent_id
+                    AND category_id = $1.category_id
+                    AND ord > $1.ord', TG_TABLE_NAME);
+                ELSE
+                    query := format('UPDATE %I
+                    SET ord = ord - 1
+                    WHERE parent_id = $1.parent_id
+                    AND ord > $1.ord', TG_TABLE_NAME);
+                END IF;
                 EXECUTE query USING OLD;
             END IF;
             IF TG_OP = 'DELETE' THEN
@@ -36,8 +47,18 @@ class TriggerFunctions extends Migration
             max_ord integer;
         BEGIN
             IF TG_OP = 'INSERT' OR NEW.parent_id != OLD.parent_id THEN
-                query := format('SELECT MAX(ord) FROM %I
-                WHERE parent_id = $1.parent_id', TG_TABLE_NAME);
+                IF ((SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_name=TG_TABLE_NAME and column_name='category_id') = 'category_id') THEN
+
+                    query := format('SELECT MAX(ord) FROM %I
+                    WHERE parent_id = $1.parent_id
+                    AND category_id = $1.category_id', TG_TABLE_NAME);
+                ELSE
+                    query := format('SELECT MAX(ord) FROM %I
+                    WHERE parent_id = $1.parent_id', TG_TABLE_NAME);
+                END IF;
+
                 EXECUTE query INTO max_ord USING NEW;
 
                 IF (max_ord IS NULL) THEN

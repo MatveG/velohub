@@ -20,11 +20,15 @@ Route::namespace('Api')->group(function () {
 Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(function () {
     // Categories
     Route::get('/categories', 'CategoryController@index');
-//    Route::get('/categories/{id}', 'CategoryController@edit');
-//    Route::post('/categories', 'CategoryController@store');
-//    Route::patch('/categories/{id}', 'CategoryController@update');
-//    Route::delete('/categories/{id}', 'CategoryController@destroy');
-//    Route::post('/categories/{id}/upload-images', 'CategoryController@uploadImages');
+    Route::get('/categories/{id}', 'CategoryController@get');
+    Route::post('/categories', 'CategoryController@post');
+    Route::patch('/categories/{id}', 'CategoryController@patch');
+    Route::delete('/categories/{id}', 'CategoryController@delete');
+
+//    // Features
+    Route::post('/features', 'FeatureController@post');
+    Route::patch('/features/{id}', 'FeatureController@patch');
+    Route::delete('/features/{id}', 'FeatureController@delete');
 
     // Orders
     Route::get('/orders', 'OrderController@index');

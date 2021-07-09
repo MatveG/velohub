@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
@@ -32,6 +33,11 @@ class Category extends Model
     protected $casts = [
         'images' => 'array',
     ];
+
+    public function parent(): BelongsTo
+    {
+        return $this->BelongsTo(Category::class, 'parent_id', 'id');
+    }
 
     public function children(): HasMany
     {
