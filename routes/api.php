@@ -25,7 +25,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
     Route::patch('/categories/{id}', 'CategoryController@patch');
     Route::delete('/categories/{id}', 'CategoryController@delete');
 
-//    // Features
+    // Features
+    Route::get('/features/{categoryId}', 'FeatureController@index');
     Route::post('/features', 'FeatureController@post');
     Route::patch('/features/{id}', 'FeatureController@patch');
     Route::delete('/features/{id}', 'FeatureController@delete');

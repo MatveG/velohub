@@ -28,10 +28,7 @@ class CategoryController extends Controller
 
     public function get($id): JsonResponse
     {
-        $category = Category::with([
-            'features' => fn ($query) => $query->with('children'),
-            'parameters'
-        ])->findOrFail($id);
+        $category = Category::findOrFail($id);
 
         return response()->json($category);
     }

@@ -9,6 +9,17 @@ use Illuminate\Http\JsonResponse;
 
 class FeatureController extends Controller
 {
+    public function index(int $categoryId): JsonResponse
+    {
+        $features = Feature::where('category_id', $categoryId)
+//            ->where('parent_id', 0)
+//            ->with('children')
+            ->orderBy('ord')
+            ->get();
+
+        return response()->json($features);
+    }
+
     public function post(Request $request): JsonResponse
     {
         $request->validate([
