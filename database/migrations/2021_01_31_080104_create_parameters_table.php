@@ -25,6 +25,7 @@ class CreateParametersTable extends Migration
 
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
+            $table->string('type')->nullable();
             $table->string('units')->nullable();
 
             $table->json('values')->default(json_encode([]));

@@ -3,32 +3,31 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Feature;
-use Illuminate\Http\Request;
+use App\Models\Parameter;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class FeatureController extends Controller
+class ParameterController extends Controller
 {
     public function index(int $categoryId): JsonResponse
     {
-        $features = Feature::where('category_id', $categoryId)->get();
+        $parameters = Parameter::where('category_id', $categoryId)->get();
 
-        return response()->json($features);
+        return response()->json($parameters);
     }
 
     public function post(Request $request): JsonResponse
     {
         $request->validate([
-            'parent_id' => 'required|integer',
             'category_id' => 'required|integer',
             'title' => 'required|min:2|max:255',
             'type' => 'required|min:2|max:255',
         ]);
 
-        $feature = Feature::create($request->all());
-        $feature = $feature->fresh();
+        $parameter = Parameter::create($request->all());
+        $parameter = $parameter->fresh();
 
-        return response()->json($feature);
+        return response()->json($parameter);
     }
 
     public function patch(Request $request, int $id): JsonResponse
@@ -39,15 +38,15 @@ class FeatureController extends Controller
             'type' => 'required|min:2|max:255',
         ]);
 
-        $feature = Feature::findOrFail($id);
-        $feature->update($request->all());
+        $parameter = Parameter::findOrFail($id);
+        $parameter->update($request->all());
 
-        return response()->json($feature);
+        return response()->json($parameter);
     }
 
     public function delete(int $id): JsonResponse
     {
-        Feature::findOrFail($id)->delete();
+        Parameter::findOrFail($id)->delete();
 
         return response()->json($id);
     }

@@ -38,6 +38,12 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
     Route::patch('/orders/{id}', 'OrderController@patch');
     Route::delete('/orders/{id}', 'OrderController@delete');
 
+    // Parameters
+    Route::get('/parameters/{categoryId}', 'ParameterController@index');
+    Route::post('/parameters', 'ParameterController@post');
+    Route::patch('/parameters/{id}', 'ParameterController@patch');
+    Route::delete('/parameters/{id}', 'ParameterController@delete');
+
     // Products
     Route::get('/products', 'ProductController@index');
     Route::get('/products/{id}', 'ProductController@get');

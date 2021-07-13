@@ -14,6 +14,7 @@ class Feature extends Model
     protected $fillable = [
         'parent_id',
         'category_id',
+        'is_parent',
         'is_required',
         'is_filter',
         'ord',

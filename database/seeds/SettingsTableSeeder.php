@@ -65,5 +65,26 @@ class SettingsTableSeeder extends Seeder
             'value' => 5,
             'hint' => '%'
         ]);
+        DB::table('settings')->insert([
+            'group' => 'shop',
+            'key' => 'features',
+            'value' => json_encode([
+                'stock-1' => 'Stock 1',
+                'stock-2' => 'Stock 2',
+            ]),
+        ]);
+        DB::table('settings')->insert([
+            'group' => 'shop',
+            'key' => 'parameters',
+            'value' => json_encode([
+                'group' => 'группа',
+                'number' => 'число',
+                'string' => 'строка',
+                'text' => 'текст',
+                'bool' => 'есть/нет',
+                'select' => 'выбор',
+                'multiple' => 'мульти выбор'
+            ]),
+        ]);
     }
 }
