@@ -15,6 +15,7 @@ class Parameter extends Model
         'category_id',
         'is_required',
         'is_filter',
+        'ord',
         'title',
         'type',
         'units',

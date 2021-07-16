@@ -15,7 +15,6 @@ class Product extends Model
     use Traits\Relations\HasMany\Comments;
 
     protected string $modelName = 'product';
-    protected string $imagesFolder = '/images/product';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'category_id',
@@ -51,11 +50,6 @@ class Product extends Model
         'features' => JsonObject::class,
         'settings' => JsonObject::class
     ];
-    protected $appends = [
-        'name',
-        'link',
-        'thumb'
-    ];
 
     public function analogs(): HasMany
     {
@@ -86,19 +80,4 @@ class Product extends Model
     {
         $query->orderByRaw("ts_rank(search, to_tsquery('" . $keywords . "')) DESC");
     }
-
-//    public function getRawStocksAttribute(): string
-//    {
-//        return $this->attributes['stocks'];
-//    }
-//
-//    public function getRawFeaturesAttribute(): string
-//    {
-//        return $this->attributes['features'];
-//    }
-//
-//    public function getRawSettingsAttribute(): string
-//    {
-//        return $this->attributes['settings'];
-//    }
 }

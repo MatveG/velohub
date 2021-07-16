@@ -17,35 +17,42 @@ class ImageController extends Controller
 
     public function upload(Request $request, string $model, int $id): JsonResponse
     {
-//        $request->validate([
-//            'model' => 'required|string|min:3',
-//            'images' => 'required|array',
-//            'images.*' => 'image|mimes:jpg,jpeg,gif,png|max:1048',
-//            'images.0' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
-//        ]);
-//
-//        $class = 'App\Models\\' . ucfirst($request->model);
-//        $model = (new $class())->findOrFail($id);
-//        $uploaded = ImagesUploadService::upload($request->images, $model->imagesStorage(), $model->thumbsStorage());
-//        $model->images = [...$model->images, ...$uploaded];
-//        $model->save();
-//
-//        return response()->json($model->images);
-        return response()->json($model, $id);
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpg,jpeg,gif,png|max:1048',
+            'images.0' => 'required|image|mimes:jpg,jpeg,gif,png|max:1048',
+        ]);
+
+        $class = 'App\Models\\' . ucfirst($model);
+        $model = (new $class())->findOrFail($id);
+
+        $uploaded = ImagesUploadService::upload(
+            $request->images,
+            $model->imagesStorage(),
+            $model->thumbsStorage()
+        );
+
+        $model->images = [...$model->images, ...$uploaded];
+        $model->save();
+
+        return response()->json($model->images);
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, string $model, int $id): JsonResponse
     {
         $request->validate([
-            'model' => 'required|string|min:3',
-            'images' => 'array',
             'images.*' => 'string',
         ]);
 
-        $class = 'App\Models\\' . ucfirst($request->model);
+        $class = 'App\Models\\' . ucfirst($model);
         $model = (new $class())->findOrFail($id);
-        Storage::delete(array_diff($model->images, $request->images));
-        $model->images = $request->images;
+        $images = $request->images ?? [];
+
+        if (count($images)) {
+            Storage::delete(array_diff($model->images, $images));
+        }
+
+        $model->images = $images;
         $model->save();
 
         return response()->json($model->images);

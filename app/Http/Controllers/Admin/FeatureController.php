@@ -41,6 +41,7 @@ class FeatureController extends Controller
 
         $feature = Feature::findOrFail($id);
         $feature->update($request->all());
+        $feature = $feature->fresh()->first(array_keys($feature->getChanges()));
 
         return response()->json($feature);
     }

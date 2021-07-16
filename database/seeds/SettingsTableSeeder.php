@@ -67,10 +67,11 @@ class SettingsTableSeeder extends Seeder
         ]);
         DB::table('settings')->insert([
             'group' => 'shop',
-            'key' => 'features',
+            'key' => 'parameters',
             'value' => json_encode([
-                'stock-1' => 'Stock 1',
-                'stock-2' => 'Stock 2',
+                'number' => 'число',
+                'string' => 'строка',
+                'select' => 'выбор',
             ]),
         ]);
         DB::table('settings')->insert([
@@ -81,7 +82,7 @@ class SettingsTableSeeder extends Seeder
                 'number' => 'число',
                 'string' => 'строка',
                 'text' => 'текст',
-                'bool' => 'есть/нет',
+                'boolean' => 'есть/нет',
                 'select' => 'выбор',
                 'multiple' => 'мульти выбор'
             ]),

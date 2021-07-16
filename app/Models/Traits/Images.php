@@ -9,14 +9,34 @@ trait Images
     private string $imagesDir = '/image/';
     private string $thumbsDir = '/thumb/';
     private string $refValue = '';
-    private array $cacheValue = [];
+    private ?array $cacheValue = null;
+
+    public function setImagesAttribute(array $value): void
+    {
+        $this->attributes['images'] = json_encode($value);
+    }
 
     public function getImagesAttribute(): array
+    {
+        return $this->castValue();
+    }
+
+    public function getImagesStorageAttribute(): string
+    {
+        return Storage::url($this->imagesStorage());
+    }
+
+    public function getThumbsStorageAttribute(): string
+    {
+        return Storage::url($this->thumbsStorage());
+    }
+
+    public function getFullImagesAttribute(): array
     {
         return array_map(fn ($url) => Storage::url($this->imagesStorage() . $url), $this->castValue());
     }
 
-    public function getThumbsAttribute(): array
+    public function getFullThumbsAttribute(): array
     {
         return array_map(fn ($url) => Storage::url($this->thumbsStorage() . $url), $this->castValue());
     }
@@ -31,9 +51,14 @@ trait Images
         return (count($this->castValue())) ? Storage::url($this->thumbsStorage() . $this->castValue()[0]) : null;
     }
 
-    public function setImagesAttribute(array $value): void
+    private function castValue(): array
     {
-        $this->attributes['images'] = json_encode($value);
+        if ($this->attributes['images'] !== $this->refValue) {
+            $this->cacheValue = json_decode($this->attributes['images'], true);
+            $this->refValue = $this->attributes['images'];
+        }
+
+        return $this->cacheValue;
     }
 
     public function imagesStorage(): string
@@ -44,15 +69,5 @@ trait Images
     public function thumbsStorage(): string
     {
         return $this->modelName . $this->thumbsDir;
-    }
-
-    private function castValue(): array
-    {
-        if ($this->attributes['images'] !== $this->refValue) {
-            $this->cacheValue = json_decode($this->attributes['images'], true);
-            $this->refValue = $this->attributes['images'];
-        }
-
-        return $this->cacheValue;
     }
 }

@@ -18,15 +18,16 @@ class ProductController extends Controller
             ->get([
                 'id',
                 'is_active',
-                'is_stock',
-                'slug',
+                'category_id',
                 'code',
                 'title',
                 'brand',
                 'model',
                 'price',
-                'category_id',
                 'images'
+            ])
+            ->append([
+                'thumb'
             ]);
 
         return response()->json($products);
@@ -34,7 +35,11 @@ class ProductController extends Controller
 
     public function get($id): JsonResponse
     {
-        $product = Product::with('category.features', 'variants')->find($id);
+        $product = Product::with('category.features')
+            ->findOrFail($id)
+            ->append([
+                'imagesStorage'
+            ]);
 
         return response()->json($product);
     }
@@ -63,9 +68,11 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->update($request->all());
 
-        return response()->json(
-            $product->only(array_keys($product->getChanges()))
-        );
+        $product = $product->fresh()
+            ->with($product->wasChanged('category_id') ? ['category.features'] : [])
+            ->first(array_keys($product->getChanges()));
+
+        return response()->json($product);
     }
 
     public function delete(int $id): JsonResponse

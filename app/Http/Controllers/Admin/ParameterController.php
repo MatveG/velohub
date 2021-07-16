@@ -40,6 +40,7 @@ class ParameterController extends Controller
 
         $parameter = Parameter::findOrFail($id);
         $parameter->update($request->all());
+        $parameter = $parameter->fresh()->first(array_keys($parameter->getChanges()));
 
         return response()->json($parameter);
     }

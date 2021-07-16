@@ -1,12 +1,9 @@
 /.idea
 /node_modules
-/public/assets/webfonts/
-/public/images
+/public/assets
 /public/storage
 /storage
 /vendor
-/public/assets/admin/app.min.css
-/public/assets/admin/app.min.js
 *.log
 *.map
 .data

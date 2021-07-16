@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
+    use Traits\Images;
     use Traits\Relations\HasMany\Features;
     use Traits\Relations\HasMany\Parameters;
     use Traits\Relations\HasMany\Products;
@@ -30,9 +31,6 @@ class Category extends Model
         'description',
         'images',
     ];
-    protected $casts = [
-        'images' => 'array',
-    ];
 
     public function parent(): BelongsTo
     {
@@ -41,23 +39,11 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id', 'id');
+        return $this->hasMany(Category::class, 'parent_id', 'id')->orderBy('ord');
     }
 
     public function getLinkAttribute(): string
     {
         return route('category', ['slug' => $this->slug, 'id' => $this->id]);
     }
-
-
-
-//    public function getRawImagesAttribute(): string
-//    {
-//        return $this->attributes['images'];
-//    }
-//
-//    public function getRawSettingsAttribute(): string
-//    {
-//        return $this->attributes['settings'];
-//    }
 }

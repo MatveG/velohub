@@ -11,9 +11,7 @@ class CategoryController extends Controller
 {
     public function index(): JsonResponse
     {
-        $categories = Category::where('parent_id', 0)
-            ->with('children')
-            ->get([
+        $categories = Category::orderBy('ord')->get([
                 'id',
                 'parent_id',
                 'is_active',
@@ -28,7 +26,7 @@ class CategoryController extends Controller
 
     public function get($id): JsonResponse
     {
-        $category = Category::findOrFail($id);
+        $category = Category::findOrFail($id)->append(['imagesStorage']);;
 
         return response()->json($category);
     }
@@ -56,10 +54,9 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->update($request->all());
+        $category = $category->fresh()->first(array_keys($category->getChanges()));
 
-        return response()->json(
-            $category->only(array_keys($category->getChanges()))
-        );
+        return response()->json($category);
     }
 
     public function delete(int $id): JsonResponse
