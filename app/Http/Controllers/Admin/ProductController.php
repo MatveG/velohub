@@ -18,6 +18,7 @@ class ProductController extends Controller
             ->get([
                 'id',
                 'is_active',
+                'is_stock',
                 'category_id',
                 'code',
                 'title',
@@ -35,11 +36,9 @@ class ProductController extends Controller
 
     public function get($id): JsonResponse
     {
-        $product = Product::with('category.features')
-            ->findOrFail($id)
-            ->append([
-                'imagesStorage'
-            ]);
+        $product = Product::findOrFail($id)
+            ->load('category.features')
+            ->append(['imagesPath']);
 
         return response()->json($product);
     }
@@ -67,18 +66,20 @@ class ProductController extends Controller
 
         $product = Product::findOrFail($id);
         $product->update($request->all());
+        $changed = array_keys($product->getChanges());
 
-        $product = $product->fresh()
-            ->with($product->wasChanged('category_id') ? ['category.features'] : [])
-            ->first(array_keys($product->getChanges()));
+        if ($product->wasChanged('category_id')) {
+            $product->load('category.features');
+            $changed[] = 'category';
+        }
 
-        return response()->json($product);
+        return response()->json($product->only($changed));
     }
 
     public function delete(int $id): JsonResponse
     {
         Product::findOrFail($id)->delete();
 
-        return response()->json($id);
+        return response()->json(compact('id'));
     }
 }

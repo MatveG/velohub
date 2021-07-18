@@ -40,15 +40,15 @@ class ParameterController extends Controller
 
         $parameter = Parameter::findOrFail($id);
         $parameter->update($request->all());
-        $parameter = $parameter->fresh()->first(array_keys($parameter->getChanges()));
+        $changed = array_keys($parameter->getChanges());
 
-        return response()->json($parameter);
+        return response()->json($parameter->only($changed));
     }
 
     public function delete(int $id): JsonResponse
     {
         Parameter::findOrFail($id)->delete();
 
-        return response()->json($id);
+        return response()->json(compact(['id']));
     }
 }

@@ -26,7 +26,7 @@ class CategoryController extends Controller
 
     public function get($id): JsonResponse
     {
-        $category = Category::findOrFail($id)->append(['imagesStorage']);;
+        $category = Category::findOrFail($id)->append(['imagesPath']);
 
         return response()->json($category);
     }
@@ -54,15 +54,15 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->update($request->all());
-        $category = $category->fresh()->first(array_keys($category->getChanges()));
+        $changed = array_keys($category->getChanges());
 
-        return response()->json($category);
+        return response()->json($category->only($changed));
     }
 
     public function delete(int $id): JsonResponse
     {
         Category::findOrFail($id)->delete();
 
-        return response()->json($id);
+        return response()->json(compact('id'));
     }
 }

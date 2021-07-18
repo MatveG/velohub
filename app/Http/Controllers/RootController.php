@@ -13,18 +13,29 @@ class RootController extends Controller
     {
 //        dd(Artisan::call('parse:veloplaneta'));
 
-        $prod = Product::whereId(999)->with('category.features')->first();
+        $product = Product::findOrFail(999);
 
-        $prod->update(['category_id' => 1]);
-        $prod = $prod->fresh()->with('category.features')->first(['id', 'category_id']);
+        dd($product->attributesToArray());
 
-        dd( $prod->toArray() );
+//        $prod = Product::findOrFail(999);
+//
+//        $prod->update(['title' => 'foo-bar']);
+//
+//        $prod->load('category.features');
+//
+//        dd($prod->only(['title', 'category']));
 
-        dd( $prod->only([
-            ...($prod->wasChanged('category_id') ? ['category'] : []),
-            ...array_keys($prod->getChanges())
-        ]));
+//        $prod->update(['category_id' => 1]);
+//        $prod = $prod->fresh()->with('category.features')->first(['id', 'category_id']);
+//
+//        dd( $prod->toArray() );
+//
+//        dd( $prod->only([
+//            ...($prod->wasChanged('category_id') ? ['category'] : []),
+//            ...array_keys($prod->getChanges())
+//        ]));
 
+        //
         $document = Document::where('slug', 'root')->firstOrFail();
 
         $meta = MetaService::title($document->meta_title ?? $document->title)

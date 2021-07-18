@@ -21,24 +21,24 @@ trait Images
         return $this->castValue();
     }
 
-    public function getImagesStorageAttribute(): string
+    public function getImagesPathAttribute(): string
     {
         return Storage::url($this->imagesStorage());
     }
 
-    public function getThumbsStorageAttribute(): string
+    public function getThumbsPathAttribute(): string
     {
         return Storage::url($this->thumbsStorage());
     }
 
     public function getFullImagesAttribute(): array
     {
-        return array_map(fn ($url) => Storage::url($this->imagesStorage() . $url), $this->castValue());
+        return array_map(fn ($fileName) => Storage::url($this->imagesStorage() . $fileName), $this->castValue());
     }
 
     public function getFullThumbsAttribute(): array
     {
-        return array_map(fn ($url) => Storage::url($this->thumbsStorage() . $url), $this->castValue());
+        return array_map(fn ($fileName) => Storage::url($this->thumbsStorage() . $fileName), $this->castValue());
     }
 
     public function getImageAttribute(): ?string
