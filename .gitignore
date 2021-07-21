@@ -1,6 +1,7 @@
 /.idea
 /node_modules
 /public/assets
+/public/images
 /public/storage
 /storage
 /vendor
@@ -13,3 +14,4 @@
 .editorconfig
 _ide_helper.php
 
+/public/assets/

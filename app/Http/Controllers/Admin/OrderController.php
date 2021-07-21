@@ -31,7 +31,7 @@ class OrderController extends Controller
 
     public function get($id): JsonResponse
     {
-        $order = Order::with('products')->find($id);
+        $order = Order::findOrFail($id);
 
         return response()->json($order);
     }
@@ -59,14 +59,15 @@ class OrderController extends Controller
 
         $order = Order::findOrFail($id);
         $order->update($request->all());
+        $changed = array_keys($order->getChanges());
 
-        return response()->json($order->only($order->getChanges()));
+        return response()->json($order->only($changed));
     }
 
     public function delete(int $id): JsonResponse
     {
         Order::findOrFail($id)->delete();
 
-        return response()->json();
+        return response()->json(compact(['id']));
     }
 }

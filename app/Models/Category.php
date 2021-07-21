@@ -15,7 +15,6 @@ class Category extends Model
     use Traits\Relations\HasMany\Variants;
 
     protected string $modelName = 'category';
-    protected string $imagesFolder = '/images/category';
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'parent_id',

@@ -11,10 +11,12 @@ class OrderProducts implements CastsAttributes
     const PRODUCT_COLS = [
         'id',
         'variant_id',
+        'code',
         'amount',
         'title',
         'brand',
         'model',
+        'name',
         'price',
         'image',
         'link'

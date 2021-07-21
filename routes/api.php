@@ -25,6 +25,13 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
     Route::patch('/categories/{id}', 'CategoryController@patch');
     Route::delete('/categories/{id}', 'CategoryController@delete');
 
+    // Documents
+    Route::get('/documents', 'DocumentController@index');
+    Route::get('/documents/{id}', 'DocumentController@get');
+    Route::post('/documents', 'DocumentController@post');
+    Route::patch('/documents/{id}', 'DocumentController@patch');
+    Route::delete('/documents/{id}', 'DocumentController@delete');
+
     // Features
     Route::get('/features/{categoryId}', 'FeatureController@index');
     Route::post('/features', 'FeatureController@post');

@@ -20,6 +20,7 @@ class Order extends Model
         'name',
         'surname',
         'text',
+        'notes',
         'address',
     ];
     protected $casts = [
