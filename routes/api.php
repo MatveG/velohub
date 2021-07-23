@@ -58,9 +58,19 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
     Route::patch('/products/{id}', 'ProductController@patch');
     Route::delete('/products/{id}', 'ProductController@delete');
 
-    // Images
-    Route::post('/images/upload/{model}/{id}', 'ImageController@upload');
-    Route::post('/images/update/{model}/{id}', 'ImageController@update');
+    // Settings
+    Route::get('/settings', 'SettingController@index');
+    Route::get('/settings/{id}', 'SettingController@get');
+    Route::post('/settings', 'SettingController@post');
+    Route::patch('/settings/{id}', 'SettingController@patch');
+    Route::delete('/settings/{id}', 'SettingController@delete');
+
+    // Users
+    Route::get('/users', 'UserController@index');
+    Route::get('/users/{id}', 'UserController@get');
+    Route::post('/users', 'UserController@post');
+    Route::patch('/users/{id}', 'UserController@patch');
+    Route::delete('/users/{id}', 'UserController@delete');
 
 //    // Variants
 //    Route::get('/variants/{product_id}', 'VariantController@index');
@@ -68,6 +78,10 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
 //    Route::patch('/variants/{id}', 'VariantController@update');
 //    Route::delete('/variants/{id}', 'VariantController@destroy');
 //    Route::post('/variants/{id}/upload-images', 'VariantController@uploadImages');
+
+    // Images
+    Route::post('/images/upload/{model}/{id}', 'ImageController@upload');
+    Route::post('/images/update/{model}/{id}', 'ImageController@update');
 });
 
 

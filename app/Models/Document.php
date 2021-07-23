@@ -10,6 +10,7 @@ class Document extends Model
     protected $dates = ['created_at', 'updated_at'];
     protected $fillable = [
         'is_active',
+        'slug',
         'title',
         'text',
         'meta_title',
