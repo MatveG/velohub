@@ -11,31 +11,6 @@ class RootController extends Controller
 {
     public function __invoke()
     {
-//        dd(Artisan::call('parse:veloplaneta'));
-
-        $product = Product::findOrFail(999);
-
-        dd($product->attributesToArray());
-
-//        $prod = Product::findOrFail(999);
-//
-//        $prod->update(['title' => 'foo-bar']);
-//
-//        $prod->load('category.features');
-//
-//        dd($prod->only(['title', 'category']));
-
-//        $prod->update(['category_id' => 1]);
-//        $prod = $prod->fresh()->with('category.features')->first(['id', 'category_id']);
-//
-//        dd( $prod->toArray() );
-//
-//        dd( $prod->only([
-//            ...($prod->wasChanged('category_id') ? ['category'] : []),
-//            ...array_keys($prod->getChanges())
-//        ]));
-
-        //
         $document = Document::where('slug', 'root')->firstOrFail();
 
         $meta = MetaService::title($document->meta_title ?? $document->title)

@@ -1,8 +1,5 @@
 <?php
 
-// Settings
-Route::get('/admin/settings', 'SettingController@index');
-
 // Auth
 Route::post('/admin/login', 'Api\AuthController@login')->name('login');
 
@@ -18,6 +15,8 @@ Route::namespace('Api')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(function () {
+    Route::get('/root', 'RootController');
+
     // Categories
     Route::get('/categories', 'CategoryController@index');
     Route::get('/categories/{id}', 'CategoryController@get');
@@ -58,13 +57,6 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
     Route::patch('/products/{id}', 'ProductController@patch');
     Route::delete('/products/{id}', 'ProductController@delete');
 
-    // Settings
-    Route::get('/settings', 'SettingController@index');
-    Route::get('/settings/{id}', 'SettingController@get');
-    Route::post('/settings', 'SettingController@post');
-    Route::patch('/settings/{id}', 'SettingController@patch');
-    Route::delete('/settings/{id}', 'SettingController@delete');
-
     // Users
     Route::get('/users', 'UserController@index');
     Route::get('/users/{id}', 'UserController@get');
@@ -79,9 +71,15 @@ Route::middleware('auth:sanctum')->prefix('admin')->namespace('Admin')->group(fu
 //    Route::delete('/variants/{id}', 'VariantController@destroy');
 //    Route::post('/variants/{id}/upload-images', 'VariantController@uploadImages');
 
+    // Settings
+    Route::get('/settings', 'SettingController@index');
+    Route::patch('/settings/{id}', 'SettingController@patch');
+
     // Images
     Route::post('/images/upload/{model}/{id}', 'ImageController@upload');
     Route::post('/images/update/{model}/{id}', 'ImageController@update');
 });
 
+// Settings
+Route::get('/admin/settings', 'SettingController@index');
 

@@ -15,8 +15,10 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->boolean('is_readonly')->default(false)->index();
             $table->string('group');
             $table->string('key');
+            $table->string('type');
             $table->string('title')->nullable();
             $table->text('value')->nullable();
             $table->text('hint')->nullable();

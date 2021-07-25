@@ -15,17 +15,20 @@ class SettingsTableSeeder extends Seeder
         DB::table('settings')->insert([
             'group' => 'images',
             'key' => 'format',
+            'type' => 'string',
             'value' => 'jpg'
         ]);
         DB::table('settings')->insert([
             'group' => 'images',
             'key' => 'dimension',
+            'type' => 'number',
             'value' => '1000',
             'hint' => 'px'
         ]);
         DB::table('settings')->insert([
             'group' => 'images',
             'key' => 'size',
+            'type' => 'number',
             'value' => '1024',
             'hint' => 'kb'
         ]);
@@ -33,27 +36,38 @@ class SettingsTableSeeder extends Seeder
         DB::table('settings')->insert([
             'group' => 'currency',
             'key' => 'title',
+            'type' => 'string',
             'value' => 'гривны'
         ]);
         DB::table('settings')->insert([
             'group' => 'currency',
             'key' => 'abbr',
+            'type' => 'string',
             'value' => 'грн'
         ]);
         DB::table('settings')->insert([
             'group' => 'currency',
             'key' => 'sign',
+            'type' => 'string',
             'value' => '₴'
         ]);
         DB::table('settings')->insert([
             'group' => 'currency',
             'key' => 'align',
+            'type' => 'string',
             'value' => 'right'
         ]);
-
+        DB::table('settings')->insert([
+            'group' => 'shop',
+            'key' => 'cashback',
+            'type' => 'number',
+            'value' => 5,
+            'hint' => '%'
+        ]);
         DB::table('settings')->insert([
             'group' => 'shop',
             'key' => 'stocks',
+            'type' => 'object',
             'value' => json_encode([
                 'stock-1' => 'Stock 1',
                 'stock-2' => 'Stock 2',
@@ -61,13 +75,8 @@ class SettingsTableSeeder extends Seeder
         ]);
         DB::table('settings')->insert([
             'group' => 'shop',
-            'key' => 'cashback',
-            'value' => 5,
-            'hint' => '%'
-        ]);
-        DB::table('settings')->insert([
-            'group' => 'shop',
             'key' => 'parameters',
+            'type' => 'object',
             'value' => json_encode([
                 'number' => 'число',
                 'string' => 'строка',
@@ -76,7 +85,8 @@ class SettingsTableSeeder extends Seeder
         ]);
         DB::table('settings')->insert([
             'group' => 'shop',
-            'key' => 'parameters',
+            'key' => 'features',
+            'type' => 'object',
             'value' => json_encode([
                 'group' => 'группа',
                 'number' => 'число',
